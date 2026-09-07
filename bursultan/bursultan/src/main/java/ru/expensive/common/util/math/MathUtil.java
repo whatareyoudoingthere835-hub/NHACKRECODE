@@ -1,0 +1,158 @@
+package ru.expensive.common.util.math;
+
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fStack;
+import org.joml.Matrix4f;
+import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
+import org.joml.Vector3d;
+import ru.expensive.common.QuickImports;
+
+import java.util.concurrent.ThreadLocalRandom;
+
+import static net.minecraft.util.math.MathHelper.*;
+
+public class MathUtil implements QuickImports {
+
+    public static boolean isHovered(double mouseX,
+                                    double mouseY,
+                                    double x,
+                                    double y,
+                                    double width,
+                                    double height) {
+        return mouseX >= x
+                && mouseX <= x + width
+                && mouseY >= y
+                && mouseY <= y + height;
+    }
+
+    public static double computeGcd() {
+        double f = mc.options.getMouseSensitivity().getValue() * 0.6 + 0.2;
+        return f * f * f * 8.0 * 0.15;
+    }
+
+    public static double getRandom(double min, double max) {
+        if (min == max) {
+            return min;
+        } else {
+            if (min > max) {
+                double d = min;
+                min = max;
+                max = d;
+            }
+
+            return ThreadLocalRandom.current().nextDouble(min, max);
+        }
+    }
+
+    public static void scale(MatrixStack stack,
+                             float x,
+                             float y,
+                             float scale,
+                             Runnable data) {
+
+        stack.push();
+        stack.translate(x, y, 0);
+        stack.scale(scale, scale, 1);
+        stack.translate(-x, -y, 0);
+        data.run();
+        stack.pop();
+    }
+
+    public static void scale(Matrix3x2fStack stack,
+                             float x,
+                             float y,
+                             float scale,
+                             Runnable data) {
+        stack.pushMatrix();
+        stack.translate(x, y);
+        stack.scale(scale, scale);
+        stack.translate(-x, -y);
+        data.run();
+        stack.popMatrix();
+    }
+
+    public static Matrix4f getPositionMatrix(DrawContext context) {
+        if (context == null || context.getMatrices() == null) {
+            return new Matrix4f();
+        }
+        return toMatrix4f(context.getMatrices());
+    }
+
+    public static Matrix4f toMatrix4f(Matrix3x2f stack) {
+        if (stack == null) return new Matrix4f();
+        Matrix4f mat = new Matrix4f();
+        mat.m00(stack.m00);
+        mat.m01(stack.m01);
+        mat.m10(stack.m10);
+        mat.m11(stack.m11);
+        mat.m30(stack.m20);
+        mat.m31(stack.m21);
+        return mat;
+    }
+
+
+    public static double round(double num, double increment) {
+        double rounded = Math.round(num / increment) * increment;
+        return Math.round(rounded * 100.0) / 100.0;
+    }
+
+    public static int floorNearestMulN(int x, int n) {
+        return n * (int) Math.floor((double) x / (double) n);
+    }
+
+    public static int getRed(int hex) {
+        return hex >> 16 & 255;
+    }
+
+    public static int getGreen(int hex) {
+        return hex >> 8 & 255;
+    }
+
+    public static int getBlue(int hex) {
+        return hex & 255;
+    }
+
+    public static int getAlpha(int hex) {
+        return hex >> 24 & 255;
+    }
+
+    public static float[] colorToArray(int hex) {
+        float[] rgba = new float[4];
+
+        rgba[0] = getRed(hex) / 255f;
+        rgba[1] = getGreen(hex) / 255f;
+        rgba[2] = getBlue(hex) / 255f;
+        rgba[3] = getAlpha(hex) / 255f;
+
+        return rgba;
+    }
+
+    public static float fast(float current, float target, float factor) {
+        float diff = target - current;
+        if (diff * diff < 0.001f) return target;
+        return current + diff / factor;
+    }
+
+    public static float lerp(float start, float end, float delta) {
+        return start + (end - start) * delta;
+    }
+
+    public static int applyOpacity(int color, float opacity) {
+        return ColorHelper.getArgb((int) (getAlpha(color) * opacity / 255), getRed(color), getGreen(color), getBlue(color));
+    }
+
+    public static Vector3d getEntityPos(Entity entity) {
+        float partialTicks = mc.getRenderTickCounter().getTickProgress(true);
+
+        double x = entity.lastRenderX + (entity.getX() - entity.lastRenderX) * partialTicks,
+                y = entity.lastRenderY + (entity.getY() - entity.lastRenderY) * partialTicks,
+                z = entity.lastRenderZ + (entity.getZ() - entity.lastRenderZ) * partialTicks;
+
+        return new Vector3d(x, y, z);
+    }
+}

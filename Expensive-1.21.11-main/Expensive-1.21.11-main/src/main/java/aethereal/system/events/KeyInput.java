@@ -1,0 +1,76 @@
+package aethereal.system.events;
+import aethereal.*;
+import aethereal.features.modules.Module;
+import aethereal.features.modules.*;
+import aethereal.features.modules.combat.*;
+import aethereal.features.modules.movement.*;
+import aethereal.features.modules.player.*;
+import aethereal.features.modules.render.*;
+import aethereal.features.modules.misc.*;
+import aethereal.features.modules.earnings.*;
+import aethereal.features.modules.autobuy.*;
+import aethereal.features.commands.*;
+import aethereal.gui.*;
+import aethereal.graphics.*;
+import aethereal.system.config.*;
+import aethereal.system.events.*;
+import aethereal.system.network.*;
+import aethereal.system.resources.*;
+import aethereal.core.models.*;
+import aethereal.core.types.*;
+import aethereal.core.accessors.*;
+import aethereal.core.annotations.*;
+import aethereal.utils.*;
+import aethereal.utils.math.*;
+
+
+public final class KeyInput implements InputEvent {
+    public final int keyCode;
+    public final int scanCode;
+    public final KeyInputAction keyAction;
+
+    public final KeyModifiers modifiers;
+
+    public KeyInput(int i, int i2, KeyInputAction class704Var, KeyModifiers class705Var) {
+        this.keyCode = i;
+        this.scanCode = i2;
+        this.keyAction = class704Var;
+        this.modifiers = class705Var;
+    }
+
+    @Override
+    public InputType type() {
+        return InputType.KEY;
+    }
+
+        @Override
+    public final String toString() {
+        return getClass().getSimpleName() + "[" + "keyCode=" + this.keyCode + ", " + "scanCode=" + this.scanCode + ", " + "keyAction=" + this.keyAction + ", " + "modifiers=" + this.modifiers + "]";
+    }
+    @Override
+    public final int hashCode() {
+        return java.util.Objects.hash(this.keyCode, this.scanCode, this.keyAction, this.modifiers);
+    }
+    @Override
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof KeyInput)) return false;
+        KeyInput o= (KeyInput) obj;
+        return java.util.Objects.equals(this.keyCode, o.keyCode) && java.util.Objects.equals(this.scanCode, o.scanCode) && java.util.Objects.equals(this.keyAction, o.keyAction) && java.util.Objects.equals(this.modifiers, o.modifiers);
+    }
+public int keyCode() {
+        return this.keyCode;
+    }
+
+    public int scanCode() {
+        return this.scanCode;
+    }
+
+    public KeyInputAction keyAction() {
+        return this.keyAction;
+    }
+
+    public KeyModifiers modifiers() {
+        return this.modifiers;
+    }
+}

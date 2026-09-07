@@ -1,0 +1,126 @@
+package ru.expensive.api.feature.draggable;
+
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.client.gui.DrawContext;
+import ru.expensive.api.event.EventManager;
+import ru.expensive.api.system.animation.Animation;
+import ru.expensive.api.system.animation.implement.DecelerateAnimation;
+import ru.expensive.common.QuickImports;
+import ru.expensive.common.QuickLogger;
+import ru.expensive.implement.events.setting.SettingsUpdateEvent;
+
+@Setter
+@Getter
+public abstract class AbstractDraggable implements Draggable, QuickImports, QuickLogger {
+    private String name;
+    private int x, y, width, height;
+
+    private boolean dragging;
+    private int dragX, dragY;
+
+    public AbstractDraggable(String name, int x, int y, int width, int height) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    private final Animation scaleAnimation = new DecelerateAnimation()
+            .setValue(1)
+            .setMs(150);
+
+    @Override
+    public boolean visible() {
+        return false;
+    }
+
+    @Override
+    public void tick(float delta) {
+    }
+
+    @Override
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (isHovered(mouseX, mouseY) && button == 0) {
+            dragging = true;
+            dragX = x - (int) mouseX;
+            dragY = y - (int) mouseY;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        x = calculateCenteredX(mouseX);
+        y = calculateCenteredY(mouseY);
+    }
+
+    private int calculateCenteredX(float mouseX) {
+        int x = (int) Math.max(0, Math.min(mouseX + dragX, mc.getWindow().getScaledWidth() - width));
+        int edgeRadius = 2;
+        int centerRadius = 10;
+
+        int windowWidth = mc.getWindow().getScaledWidth();
+
+        if (x <= edgeRadius) {
+            x = 0;
+        } else if (x >= windowWidth - width - edgeRadius) {
+            x = windowWidth - width;
+        } else if (Math.abs(x + (float) width / 2 - (float) windowWidth / 2) <= centerRadius) {
+            x = (windowWidth - width) / 2;
+        }
+        return x;
+    }
+
+    private int calculateCenteredY(float mouseY) {
+        int y = (int) Math.max(0, Math.min(mouseY + dragY, mc.getWindow().getScaledHeight() - height));
+        int edgeRadius = 2;
+        int centerRadius = 10;
+        int windowHeight = mc.getWindow().getScaledHeight();
+
+        if (y <= edgeRadius) {
+            y = 0;
+        } else if (y >= windowHeight - height - edgeRadius) {
+            y = windowHeight - height;
+        } else if (Math.abs(y + height / 2 - windowHeight / 2) <= centerRadius) {
+            y = (windowHeight - height) / 2;
+        }
+        return y;
+    }
+
+    public abstract void drawDraggable(DrawContext context);
+
+    @Override
+    public boolean mouseReleased(net.minecraft.client.gui.Click click) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (dragging) {
+            dragging = false;
+            EventManager.callEvent(new SettingsUpdateEvent());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isHovered(double mouseX, double mouseY) {
+        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+    }
+
+    public void startCloseAnimation() {
+        scaleAnimation.setDirection(Animation.Direction.BACKWARDS);
+    }
+
+    public void startAnimation() {
+        scaleAnimation.setDirection(Animation.Direction.FORWARDS);
+    }
+
+    public boolean isCloseAnimationFinished() {
+        return scaleAnimation.isFinished(Animation.Direction.BACKWARDS);
+    }
+}
