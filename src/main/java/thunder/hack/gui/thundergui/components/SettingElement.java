@@ -1,5 +1,6 @@
 package thunder.hack.gui.thundergui.components;
 
+import org.joml.Matrix3x2fStack;
 import net.minecraft.client.util.math.MatrixStack;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.render.Render2DEngine;
@@ -27,7 +28,7 @@ public class SettingElement {
         scroll_offsetY = y;
     }
 
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
+    public void render(Matrix3x2fStack matrixStack, int mouseX, int mouseY, float delta) {
         hovered = Render2DEngine.isHovered(mouseX, mouseY, x, y, width, height);
         if (scroll_offsetY != y) {
             scroll_animation = AnimationUtility.fast(scroll_animation, 1, 5f);

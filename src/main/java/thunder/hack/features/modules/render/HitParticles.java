@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
@@ -170,7 +171,7 @@ public class HitParticles extends Module {
             return System.currentTimeMillis() - getTime() > lifeTime.getValue() * 1000;
         }
 
-        public void render(MatrixStack matrixStack) {
+        public void render(Matrix3x2fStack matrixStack) {
             float size = starsScale.getValue();
             float scale = mode.is(Mode.Text) ? 0.025f * size : 0.07f;
 
@@ -178,8 +179,8 @@ public class HitParticles extends Module {
             final double posY = Render2DEngine.interpolate(py, y, Render3DEngine.getTickDelta()) + 0.1 - mc.getEntityRenderDispatcher().camera.getPos().getY();
             final double posZ = Render2DEngine.interpolate(pz, z, Render3DEngine.getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getZ();
 
-            matrixStack.push();
-            matrixStack.translate(posX, posY, posZ);
+            matrixStack.pushMatrix();
+            matrixStack.translate(posX, posY);
 
             matrixStack.scale(scale, scale, scale);
 
@@ -208,7 +209,7 @@ public class HitParticles extends Module {
             }
 
             matrixStack.scale(0.8f, 0.8f, 0.8f);
-            matrixStack.pop();
+            matrixStack.popMatrix();
         }
 
         private boolean posBlock(double x, double y, double z) {

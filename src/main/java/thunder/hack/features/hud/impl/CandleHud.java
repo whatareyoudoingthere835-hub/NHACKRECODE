@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -37,12 +38,12 @@ public class CandleHud extends HudElement {
 
         prevPitch = mc.player.getPitch();
 
-        context.getMatrices().push();
-        context.getMatrices().translate((int) getPosX(), (int) getPosY(), 0);
+        context.getMatrices().pushMatrix();
+        context.getMatrices().translate((int) getPosX(), (int) getPosY());
         float scalefactor = (float) scale.getValue() / 100f;
         context.getMatrices().scale(scalefactor, scalefactor, 1);
         context.drawTexture(TextureStorage.candle, 0, -5, 0, 0, 102, 529, 102, 529);
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
 
         drawFire(context.getMatrices(), getPosX() + (40 + 15f - xAnim) * scalefactor, getPosY() + (10 - yAnim) * scalefactor, 7 * scalefactor, 7 * scalefactor,
                 Render2DEngine.applyOpacity(new Color(0xFA460F), (float) Math.sin((mc.player.age + 10) / 15f) + 1.4f));

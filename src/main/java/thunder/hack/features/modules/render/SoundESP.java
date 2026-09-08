@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.Vec3d;
@@ -51,13 +52,13 @@ public class SoundESP extends Module {
 
                 float alpha = (float) (1f - Math.pow(1f - ((float) s.ticks / 60f), 3f));
 
-                context.getMatrices().push();
-                context.getMatrices().translate(tagX - 2 + (textWidth + 4) / 2f, (float) (posY - 13f) + 6.5f, 0);
+                context.getMatrices().pushMatrix();
+                context.getMatrices().translate(tagX - 2 + (textWidth + 4) / 2f, (float) (posY - 13f) + 6.5f);
                 context.getMatrices().scale(scale.getValue(), scale.getValue(), 1f);
-                context.getMatrices().translate(-(tagX - 2 + (textWidth + 4) / 2f), -(float) ((posY - 13f) + 6.5f), 0);
+                context.getMatrices().translate(-(tagX - 2 + (textWidth + 4) / 2f), -(float) ((posY - 13f) + 6.5f));
                 Render2DEngine.drawRect(context.getMatrices(), tagX - 2, (float) (posY - 13f), textWidth + 4, 11, fillColorA.getValue().withAlpha((int) (fillColorA.getValue().getAlpha() * alpha)).getColorObject());
                 FontRenderers.sf_bold.drawString(context.getMatrices(), s.name, tagX, (float) posY - 10, Render2DEngine.applyOpacity(-1, alpha));
-                context.getMatrices().pop();
+                context.getMatrices().popMatrix();
             }
         }
     }

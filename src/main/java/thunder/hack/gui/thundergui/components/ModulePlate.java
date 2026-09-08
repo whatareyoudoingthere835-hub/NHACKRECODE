@@ -1,5 +1,7 @@
 package thunder.hack.gui.thundergui.components;
 
+import net.minecraft.util.math.MathHelper;
+import org.joml.Matrix3x2fStack;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
@@ -42,7 +44,7 @@ public class ModulePlate {
         scroll_animation = 0;
     }
 
-    public void render(MatrixStack stack, int MouseX, int MouseY) {
+    public void render(Matrix3x2fStack stack, int MouseX, int MouseY) {
         if (scrollPosY != posY) {
             scroll_animation = AnimationUtility.fast(scroll_animation, 1, 15f);
             posY = (int) Render2DEngine.interpolate(prevPosY, scrollPosY, scroll_animation);
@@ -77,15 +79,15 @@ public class ModulePlate {
             FontRenderers.icons.drawString(stack, "H", (int) (posX + 80f), (int) (posY + 22f), Render2DEngine.applyOpacity(new Color(0xFFECECEC, true).getRGB(), getFadeFactor()));
         else {
 
-            stack.push();
-            stack.translate((posX + 91f), (posY + 15f), 0.0F);
-            stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(mc.player.age * 4));
+            stack.pushMatrix();
+            stack.translate((posX + 91f), (posY + 15f));
+            stack.rotate((mc.player.age * 4) * MathHelper.RADIANS_PER_DEGREE);
             stack.translate(-(posX + 91f), -(posY + 15f), 0.0F);
             FontRenderers.big_icons.drawString(stack, "H", (posX + 78f), (posY + 5f), Render2DEngine.applyOpacity(new Color(0xFF646464, true).getRGB(), getFadeFactor()));
             stack.translate((posX + 91f), (posY + 15f), 0.0F);
-            stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-mc.player.age * 4));
+            stack.rotate((-mc.player.age * 4) * MathHelper.RADIANS_PER_DEGREE);
             stack.translate(-(posX + 91f), -(posY + 15f), 0.0F);
-            stack.pop();
+            stack.popMatrix();
         }
 
         if (!listening_bind) {

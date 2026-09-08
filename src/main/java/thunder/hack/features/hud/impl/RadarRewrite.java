@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -58,24 +59,24 @@ public class RadarRewrite extends HudElement {
         float middleH = mc.getWindow().getScaledHeight() * getY();
 
         MSAAFramebuffer.use(false, () -> {
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             renderCompass(context.getMatrices(), middleW + CRadius.getValue(), middleH + CRadius.getValue());
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
 
             int color = 0;
 
-            context.getMatrices().push();
-            context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue(), 0);
-            context.getMatrices().multiply(RotationAxis.POSITIVE_X.rotationDegrees(90f / Math.abs(90f / MathUtility.clamp(mc.player.getPitch(), pitchLock.getValue(), 90f)) - 102));
-            context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()), 0);
+            context.getMatrices().pushMatrix();
+            context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue());
+            context;
+            context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()));
 
             for (PlayerEntity e : Lists.newArrayList(mc.world.getPlayers())) {
                 if (e != mc.player) {
-                    context.getMatrices().push();
+                    context.getMatrices().pushMatrix();
                     float yaw = getRotations(e) - mc.player.getYaw();
-                    context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue(), 0.0F);
-                    context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw));
-                    context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()), 0.0F);
+                    context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue());
+                    context.getMatrices().rotate((yaw) * MathHelper.RADIANS_PER_DEGREE);
+                    context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()));
 
                     if (Managers.FRIEND.isFriend(e))
                         color = colorf.getValue().getColor();
@@ -86,13 +87,13 @@ public class RadarRewrite extends HudElement {
 
                     Render2DEngine.drawTracerPointer(context.getMatrices(), middleW + CRadius.getValue(), middleH - xOffset.getValue() + CRadius.getValue(), width.getValue() * 5F, tracerWidth.getValue(), down.getValue(), true, glow.getValue(), color);
 
-                    context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue(), 0.0F);
-                    context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-yaw));
-                    context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()), 0.0F);
-                    context.getMatrices().pop();
+                    context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue());
+                    context.getMatrices().rotate((-yaw) * MathHelper.RADIANS_PER_DEGREE);
+                    context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()));
+                    context.getMatrices().popMatrix();
                 }
             }
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
         });
         setBounds(getPosX(), getPosY(),(int) (CRadius.getValue() * 2), (int) (CRadius.getValue() * 2));
     }

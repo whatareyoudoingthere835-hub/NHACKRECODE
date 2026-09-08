@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import org.joml.Matrix3x2fStack;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,10 +50,10 @@ public class Companion extends HudElement {
     public void onRender2D(DrawContext context) {
         super.onRender2D(context);
 
-        context.getMatrices().push();
-        context.getMatrices().translate((int) getPosX() + 100, (int) getPosY() + 100, 0);
+        context.getMatrices().pushMatrix();
+        context.getMatrices().translate((int) getPosX() + 100, (int) getPosY() + 100);
         context.getMatrices().scale((float) scale.getValue() / 100f, (float) scale.getValue() / 100f, 1);
-        context.getMatrices().translate(-((int) getPosX() + 100), -((int) getPosY() + 100), 0);
+        context.getMatrices().translate(-((int) getPosX() + 100), -((int) getPosY() + 100));
         if (mode.getValue() == Mode.Boykisser)
             context.drawTexture(TextureStorage.boykisser, (int) getPosX(), (int) getPosY(), 0, currentFrame * 128, 130, 128, 130, 6784);
         else if (mode.getValue() == Mode.Paimon)
@@ -61,7 +62,7 @@ public class Companion extends HudElement {
             context.drawTexture(TextureStorage.baltika, (int) getPosX(), (int) getPosY(), 0, 0, 421, 800, 421, 800);
         else if (mode.getValue() == Mode.Kowk)
             context.drawTexture(TextureStorage.kowk, (int) getPosX(), (int) getPosY(), 0, 0, 287, 252, 287, 252);
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
 
         if (!lastPop.passedMs(2000)) {
             float w = FontRenderers.sf_bold.getStringWidth(message) + 8;

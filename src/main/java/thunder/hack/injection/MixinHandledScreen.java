@@ -248,7 +248,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
             y1 += 8;
             z = 310;
             double scale = (double) (100 - 16) / 128.0D;
-            context.getMatrices().translate(x1, y1, z);
+            context.getMatrices().translate(x1, y1);
             context.getMatrices().scale((float) scale, (float) scale, 0);
             VertexConsumerProvider.Immediate consumer = client.getBufferBuilders().getEntityVertexConsumers();
             client.gameRenderer.getMapRenderer().draw(context.getMatrices(), consumer, (MapIdComponent) stack.get(DataComponentTypes.MAP_ID), mapState, false, 0xF000F0);

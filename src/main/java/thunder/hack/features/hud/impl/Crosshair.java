@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -81,21 +82,21 @@ public class Crosshair extends Module {
             }
             case WiseTree -> {
                 Color color = this.color.getValue().getColorObject();
-                context.getMatrices().push();
-                context.getMatrices().translate(xAnim, yAnim, 0);
-                context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotation((System.currentTimeMillis() % 70000) / 70000f * 360f));
-                context.getMatrices().translate(-xAnim, -yAnim, 0);
+                context.getMatrices().pushMatrix();
+                context.getMatrices().translate(xAnim, yAnim);
+                context.getMatrices().rotate((System.currentTimeMillis() % 70000) / 70000f * 360f);
+                context.getMatrices().translate(-xAnim, -yAnim);
                 Render2DEngine.drawRect(context.getMatrices(), xAnim - 0.75f, yAnim - 5, 1.5f, 10, color);
                 Render2DEngine.drawRect(context.getMatrices(), xAnim - 5, yAnim - 0.75f, 10, 1.5f, color);
                 Render2DEngine.drawRect(context.getMatrices(), xAnim, yAnim - 5, 5, 1.5f, color);
                 Render2DEngine.drawRect(context.getMatrices(), xAnim - 5, yAnim + 4, 5.25f, 1.5f, color);
                 Render2DEngine.drawRect(context.getMatrices(), xAnim - 5f, yAnim - 5, 1.5f, 4.25f, color);
                 Render2DEngine.drawRect(context.getMatrices(), xAnim + 3.5f, yAnim, 1.5f, 5.5f, color);
-                context.getMatrices().pop();
+                context.getMatrices().popMatrix();
             }
             case Dot -> {
-                context.getMatrices().push();
-                context.getMatrices().translate(xAnim + 4, yAnim + 4, 0);
+                context.getMatrices().pushMatrix();
+                context.getMatrices().translate(xAnim + 4, yAnim + 4);
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
                 RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
@@ -111,7 +112,7 @@ public class Crosshair extends Module {
                 BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
                 RenderSystem.defaultBlendFunc();
                 RenderSystem.disableBlend();
-                context.getMatrices().pop();
+                context.getMatrices().popMatrix();
             }
             case Default -> {
                 Color color = this.color.getValue().getColorObject();

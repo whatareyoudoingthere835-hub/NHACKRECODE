@@ -1,5 +1,7 @@
 package thunder.hack.features.hud.impl;
 
+import thunder.hack.utility.render.Draw2D;
+import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,7 +32,7 @@ public class Hotbar extends HudElement {
 
         PlayerEntity playerEntity = mc.player;
         if (playerEntity != null) {
-            MatrixStack matrices = context.getMatrices();
+            Matrix3x2fStack matrices = context.getMatrices() = matrices = context.getMatrices();
             int i = mc.getWindow().getScaledWidth() / 2;
 
             if (mc.player.getOffHandStack().isEmpty()) {
@@ -63,7 +65,7 @@ public class Hotbar extends HudElement {
         PlayerEntity playerEntity = mc.player;
         if (playerEntity != null) {
 
-            MatrixStack matrices = context.getMatrices();
+            Matrix3x2fStack matrices = context.getMatrices() = matrices = context.getMatrices();
             int i = mc.getWindow().getScaledWidth() / 2;
             int o = mc.getWindow().getScaledHeight() - 16 - 3;
 
@@ -85,13 +87,13 @@ public class Hotbar extends HudElement {
 
     private static void renderHotbarItem(DrawContext context, int i, int j, ItemStack itemStack) {
         if (!itemStack.isEmpty()) {
-            context.getMatrices().push();
-            context.getMatrices().translate((float) (i + 8), (float) (j + 12), 0.0F);
+            context.getMatrices().pushMatrix();
+            context.getMatrices().translate((float) (i + 8), (float) (j + 12));
             context.getMatrices().scale(0.9f, 0.9f, 1.0F);
-            context.getMatrices().translate((float) (-(i + 8)), (float) (-(j + 12)), 0.0F);
+            context.getMatrices().translate((float) (-(i + 8)), (float) (-(j + 12)));
             context.drawItem(itemStack, i, j);
             context.drawItemInSlot(mc.textRenderer, itemStack, i, j);
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
         }
     }
 
@@ -106,7 +108,7 @@ public class Hotbar extends HudElement {
             String string = "" + mc.player.experienceLevel;
             k = (int) ((mc.getWindow().getScaledWidth() - FontRenderers.sf_bold_mini.getStringWidth(string)) / 2);
             l = mc.getWindow().getScaledHeight() - 31 - 4;
-            FontRenderers.sf_bold_mini.drawString(matrices, string, k, l, 8453920);
+            FontRenderers.sf_bold_mini.drawString(Draw2D.CURRENT.getMatrices(), string, k, l, 8453920);
             mc.getProfiler().pop();
         }
     }

@@ -1,5 +1,6 @@
 package thunder.hack.core;
 
+import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.DrawContext;
@@ -172,13 +173,13 @@ public final class Core {
             float xOffset = mc.getWindow().getScaledWidth() / 2f;
             float yOffset = mc.getWindow().getScaledHeight() / 2f;
             float yaw = getRotations(new Vec2f(ThunderHack.gps_position.getX(), ThunderHack.gps_position.getZ())) - mc.player.getYaw();
-            e.getMatrices().translate(xOffset, yOffset, 0.0F);
-            e.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw));
-            e.getMatrices().translate(-xOffset, -yOffset, 0.0F);
+            e.getMatrices().translate(xOffset, yOffset);
+            e.getMatrices().rotate((yaw) * MathHelper.RADIANS_PER_DEGREE);
+            e.getMatrices().translate(-xOffset, -yOffset);
             Render2DEngine.drawTracerPointer(e.getMatrices(), xOffset, yOffset - 50, 12.5f, 0.5f, 3.63f, true, true, HudEditor.getColor(1).getRGB());
-            e.getMatrices().translate(xOffset, yOffset, 0.0F);
-            e.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-yaw));
-            e.getMatrices().translate(-xOffset, -yOffset, 0.0F);
+            e.getMatrices().translate(xOffset, yOffset);
+            e.getMatrices().rotate((-yaw) * MathHelper.RADIANS_PER_DEGREE);
+            e.getMatrices().translate(-xOffset, -yOffset);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
             FontRenderers.modules.drawCenteredString(e.getMatrices(), "gps (" + dst + "m)", (float) (Math.sin(Math.toRadians(yaw)) * 50f) + xOffset, (float) (yOffset - (Math.cos(Math.toRadians(yaw)) * 50f)) - 23, -1);
 

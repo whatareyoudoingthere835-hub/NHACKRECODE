@@ -1,5 +1,7 @@
 package thunder.hack.gui.clickui.impl;
 
+import net.minecraft.util.math.MathHelper;
+import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
@@ -33,7 +35,7 @@ public class BooleanParentElement extends AbstractElement {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
-        MatrixStack matrixStack = context.getMatrices();
+        Matrix3x2fStack matrixStack = context.getMatrices() = matrixStack = context.getMatrices();
 
         float tx = x + width - 11;
         float ty = y + 7.5f;
@@ -42,7 +44,7 @@ public class BooleanParentElement extends AbstractElement {
 
         matrixStack.push();
         matrixStack.translate(tx, ty, 0);
-        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-180f * arrowAnimation));
+        matrixStack.rotate((-180f * arrowAnimation) * MathHelper.RADIANS_PER_DEGREE);
         matrixStack.translate(-tx, -ty, 0);
         matrixStack.translate((x + width - 14), (y + 4.5f), 0);
         context.drawTexture(TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6);

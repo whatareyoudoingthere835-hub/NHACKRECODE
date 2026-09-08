@@ -1,5 +1,6 @@
 package thunder.hack.gui.clickui;
 
+import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -55,7 +56,7 @@ public class Category extends AbstractCategory {
 
         scrollHover = Render2DEngine.isHovered(mouseX, mouseY, getX(), getY() + height, width, catHeight + 20);
 
-        context.getMatrices().push();
+        context.getMatrices().pushMatrix();
 
         boolean popStack = false;
 
@@ -128,7 +129,7 @@ public class Category extends AbstractCategory {
                 ((int) getX() + (width - 4) / 2) - FontRenderers.categories.getStringWidth(getName()) / 2f, (int) getY() + (int) height / 2f - 10, FontRenderers.categories.getStringWidth(getName()) + 6, 13, 20, Render2DEngine.injectAlpha(Color.black, 170));
 
         FontRenderers.categories.drawCenteredString(context.getMatrices(), getName(), ((int) getX() + 2 + (width - 4) / 2), (int) getY() + (int) height / 2f - 7, new Color(-1).getRGB());
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
         updatePosition();
     }
 

@@ -1,5 +1,6 @@
 package thunder.hack.gui.windows.impl;
 
+import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
@@ -96,10 +97,10 @@ public class ItemSelectWindow extends WindowBase {
             if (itemPlate.offset + getY() + 25 + getScrollOffset() > getY() + getHeight() || itemPlate.offset + getScrollOffset() + getY() + 10 < getY())
                 continue;
 
-            context.getMatrices().push();
-            context.getMatrices().translate(getX() + 6, itemPlate.offset + getY() + 32 + getScrollOffset(), 0);
+            context.getMatrices().pushMatrix();
+            context.getMatrices().translate(getX() + 6, itemPlate.offset + getY() + 32 + getScrollOffset());
             context.drawItem(itemPlate.item().getDefaultStack(), 0, 0);
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
 
             FontRenderers.sf_medium.drawString(context.getMatrices(), I18n.translate(itemPlate.key()), getX() + 26, itemPlate.offset + getY() + 38 + getScrollOffset(), new Color(0xBDBDBD).getRGB());
 

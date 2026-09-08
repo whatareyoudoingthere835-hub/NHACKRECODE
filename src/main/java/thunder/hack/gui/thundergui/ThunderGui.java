@@ -1,5 +1,6 @@
 package thunder.hack.gui.thundergui;
 
+import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -163,7 +164,7 @@ public class ThunderGui extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (Module.fullNullCheck())
             renderBackground(context, mouseX, mouseY, delta);
-        context.getMatrices().push();
+        context.getMatrices().pushMatrix();
         mouse_x = mouseX;
         mouse_y = mouseY;
         if (open_animation.getAnimationd() > 0) {
@@ -174,7 +175,7 @@ public class ThunderGui extends Screen {
             mc.currentScreen = null;
             mc.setScreen(null);
         }
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
     }
 
     public void renderGui(DrawContext context, int mouseX, int mouseY, float partialTicks) {
@@ -222,13 +223,13 @@ public class ThunderGui extends Screen {
         // Плита с лого / Main GUI logo
         Render2DEngine.drawRound(context.getMatrices(), main_posX + 5, main_posY + 5, 90, 30, 7f, ThunderHackGui.getColorByTheme(1));
 
-        context.getMatrices().push();
+        context.getMatrices().pushMatrix();
         context.getMatrices().scale(0.85f, 0.85f, 1);
-        context.getMatrices().translate((main_posX + 10) / 0.85, (main_posY + 15) / 0.85, 0);
+        context.getMatrices().translate((main_posX + 10) / 0.85, (main_posY + 15) / 0.85);
         FontRenderers.thglitch.drawString(context.getMatrices(), "THUNDERHACK", 0, 0, ThunderHackGui.getColorByTheme(2).getRGB());
-        context.getMatrices().translate(-(main_posX + 10) / 0.85, -(main_posY + 15) / 0.85, 0);
-        context.getMatrices().scale(1, 1, 1);
-        context.getMatrices().pop();
+        context.getMatrices().translate(-(main_posX + 10) / 0.85, -(main_posY + 15) / 0.85);
+        context.getMatrices().scale(1, 1);
+        context.getMatrices().popMatrix();
 
         FontRenderers.settings.drawString(context.getMatrices(), "recode v" + ThunderHack.VERSION, main_posX + 91 - (FontRenderers.settings.getStringWidth("recode v" + ThunderHack.VERSION)), main_posY + 30, ThunderHackGui.getColorByTheme(3).getRGB());
 

@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -107,10 +108,10 @@ public class PotionHud extends HudElement {
 
             float px = getPosX() + (max_width - pointerX - 10);
 
-            context.getMatrices().push();
-            context.getMatrices().translate(getPosX() + 2, getPosY() + 16 + y_offset, 0);
+            context.getMatrices().pushMatrix();
+            context.getMatrices().translate(getPosX() + 2, getPosY() + 16 + y_offset);
             context.drawSprite(0, 0, 0, 8, 8, mc.getStatusEffectSpriteManager().getSprite(potionEffect.getEffectType()));
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
 
             FontRenderers.sf_bold_mini.drawString(context.getMatrices(), potion.getName().getString() + " " + Formatting.RED + (potionEffect.getAmplifier() + 1), getPosX() + 12, getPosY() + 19 + y_offset, HudEditor.textColor.getValue().getColor());
             FontRenderers.sf_bold_mini.drawCenteredString(context.getMatrices(), getDuration(potionEffect), px + (getPosX() + max_width - px) / 2f, getPosY() + 19 + y_offset, HudEditor.textColor.getValue().getColor());

@@ -1,5 +1,7 @@
 package thunder.hack.gui.clickui.impl;
 
+import net.minecraft.util.math.MathHelper;
+import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
@@ -38,13 +40,13 @@ public class ModeElement extends AbstractElement {
         float tx = x + width - 11;
         float ty = y + 7.5f;
 
-        MatrixStack matrixStack = context.getMatrices();
+        Matrix3x2fStack matrixStack = context.getMatrices() = matrixStack = context.getMatrices();
 
         float thetaRotation = -180f * animation;
         matrixStack.push();
 
         matrixStack.translate(tx, ty, 0);
-        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(thetaRotation));
+        matrixStack.rotate((thetaRotation) * MathHelper.RADIANS_PER_DEGREE);
         matrixStack.translate(-tx, -ty, 0);
 
         matrixStack.translate((x + width - 14), y + 4.5f, 0);

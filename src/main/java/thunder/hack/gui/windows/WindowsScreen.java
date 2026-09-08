@@ -1,5 +1,6 @@
 package thunder.hack.gui.windows;
 
+import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -40,7 +41,7 @@ public class WindowsScreen extends Screen {
         if (Module.fullNullCheck())
             renderBackground(context, mouseX, mouseY, delta);
 
-        MatrixStack matrices = context.getMatrices();
+        Matrix3x2fStack matrices = context.getMatrices() = matrices = context.getMatrices();
         int i = mc.getWindow().getScaledWidth() / 2;
 
         float offset = (windows.size() * 20f) / -2f - 23;

@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
@@ -427,7 +428,7 @@ public class Trails extends Module {
             motionY /= 1.005;
         }
 
-        public void render(MatrixStack matrixStack, BufferBuilder bufferBuilder) {
+        public void render(Matrix3x2fStack matrixStack, BufferBuilder bufferBuilder) {
             update();
             float scale = starsScale.getValue() / 10f;
             final double posX = x - mc.getEntityRenderDispatcher().camera.getPos().getX();
