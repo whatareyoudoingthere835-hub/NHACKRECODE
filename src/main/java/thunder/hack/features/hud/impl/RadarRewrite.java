@@ -67,7 +67,8 @@ public class RadarRewrite extends HudElement {
 
             context.getMatrices().pushMatrix();
             context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue());
-            context;
+            float tiltDeg = 90f / Math.abs(90f / MathUtility.clamp(mc.player.getPitch(), pitchLock.getValue(), 90f)) - 102f;
+            context.getMatrices().scale(1f, (float) Math.cos(Math.toRadians(tiltDeg)));
             context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()));
 
             for (PlayerEntity e : Lists.newArrayList(mc.world.getPlayers())) {

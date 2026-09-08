@@ -35,12 +35,6 @@ public class BreadCrumbs extends Module {
     public void onRender3D(MatrixStack stack) {
         Render3DEngine.setupRender();
 
-        if (throughWalls.getValue())
-
-
-
-
-
         BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 
         for (int i = 0; i < positions.size(); i++) {
@@ -60,8 +54,6 @@ public class BreadCrumbs extends Module {
 
         Render2DEngine.endBuilding(buffer);
 
-
-        if (throughWalls.getValue())
 
         Render3DEngine.endRender();
     }

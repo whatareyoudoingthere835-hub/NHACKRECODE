@@ -24,7 +24,6 @@ import org.joml.Quaternionf;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.Managers;
-import thunder.hack.events.impl.EventHeldItemRenderer;
 import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.ColorSetting;
@@ -62,11 +61,6 @@ public class Chams extends Module {
     private static final float SINE_45_DEGREES = (float) Math.sin(0.7853981633974483);
 
     public void renderCrystal(EndCrystalEntity endCrystalEntity, float f, float g, MatrixStack matrixStack, int i, ModelPart core, ModelPart frame) {
-
-        if (alternativeBlending.getValue())
-
-
-
 
         BufferBuilder buffer;
 
@@ -115,11 +109,6 @@ public class Chams extends Module {
     }
 
     public void renderPlayer(PlayerEntity pe, float g, LivingEntityRenderState state, MatrixStack matrixStack, int i, EntityModel model, CallbackInfo ci, Runnable post) {
-
-        if (alternativeBlending.getValue())
-
-
-
 
         BufferBuilder buffer;
 
@@ -277,9 +266,4 @@ public class Chams extends Module {
         };
     }
 
-    @EventHandler
-    public void onRenderHands(EventHeldItemRenderer e) {
-        if (handItems.getValue())
-
-    }
 }
