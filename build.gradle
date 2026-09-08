@@ -3,10 +3,9 @@ plugins {
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
-
-archivesBaseName = project.archives_base_name
+base {
+	archivesName = project.archives_base_name
+}
 version = project.mod_version
 group = project.maven_group
 
@@ -95,7 +94,7 @@ sourceSets {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_${project.archives_base_name}"}
 	}
 	from {
 		configurations.libImpl.collect { it.isDirectory() ? it : zipTree(it) }
@@ -119,5 +118,9 @@ publishing {
 	}
 
 	repositories {
+		maven {
+			name = "local"
+			url = layout.buildDirectory.dir("repo")
+		}
 	}
 }
