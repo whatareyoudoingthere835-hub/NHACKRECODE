@@ -1,19 +1,23 @@
 package thunder.hack.utility.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.*;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL11;
 import thunder.hack.ThunderHack;
-import thunder.hack.core.manager.client.ModuleManager;
 import thunder.hack.features.modules.client.ClientSettings;
 import thunder.hack.features.modules.client.HudEditor;
 import thunder.hack.gui.font.FontRenderers;
@@ -24,6 +28,10 @@ import java.util.List;
 
 import static thunder.hack.features.modules.Module.mc;
 
+/**
+ * 1.21.11 port: every world-space overlay is batched into a {@link BufferBuilder} and flushed
+ * through a {@link RenderLayer} from {@link THRenderLayers} instead of poking GL state by hand.
+ */
 public class Render3DEngine {
     public static List<FillAction> FILLED_QUEUE = new ArrayList<>();
     public static List<OutlineAction> OUTLINE_QUEUE = new ArrayList<>();
@@ -40,25 +48,18 @@ public class Render3DEngine {
     private static float prevCircleStep;
     private static float circleStep;
 
-    // getTickDelta() -> mc.getRenderTickCounter().getTickDelta(true)
-
     public static void onRender3D(MatrixStack stack) {
         if (!FILLED_QUEUE.isEmpty() || !FADE_QUEUE.isEmpty() || !FILLED_SIDE_QUEUE.isEmpty()) {
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-            RenderSystem.disableDepthTest();
-            setupRender();
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+            BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+            Matrix4f matrix = stack.peek().getPositionMatrix();
 
-            FILLED_QUEUE.forEach(action -> setFilledBoxVertexes(bufferBuilder, stack.peek().getPositionMatrix(), action.box(), action.color()));
+            FILLED_QUEUE.forEach(action -> setFilledBoxVertexes(bufferBuilder, matrix, action.box(), action.color()));
 
-            FADE_QUEUE.forEach(action -> setFilledFadePoints(action.box(), bufferBuilder, stack.peek().getPositionMatrix(), action.color(), action.color2()));
+            FADE_QUEUE.forEach(action -> setFilledFadePoints(action.box(), bufferBuilder, matrix, action.color(), action.color2()));
 
-            FILLED_SIDE_QUEUE.forEach(action -> setFilledSidePoints(bufferBuilder, stack.peek().getPositionMatrix(), action.box, action.color(), action.side()));
-            Render2DEngine.endBuilding(bufferBuilder);
+            FILLED_SIDE_QUEUE.forEach(action -> setFilledSidePoints(bufferBuilder, matrix, action.box, action.color(), action.side()));
 
-            endRender();
-            RenderSystem.enableDepthTest();
+            flush(bufferBuilder, THRenderLayers.worldColored(VertexFormat.DrawMode.QUADS));
 
             FADE_QUEUE.clear();
             FILLED_SIDE_QUEUE.clear();
@@ -66,70 +67,47 @@ public class Render3DEngine {
         }
 
         if (!OUTLINE_QUEUE.isEmpty() || !OUTLINE_SIDE_QUEUE.isEmpty()) {
-            setupRender();
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-            RenderSystem.disableCull();
-            RenderSystem.disableDepthTest();
-            RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+            BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 
-            RenderSystem.lineWidth(2f);
+            OUTLINE_QUEUE.forEach(action ->
+                    setOutlinePoints(action.box(), matrixFrom(action.box().minX, action.box().minY, action.box().minZ), buffer, action.color()));
 
-            OUTLINE_QUEUE.forEach(action -> {
-                setOutlinePoints(action.box(), matrixFrom(action.box().minX, action.box().minY, action.box().minZ), buffer, action.color());
-            });
+            OUTLINE_SIDE_QUEUE.forEach(action ->
+                    setSideOutlinePoints(action.box, matrixFrom(action.box().minX, action.box().minY, action.box().minZ), buffer, action.color(), action.side()));
 
-            OUTLINE_SIDE_QUEUE.forEach(action -> {
-                setSideOutlinePoints(action.box, matrixFrom(action.box().minX, action.box().minY, action.box().minZ), buffer, action.color(), action.side());
-            });
+            flush(buffer, THRenderLayers.worldLines(VertexFormat.DrawMode.LINES));
 
-            Render2DEngine.endBuilding(buffer);
-
-            RenderSystem.enableCull();
-            RenderSystem.enableDepthTest();
-            endRender();
             OUTLINE_QUEUE.clear();
             OUTLINE_SIDE_QUEUE.clear();
         }
 
         if (!DEBUG_LINE_QUEUE.isEmpty()) {
-            setupRender();
-            RenderSystem.disableDepthTest();
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.LINES);
+            BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.LINES);
 
-            RenderSystem.disableCull();
-            RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
             DEBUG_LINE_QUEUE.forEach(action -> {
                 MatrixStack matrices = matrixFrom(action.start.getX(), action.start.getY(), action.start.getZ());
                 vertexLine(matrices, buffer, 0f, 0f, 0f, (float) (action.end.getX() - action.start.getX()), (float) (action.end.getY() - action.start.getY()), (float) (action.end.getZ() - action.start.getZ()), action.color);
             });
-            Render2DEngine.endBuilding(buffer);
-            RenderSystem.enableCull();
-            RenderSystem.enableDepthTest();
-            endRender();
+
+            flush(buffer, THRenderLayers.worldLines(VertexFormat.DrawMode.DEBUG_LINES));
             DEBUG_LINE_QUEUE.clear();
         }
 
         if (!LINE_QUEUE.isEmpty()) {
-            setupRender();
-            Tessellator tessellator = Tessellator.getInstance();
-            RenderSystem.disableCull();
-            RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-            RenderSystem.lineWidth(2f);
-            RenderSystem.disableDepthTest();
-            BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+            BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+
             LINE_QUEUE.forEach(action -> {
                 MatrixStack matrices = matrixFrom(action.start.getX(), action.start.getY(), action.start.getZ());
                 vertexLine(matrices, buffer, 0f, 0f, 0f, (float) (action.end.getX() - action.start.getX()), (float) (action.end.getY() - action.start.getY()), (float) (action.end.getZ() - action.start.getZ()), action.color);
             });
-            Render2DEngine.endBuilding(buffer);
-            RenderSystem.enableCull();
-            RenderSystem.lineWidth(1f);
-            RenderSystem.enableDepthTest();
-            endRender();
+
+            flush(buffer, THRenderLayers.worldLines(VertexFormat.DrawMode.LINES));
             LINE_QUEUE.clear();
         }
+    }
+
+    private static void flush(BufferBuilder buffer, RenderLayer layer) {
+        THRenderLayers.drawWorld(layer, buffer.end());
     }
 
     @Deprecated
@@ -139,42 +117,45 @@ public class Render3DEngine {
     }
 
     public static void setFilledBoxVertexes(@NotNull BufferBuilder bufferBuilder, Matrix4f m, @NotNull Box box, @NotNull Color c) {
-        float minX = (float) (box.minX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float minY = (float) (box.minY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float minZ = (float) (box.minZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
-        float maxX = (float) (box.maxX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float maxY = (float) (box.maxY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float maxZ = (float) (box.maxZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
+        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        float minX = (float) (box.minX - cam.getX());
+        float minY = (float) (box.minY - cam.getY());
+        float minZ = (float) (box.minZ - cam.getZ());
+        float maxX = (float) (box.maxX - cam.getX());
+        float maxY = (float) (box.maxY - cam.getY());
+        float maxZ = (float) (box.maxZ - cam.getZ());
 
-        bufferBuilder.vertex(m, minX, minY, minZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, minY, minZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, minY, maxZ).color(c.getRGB());
-        bufferBuilder.vertex(m, minX, minY, maxZ).color(c.getRGB());
+        int color = c.getRGB();
 
-        bufferBuilder.vertex(m, minX, minY, minZ).color(c.getRGB());
-        bufferBuilder.vertex(m, minX, maxY, minZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, maxY, minZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, minY, minZ).color(c.getRGB());
+        bufferBuilder.vertex(m, minX, minY, minZ).color(color);
+        bufferBuilder.vertex(m, maxX, minY, minZ).color(color);
+        bufferBuilder.vertex(m, maxX, minY, maxZ).color(color);
+        bufferBuilder.vertex(m, minX, minY, maxZ).color(color);
 
-        bufferBuilder.vertex(m, maxX, minY, minZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, maxY, minZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, maxY, maxZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, minY, maxZ).color(c.getRGB());
+        bufferBuilder.vertex(m, minX, minY, minZ).color(color);
+        bufferBuilder.vertex(m, minX, maxY, minZ).color(color);
+        bufferBuilder.vertex(m, maxX, maxY, minZ).color(color);
+        bufferBuilder.vertex(m, maxX, minY, minZ).color(color);
 
-        bufferBuilder.vertex(m, minX, minY, maxZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, minY, maxZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, maxY, maxZ).color(c.getRGB());
-        bufferBuilder.vertex(m, minX, maxY, maxZ).color(c.getRGB());
+        bufferBuilder.vertex(m, maxX, minY, minZ).color(color);
+        bufferBuilder.vertex(m, maxX, maxY, minZ).color(color);
+        bufferBuilder.vertex(m, maxX, maxY, maxZ).color(color);
+        bufferBuilder.vertex(m, maxX, minY, maxZ).color(color);
 
-        bufferBuilder.vertex(m, minX, minY, minZ).color(c.getRGB());
-        bufferBuilder.vertex(m, minX, minY, maxZ).color(c.getRGB());
-        bufferBuilder.vertex(m, minX, maxY, maxZ).color(c.getRGB());
-        bufferBuilder.vertex(m, minX, maxY, minZ).color(c.getRGB());
+        bufferBuilder.vertex(m, minX, minY, maxZ).color(color);
+        bufferBuilder.vertex(m, maxX, minY, maxZ).color(color);
+        bufferBuilder.vertex(m, maxX, maxY, maxZ).color(color);
+        bufferBuilder.vertex(m, minX, maxY, maxZ).color(color);
 
-        bufferBuilder.vertex(m, minX, maxY, minZ).color(c.getRGB());
-        bufferBuilder.vertex(m, minX, maxY, maxZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, maxY, maxZ).color(c.getRGB());
-        bufferBuilder.vertex(m, maxX, maxY, minZ).color(c.getRGB());
+        bufferBuilder.vertex(m, minX, minY, minZ).color(color);
+        bufferBuilder.vertex(m, minX, minY, maxZ).color(color);
+        bufferBuilder.vertex(m, minX, maxY, maxZ).color(color);
+        bufferBuilder.vertex(m, minX, maxY, minZ).color(color);
+
+        bufferBuilder.vertex(m, minX, maxY, minZ).color(color);
+        bufferBuilder.vertex(m, minX, maxY, maxZ).color(color);
+        bufferBuilder.vertex(m, maxX, maxY, maxZ).color(color);
+        bufferBuilder.vertex(m, maxX, maxY, minZ).color(color);
     }
 
     public static @NotNull Box interpolateBox(@NotNull Box from, @NotNull Box to, float delta) {
@@ -193,79 +174,80 @@ public class Render3DEngine {
     }
 
     public static void setFilledSidePoints(BufferBuilder buffer, Matrix4f matrix, Box box, Color c, Direction dir) {
-        float minX = (float) (box.minX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float minY = (float) (box.minY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float minZ = (float) (box.minZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
-        float maxX = (float) (box.maxX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float maxY = (float) (box.maxY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float maxZ = (float) (box.maxZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
+        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        float minX = (float) (box.minX - cam.getX());
+        float minY = (float) (box.minY - cam.getY());
+        float minZ = (float) (box.minZ - cam.getZ());
+        float maxX = (float) (box.maxX - cam.getX());
+        float maxY = (float) (box.maxY - cam.getY());
+        float maxZ = (float) (box.maxZ - cam.getZ());
+
+        int color = c.getRGB();
 
         if (dir == Direction.DOWN) {
-            buffer.vertex(matrix, minX, minY, minZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, minY, minZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, minY, maxZ).color(c.getRGB());
-            buffer.vertex(matrix, minX, minY, maxZ).color(c.getRGB());
+            buffer.vertex(matrix, minX, minY, minZ).color(color);
+            buffer.vertex(matrix, maxX, minY, minZ).color(color);
+            buffer.vertex(matrix, maxX, minY, maxZ).color(color);
+            buffer.vertex(matrix, minX, minY, maxZ).color(color);
         }
 
         if (dir == Direction.NORTH) {
-            buffer.vertex(matrix, minX, minY, minZ).color(c.getRGB());
-            buffer.vertex(matrix, minX, maxY, minZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, maxY, minZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, minY, minZ).color(c.getRGB());
+            buffer.vertex(matrix, minX, minY, minZ).color(color);
+            buffer.vertex(matrix, minX, maxY, minZ).color(color);
+            buffer.vertex(matrix, maxX, maxY, minZ).color(color);
+            buffer.vertex(matrix, maxX, minY, minZ).color(color);
         }
 
         if (dir == Direction.EAST) {
-            buffer.vertex(matrix, maxX, minY, minZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, maxY, minZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, maxY, maxZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, minY, maxZ).color(c.getRGB());
+            buffer.vertex(matrix, maxX, minY, minZ).color(color);
+            buffer.vertex(matrix, maxX, maxY, minZ).color(color);
+            buffer.vertex(matrix, maxX, maxY, maxZ).color(color);
+            buffer.vertex(matrix, maxX, minY, maxZ).color(color);
         }
         if (dir == Direction.SOUTH) {
-            buffer.vertex(matrix, minX, minY, maxZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, minY, maxZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, maxY, maxZ).color(c.getRGB());
-            buffer.vertex(matrix, minX, maxY, maxZ).color(c.getRGB());
+            buffer.vertex(matrix, minX, minY, maxZ).color(color);
+            buffer.vertex(matrix, maxX, minY, maxZ).color(color);
+            buffer.vertex(matrix, maxX, maxY, maxZ).color(color);
+            buffer.vertex(matrix, minX, maxY, maxZ).color(color);
         }
 
         if (dir == Direction.WEST) {
-            buffer.vertex(matrix, minX, minY, minZ).color(c.getRGB());
-            buffer.vertex(matrix, minX, minY, maxZ).color(c.getRGB());
-            buffer.vertex(matrix, minX, maxY, maxZ).color(c.getRGB());
-            buffer.vertex(matrix, minX, maxY, minZ).color(c.getRGB());
+            buffer.vertex(matrix, minX, minY, minZ).color(color);
+            buffer.vertex(matrix, minX, minY, maxZ).color(color);
+            buffer.vertex(matrix, minX, maxY, maxZ).color(color);
+            buffer.vertex(matrix, minX, maxY, minZ).color(color);
         }
 
         if (dir == Direction.UP) {
-            buffer.vertex(matrix, minX, maxY, minZ).color(c.getRGB());
-            buffer.vertex(matrix, minX, maxY, maxZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, maxY, maxZ).color(c.getRGB());
-            buffer.vertex(matrix, maxX, maxY, minZ).color(c.getRGB());
+            buffer.vertex(matrix, minX, maxY, minZ).color(color);
+            buffer.vertex(matrix, minX, maxY, maxZ).color(color);
+            buffer.vertex(matrix, maxX, maxY, maxZ).color(color);
+            buffer.vertex(matrix, maxX, maxY, minZ).color(color);
         }
     }
 
+    /**
+     * Billboard text: projected to screen space and rendered through the GUI render state
+     * (the vanilla {@link DrawContext} of the current frame, see {@link Draw2D#CURRENT}).
+     */
     public static void drawTextIn3D(String text, @NotNull Vec3d pos, double offX, double offY, double textOffset, @NotNull Color color) {
-        MatrixStack matrices = new MatrixStack();
-        Camera camera = mc.gameRenderer.getCamera();
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableCull();
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
-        matrices.translate(pos.getX() - camera.getPos().x, pos.getY() - camera.getPos().y, pos.getZ() - camera.getPos().z);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-        setupRender();
-        matrices.translate(offX, offY - 0.1, -0.01);
-        matrices.scale(-0.025f, -0.025f, 0);
-        FontRenderers.sf_medium.drawCenteredString(matrices, text, textOffset, 0f, color.getRGB());
-        RenderSystem.enableCull();
-        RenderSystem.enableDepthTest();
-        endRender();
+        DrawContext context = Draw2D.CURRENT;
+        if (context == null || mc.getNetworkHandler() == null) return;
+
+        Vec3d screen = worldSpaceToScreenSpace(pos);
+        if (screen.z < -1.0 || screen.z > 1.0) return;
+
+        Matrix3x2fStack m = context.getMatrices();
+        m.pushMatrix();
+        m.translate((float) screen.x + (float) offX, (float) screen.y + (float) offY);
+        FontRenderers.sf_medium.drawCenteredString(m, text, (float) textOffset, 0f, color.getRGB());
+        m.popMatrix();
     }
 
     public static @NotNull Vec3d worldSpaceToScreenSpace(@NotNull Vec3d pos) {
         Camera camera = mc.getEntityRenderDispatcher().camera;
         int displayHeight = mc.getWindow().getHeight();
-        int[] viewport = new int[4];
-        GL11.glGetIntegerv(GL11.GL_VIEWPORT, viewport);
+        int[] viewport = new int[]{0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight()};
         Vector3f target = new Vector3f();
 
         double deltaX = pos.x - camera.getPos().x;
@@ -291,43 +273,41 @@ public class Render3DEngine {
     }
 
     public static void setFilledFadePoints(Box box, BufferBuilder buffer, Matrix4f posMatrix, Color c, Color c1) {
-        float minX = (float) (box.minX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float minY = (float) (box.minY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float minZ = (float) (box.minZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
-        float maxX = (float) (box.maxX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float maxY = (float) (box.maxY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float maxZ = (float) (box.maxZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
+        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        float minX = (float) (box.minX - cam.getX());
+        float minY = (float) (box.minY - cam.getY());
+        float minZ = (float) (box.minZ - cam.getZ());
+        float maxX = (float) (box.maxX - cam.getX());
+        float maxY = (float) (box.maxY - cam.getY());
+        float maxZ = (float) (box.maxZ - cam.getZ());
 
-        if (ModuleManager.holeESP.culling.getValue())
-            RenderSystem.enableCull();
+        int bottom = c.getRGB();
+        int top = c1.getRGB();
 
-        buffer.vertex(posMatrix, minX, minY, minZ).color(c.getRGB());
-        buffer.vertex(posMatrix, minX, maxY, minZ).color(c1.getRGB());
-        buffer.vertex(posMatrix, maxX, maxY, minZ).color(c1.getRGB());
-        buffer.vertex(posMatrix, maxX, minY, minZ).color(c.getRGB());
+        buffer.vertex(posMatrix, minX, minY, minZ).color(bottom);
+        buffer.vertex(posMatrix, minX, maxY, minZ).color(top);
+        buffer.vertex(posMatrix, maxX, maxY, minZ).color(top);
+        buffer.vertex(posMatrix, maxX, minY, minZ).color(bottom);
 
-        buffer.vertex(posMatrix, maxX, minY, minZ).color(c.getRGB());
-        buffer.vertex(posMatrix, maxX, maxY, minZ).color(c1.getRGB());
-        buffer.vertex(posMatrix, maxX, maxY, maxZ).color(c1.getRGB());
-        buffer.vertex(posMatrix, maxX, minY, maxZ).color(c.getRGB());
+        buffer.vertex(posMatrix, maxX, minY, minZ).color(bottom);
+        buffer.vertex(posMatrix, maxX, maxY, minZ).color(top);
+        buffer.vertex(posMatrix, maxX, maxY, maxZ).color(top);
+        buffer.vertex(posMatrix, maxX, minY, maxZ).color(bottom);
 
-        buffer.vertex(posMatrix, minX, minY, maxZ).color(c.getRGB());
-        buffer.vertex(posMatrix, maxX, minY, maxZ).color(c.getRGB());
-        buffer.vertex(posMatrix, maxX, maxY, maxZ).color(c1.getRGB());
-        buffer.vertex(posMatrix, minX, maxY, maxZ).color(c1.getRGB());
+        buffer.vertex(posMatrix, minX, minY, maxZ).color(bottom);
+        buffer.vertex(posMatrix, maxX, minY, maxZ).color(bottom);
+        buffer.vertex(posMatrix, maxX, maxY, maxZ).color(top);
+        buffer.vertex(posMatrix, minX, maxY, maxZ).color(top);
 
-        buffer.vertex(posMatrix, minX, minY, minZ).color(c.getRGB());
-        buffer.vertex(posMatrix, minX, minY, maxZ).color(c.getRGB());
-        buffer.vertex(posMatrix, minX, maxY, maxZ).color(c1.getRGB());
-        buffer.vertex(posMatrix, minX, maxY, minZ).color(c1.getRGB());
+        buffer.vertex(posMatrix, minX, minY, minZ).color(bottom);
+        buffer.vertex(posMatrix, minX, minY, maxZ).color(bottom);
+        buffer.vertex(posMatrix, minX, maxY, maxZ).color(top);
+        buffer.vertex(posMatrix, minX, maxY, minZ).color(bottom);
 
-        buffer.vertex(posMatrix, minX, maxY, minZ).color(c1.getRGB());
-        buffer.vertex(posMatrix, minX, maxY, maxZ).color(c1.getRGB());
-        buffer.vertex(posMatrix, maxX, maxY, maxZ).color(c1.getRGB());
-        buffer.vertex(posMatrix, maxX, maxY, minZ).color(c1.getRGB());
-
-        if (ModuleManager.holeESP.culling.getValue())
-            RenderSystem.disableCull();
+        buffer.vertex(posMatrix, minX, maxY, minZ).color(top);
+        buffer.vertex(posMatrix, minX, maxY, maxZ).color(top);
+        buffer.vertex(posMatrix, maxX, maxY, maxZ).color(top);
+        buffer.vertex(posMatrix, maxX, maxY, minZ).color(top);
     }
 
     public static void drawLine(@NotNull Vec3d start, @NotNull Vec3d end, @NotNull Color color) {
@@ -419,14 +399,8 @@ public class Render3DEngine {
     }
 
     public static void drawHoleOutline(@NotNull Box box, Color color, float lineWidth) {
-        setupRender();
         MatrixStack matrices = matrixFrom(box.minX, box.minY, box.minZ);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-
-        RenderSystem.disableCull();
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-        RenderSystem.lineWidth(lineWidth);
+        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 
         box = box.offset(new Vec3d(box.minX, box.minY, box.minZ).negate());
 
@@ -447,17 +421,14 @@ public class Render3DEngine {
         vertexLine(matrices, buffer, x1, y1, z2, x1, y2, z2, color);
         vertexLine(matrices, buffer, x2, y1, z1, x2, y2, z1, color);
 
-        Render2DEngine.endBuilding(buffer);
-        RenderSystem.enableCull();
-        endRender();
+        flush(buffer, THRenderLayers.worldLines(VertexFormat.DrawMode.LINES));
     }
 
     public static void vertexLine(@NotNull MatrixStack matrices, @NotNull VertexConsumer buffer, float x1, float y1, float z1, float x2, float y2, float z2, @NotNull Color lineColor) {
         Matrix4f model = matrices.peek().getPositionMatrix();
-        MatrixStack.Entry entry = matrices.peek();
         Vector3f normalVec = getNormal(x1, y1, z1, x2, y2, z2);
-        buffer.vertex(model, x1, y1, z1).color(lineColor.getRed(), lineColor.getGreen(), lineColor.getBlue(), lineColor.getAlpha()).normal(entry, normalVec.x(), normalVec.y(), normalVec.z());
-        buffer.vertex(model, x2, y2, z2).color(lineColor.getRed(), lineColor.getGreen(), lineColor.getBlue(), lineColor.getAlpha()).normal(entry, normalVec.x(), normalVec.y(), normalVec.z());
+        buffer.vertex(model, x1, y1, z1).color(lineColor.getRed(), lineColor.getGreen(), lineColor.getBlue(), lineColor.getAlpha()).normal(normalVec.x(), normalVec.y(), normalVec.z());
+        buffer.vertex(model, x2, y2, z2).color(lineColor.getRed(), lineColor.getGreen(), lineColor.getBlue(), lineColor.getAlpha()).normal(normalVec.x(), normalVec.y(), normalVec.z());
     }
 
     public static @NotNull Vector3f getNormal(float x1, float y1, float z1, float x2, float y2, float z2) {
@@ -481,13 +452,12 @@ public class Render3DEngine {
         return matrices;
     }
 
+    @Deprecated
     public static void setupRender() {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
     }
 
+    @Deprecated
     public static void endRender() {
-        RenderSystem.disableBlend();
     }
 
     public static void drawTargetEsp(MatrixStack stack, @NotNull Entity target) {
@@ -495,13 +465,10 @@ public class Render3DEngine {
         ArrayList<Vec3d> vecs1 = new ArrayList<>();
         ArrayList<Vec3d> vecs2 = new ArrayList<>();
 
-        double x = target.prevX + (target.getX() - target.prevX) * getTickDelta()
-                - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = target.prevY + (target.getY() - target.prevY) * getTickDelta()
-                - mc.getEntityRenderDispatcher().camera.getPos().getY();
-        double z = target.prevZ + (target.getZ() - target.prevZ) * getTickDelta()
-                - mc.getEntityRenderDispatcher().camera.getPos().getZ();
-
+        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        double x = target.prevX + (target.getX() - target.prevX) * getTickDelta() - cam.getX();
+        double y = target.prevY + (target.getY() - target.prevY) * getTickDelta() - cam.getY();
+        double z = target.prevZ + (target.getZ() - target.prevZ) * getTickDelta() - cam.getZ();
 
         double height = target.getHeight();
 
@@ -523,57 +490,29 @@ public class Render3DEngine {
             height -= 0.004f;
         }
 
-
         stack.push();
         stack.translate(x, y, z);
-        BufferBuilder bufferBuilder;
-        setupRender();
-        RenderSystem.disableCull();
-        RenderSystem.disableDepthTest();
-
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
         Matrix4f matrix = stack.peek().getPositionMatrix();
+        RenderLayer layer = THRenderLayers.worldColored(VertexFormat.DrawMode.TRIANGLE_STRIP);
 
-        for (int j = 0; j < vecs.size() - 1; ++j) {
-            float alpha = 1f - (((float) j + ((System.currentTimeMillis() - ThunderHack.initTime) / 5f)) % 360) / 60f;
-            bufferBuilder.vertex(matrix, (float) vecs.get(j).x, (float) vecs.get(j).y, (float) vecs.get(j).z).color(Render2DEngine.injectAlpha(HudEditor.getColor((int) (j / 20f)), (int) (alpha * 255)).getRGB());
-            bufferBuilder.vertex(matrix, (float) vecs.get(j + 1).x, (float) vecs.get(j + 1).y + 0.1f, (float) vecs.get(j + 1).z).color(Render2DEngine.injectAlpha(HudEditor.getColor((int) (j / 20f)), (int) (alpha * 255f)).getRGB());
+        for (List<Vec3d> ring : List.of(vecs, vecs1, vecs2)) {
+            BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
+            for (int j = 0; j < ring.size() - 1; ++j) {
+                float alpha = 1f - (((float) j + ((System.currentTimeMillis() - ThunderHack.initTime) / 5f)) % 360) / 60f;
+                int c = Render2DEngine.injectAlpha(HudEditor.getColor((int) (j / 20f)), (int) (alpha * 255)).getRGB();
+                bufferBuilder.vertex(matrix, (float) ring.get(j).x, (float) ring.get(j).y, (float) ring.get(j).z).color(c);
+                bufferBuilder.vertex(matrix, (float) ring.get(j + 1).x, (float) ring.get(j + 1).y + 0.1f, (float) ring.get(j + 1).z).color(c);
+            }
+            flush(bufferBuilder, layer);
         }
-        Render2DEngine.endBuilding(bufferBuilder);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
-        for (int j = 0; j < vecs1.size() - 1; ++j) {
-            float alpha = 1f - (((float) j + ((System.currentTimeMillis() - ThunderHack.initTime) / 5f)) % 360) / 60f;
-            bufferBuilder.vertex(matrix, (float) vecs1.get(j).x, (float) vecs1.get(j).y, (float) vecs1.get(j).z).color(Render2DEngine.injectAlpha(HudEditor.getColor((int) (j / 20f)), (int) (alpha * 255)).getRGB());
-            bufferBuilder.vertex(matrix, (float) vecs1.get(j + 1).x, (float) vecs1.get(j + 1).y + 0.1f, (float) vecs1.get(j + 1).z).color(Render2DEngine.injectAlpha(HudEditor.getColor((int) (j / 20f)), (int) (alpha * 255f)).getRGB());
-        }
-        Render2DEngine.endBuilding(bufferBuilder);
-
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
-        for (int j = 0; j < vecs2.size() - 1; ++j) {
-            float alpha = 1f - (((float) j + ((System.currentTimeMillis() - ThunderHack.initTime) / 5f)) % 360) / 60f;
-            bufferBuilder.vertex(matrix, (float) vecs2.get(j).x, (float) vecs2.get(j).y, (float) vecs2.get(j).z).color(Render2DEngine.injectAlpha(HudEditor.getColor((int) (j / 20f)), (int) (alpha * 255)).getRGB());
-            bufferBuilder.vertex(matrix, (float) vecs2.get(j + 1).x, (float) vecs2.get(j + 1).y + 0.1f, (float) vecs2.get(j + 1).z).color(Render2DEngine.injectAlpha(HudEditor.getColor((int) (j / 20f)), (int) (alpha * 255f)).getRGB());
-        }
-        Render2DEngine.endBuilding(bufferBuilder);
-
-        RenderSystem.enableCull();
         stack.translate(-x, -y, -z);
-        endRender();
-        RenderSystem.enableDepthTest();
         stack.pop();
     }
 
     public static void renderCrosses(@NotNull Box box, Color color, float lineWidth) {
-        setupRender();
         MatrixStack matrices = matrixFrom(box.minX, box.minY, box.minZ);
-        RenderSystem.disableCull();
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-        RenderSystem.lineWidth(lineWidth);
         BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 
         box = box.offset(new Vec3d(box.minX, box.minY, box.minZ).negate());
@@ -581,9 +520,7 @@ public class Render3DEngine {
         vertexLine(matrices, buffer, (float) box.maxX, (float) box.minY, (float) box.minZ, (float) box.minX, (float) box.minY, (float) box.maxZ, color);
         vertexLine(matrices, buffer, (float) box.minX, (float) box.minY, (float) box.minZ, (float) box.maxX, (float) box.minY, (float) box.maxZ, color);
 
-        Render2DEngine.endBuilding(buffer);
-        RenderSystem.enableCull();
-        endRender();
+        flush(buffer, THRenderLayers.worldLines(VertexFormat.DrawMode.LINES));
     }
 
     public static void drawSphere(MatrixStack matrix, float radius, int slices, int stacks, int color) {
@@ -596,12 +533,12 @@ public class Render3DEngine {
         float z;
         int i;
         int j;
-        setupRender();
+        RenderLayer layer = THRenderLayers.worldColored(VertexFormat.DrawMode.DEBUG_LINE_STRIP);
+
         for (i = 1; i < stacks; ++i) {
             rho = (float) i * drho;
 
             BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
             for (j = 0; j < slices; ++j) {
                 theta = (float) j * dtheta;
@@ -610,15 +547,13 @@ public class Render3DEngine {
                 z = (float) Math.cos(rho);
                 buffer.vertex(matrix.peek().getPositionMatrix(), x * radius, y * radius, z * radius).color(color);
             }
-            Render2DEngine.endBuilding(buffer);
+            flush(buffer, layer);
         }
 
         for (j = 0; j < slices; ++j) {
             theta = (float) j * dtheta;
 
             BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
             for (i = 0; i <= stacks; ++i) {
                 rho = (float) i * drho;
@@ -627,18 +562,17 @@ public class Render3DEngine {
                 z = (float) Math.cos(rho);
                 buffer.vertex(matrix.peek().getPositionMatrix(), x * radius, y * radius, z * radius).color(color);
             }
-            BufferRenderer.drawWithGlobalProgram(buffer.end());
+            flush(buffer, layer);
         }
-        endRender();
     }
 
     public static void drawCylinder(MatrixStack stack, final float radius, final float height, final int slices, final int stacks, int color) {
 
         final float da = (float) ((Math.PI * 2f) / slices);
         final float dz = height / stacks;
+        RenderLayer layer = THRenderLayers.worldColored(VertexFormat.DrawMode.DEBUG_LINE_STRIP);
 
         BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         float y = 0;
 
@@ -651,10 +585,9 @@ public class Render3DEngine {
             y += dz;
         }
 
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
+        flush(buffer, layer);
 
         buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         for (int i = 0; i <= slices; ++i) {
             final float x = (float) Math.cos(i * da);
@@ -664,17 +597,16 @@ public class Render3DEngine {
             buffer.vertex(stack.peek().getPositionMatrix(), x * radius, height, z * radius).color(color);
         }
 
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
+        flush(buffer, layer);
     }
 
 
     public static void drawCircle3D(MatrixStack stack, Entity ent, float radius, int color, int points, boolean hudColor, int colorOffset) {
-        setupRender();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-        double x = ent.prevX + (ent.getX() - ent.prevX) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = ent.prevY + (ent.getY() - ent.prevY) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-        double z = ent.prevZ + (ent.getZ() - ent.prevZ) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        double x = ent.prevX + (ent.getX() - ent.prevX) * getTickDelta() - cam.getX();
+        double y = ent.prevY + (ent.getY() - ent.prevY) * getTickDelta() - cam.getY();
+        double z = ent.prevZ + (ent.getZ() - ent.prevZ) * getTickDelta() - cam.getZ();
         stack.push();
         stack.translate(x, y, z);
 
@@ -686,8 +618,7 @@ public class Render3DEngine {
             bufferBuilder.vertex(matrix, (float) (radius * Math.cos(i * 6.28 / points)), 0f, (float) (radius * Math.sin(i * 6.28 / points))).color(color);
         }
 
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
-        endRender();
+        flush(bufferBuilder, THRenderLayers.worldColored(VertexFormat.DrawMode.DEBUG_LINE_STRIP));
         stack.translate(-x, -y, -z);
         stack.pop();
     }
@@ -696,17 +627,14 @@ public class Render3DEngine {
         double cs = prevCircleStep + (circleStep - prevCircleStep) * getTickDelta();
         double prevSinAnim = absSinAnimation(cs - 0.45f);
         double sinAnim = absSinAnimation(cs);
-        double x = target.prevX + (target.getX() - target.prevX) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = target.prevY + (target.getY() - target.prevY) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getY() + prevSinAnim * target.getHeight();
-        double z = target.prevZ + (target.getZ() - target.prevZ) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
-        double nextY = target.prevY + (target.getY() - target.prevY) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getY() + sinAnim * target.getHeight();
+        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        double x = target.prevX + (target.getX() - target.prevX) * getTickDelta() - cam.getX();
+        double y = target.prevY + (target.getY() - target.prevY) * getTickDelta() - cam.getY() + prevSinAnim * target.getHeight();
+        double z = target.prevZ + (target.getZ() - target.prevZ) * getTickDelta() - cam.getZ();
+        double nextY = target.prevY + (target.getY() - target.prevY) * getTickDelta() - cam.getY() + sinAnim * target.getHeight();
         stack.push();
-        setupRender();
-        RenderSystem.disableCull();
-        RenderSystem.disableDepthTest();
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         float cos;
         float sin;
         for (int i = 0; i <= 30; i++) {
@@ -715,10 +643,7 @@ public class Render3DEngine {
             bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) nextY, sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 170).getRGB());
             bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) y, sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 0).getRGB());
         }
-        Render2DEngine.endBuilding(bufferBuilder);
-        RenderSystem.enableCull();
-        endRender();
-        RenderSystem.enableDepthTest();
+        flush(bufferBuilder, THRenderLayers.worldColored(VertexFormat.DrawMode.TRIANGLE_STRIP));
         stack.pop();
     }
 
@@ -732,18 +657,7 @@ public class Render3DEngine {
         double tPosZ = Render2DEngine.interpolate(target.prevZ, target.getZ(), Render3DEngine.getTickDelta()) - camera.getPos().z;
         float iAge = (float) Render2DEngine.interpolate(target.age - 1, target.age, Render3DEngine.getTickDelta());
 
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-        RenderSystem.setShaderTexture(0, TextureStorage.firefly);
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-
-        boolean canSee = mc.player.canSee(target);
-
-        if (canSee) {
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthMask(false);
-        } else RenderSystem.disableDepthTest();
 
         for (int j = 0; j < 3; j++) {
             for (int i = 0; i <= espLength; i++) {
@@ -767,14 +681,7 @@ public class Render3DEngine {
             }
         }
 
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
-
-        if (canSee) {
-            RenderSystem.depthMask(true);
-            RenderSystem.disableDepthTest();
-        } else RenderSystem.enableDepthTest();
-
-        RenderSystem.disableBlend();
+        flush(buffer, THRenderLayers.worldTextured(VertexFormat.DrawMode.QUADS, TextureStorage.firefly, false));
     }
 
     public static void updateTargetESP() {
@@ -787,9 +694,10 @@ public class Render3DEngine {
     }
 
     public static Vec3d interpolatePos(float prevposX, float prevposY, float prevposZ, float posX, float posY, float posZ) {
-        double x = prevposX + ((posX - prevposX) * getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = prevposY + ((posY - prevposY) * getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getY();
-        double z = prevposZ + ((posZ - prevposZ) * getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        double x = prevposX + ((posX - prevposX) * getTickDelta()) - cam.getX();
+        double y = prevposY + ((posY - prevposY) * getTickDelta()) - cam.getY();
+        double z = prevposZ + ((posZ - prevposZ) * getTickDelta()) - cam.getZ();
         return new Vec3d(x, y, z);
     }
 

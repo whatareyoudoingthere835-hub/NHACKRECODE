@@ -54,8 +54,8 @@ public final class THRenderLayers {
                 .build());
     }
 
-    private static RenderPipeline worldPipeline(String path, VertexFormat format, DrawMode mode, boolean blendAdd, boolean textured) {
-        return RenderPipelines.register(RenderPipeline.builder(textured ? RenderPipelines.RENDERTYPE_LINES_SNIPPET : RenderPipelines.POSITION_COLOR_SNIPPET)
+    private static RenderPipeline worldPipeline(String path, RenderPipeline.Snippet snippet, VertexFormat format, DrawMode mode, boolean blendAdd) {
+        return RenderPipelines.register(RenderPipeline.builder(snippet)
                 .withLocation(Identifier.of("thunderhack", "pipeline/" + path))
                 .withVertexFormat(format, mode)
                 .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
@@ -74,19 +74,13 @@ public final class THRenderLayers {
     /** plain POSITION_COLOR geometry (boxes, circles, lines drawn as quads etc.) */
     public static RenderLayer worldColored(DrawMode mode) {
         return WORLD_CACHE.computeIfAbsent("colored" + mode, k ->
-                layer(k, worldPipeline(k, VertexFormats.POSITION_COLOR, mode, false, false), null));
+                layer(k, worldPipeline(k, RenderPipelines.POSITION_COLOR_SNIPPET, VertexFormats.POSITION_COLOR, mode, false), null));
     }
 
-    /** arbitrary vertex format (e.g. POSITION_TEXTURE_COLOR) without a bound texture override */
-    public static RenderLayer worldLayer(DrawMode mode, VertexFormat format) {
-        return WORLD_CACHE.computeIfAbsent("fmt" + System.identityHashCode(format) + mode, k ->
-                layer("world_" + mode, worldPipeline("world_" + mode + "_" + System.identityHashCode(format), format, mode, false, true), null));
-    }
-
-    /** LINES-style layer with width-aware shader (debug lines, outlines) */
+    /** LINES-style layer (debug lines, outlines) */
     public static RenderLayer worldLines(DrawMode mode) {
         return WORLD_CACHE.computeIfAbsent("lines" + mode, k ->
-                layer(k, worldPipeline(k, VertexFormats.LINES, mode, false, true), null));
+                layer(k, worldPipeline(k, RenderPipelines.RENDERTYPE_LINES_SNIPPET, VertexFormats.LINES, mode, false), null));
     }
 
     /** textured + colored geometry bound to {@code texture}; {@code additive} for glow style */
@@ -94,7 +88,7 @@ public final class THRenderLayers {
         return WORLD_CACHE.computeIfAbsent(texture + "t" + mode + additive, k ->
                 layer("tex_" + texture.getPath() + "_" + mode + (additive ? "_add" : ""),
                         worldPipeline("tex_" + texture.getPath() + "_" + mode + (additive ? "_add" : ""),
-                                VertexFormats.POSITION_TEXTURE_COLOR, mode, additive, true),
+                                RenderPipelines.POSITION_TEX_COLOR_SNIPPET, VertexFormats.POSITION_TEXTURE_COLOR, mode, additive),
                         texture));
     }
 

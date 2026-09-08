@@ -27,6 +27,13 @@ public abstract class MixinInGameHud {
         Managers.NOTIFICATION.onRender2D(context);
     }
 
+    @Inject(at = @At(value = "TAIL"), method = "render")
+    public void renderTailHook(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+        if (thunder.hack.core.manager.client.ModuleManager.totemAnimation.isEnabled()) {
+            thunder.hack.core.manager.client.ModuleManager.totemAnimation.renderFloatingItem(context, tickCounter.getTickDelta(true));
+        }
+    }
+
     @Inject(at = @At(value = "HEAD"), method = "renderStatusBars", cancellable = true)
     private void renderStatusBarsHook(DrawContext context, CallbackInfo ci) {
         if (mc != null && mc.currentScreen instanceof WindowsScreen) {

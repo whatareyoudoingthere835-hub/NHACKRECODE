@@ -1,37 +1,30 @@
 package thunder.hack.injection;
 
-import net.minecraft.client.gl.PostEffectProcessor;
-import net.minecraft.client.render.*;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import thunder.hack.core.Managers;
 import thunder.hack.core.manager.client.ModuleManager;
-import thunder.hack.core.manager.client.ShaderManager;
 
 import static thunder.hack.features.modules.Module.mc;
 
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer {
 
-    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;setupTerrain(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/Frustum;ZZ)V"), index = 3)
-    private boolean renderSetupTerrainModifyArg(boolean spectator) {
-        return ModuleManager.freeCam.isEnabled() || spectator;
-    }
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(F)V", ordinal = 0))
-    private void replaceShaderHook(PostEffectProcessor instance, float tickDelta) {
-        ShaderManager.Shader shaders = ModuleManager.shaders.mode.getValue();
-        if (ModuleManager.shaders.isEnabled() && mc.world != null) {
-            if (Managers.SHADER.fullNullCheck()) return;
-            Managers.SHADER.setupShader(shaders, Managers.SHADER.getShaderOutline(shaders));
-        } else {
-            instance.render(tickDelta);
-        }
+    // keep the chunks around the real player loaded while the camera flies away (free cam)
+    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;setupFrustum(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/client/render/Frustum;"), index = 2)
+    private Vec3d freeCamFrustumPos(Vec3d pos) {
+        if (ModuleManager.freeCam.isEnabled() && mc.player != null) return mc.player.getEyePos();
+        return pos;
     }
 
     @Inject(method = "renderWeather", at = @At("HEAD"), cancellable = true)
-    private void renderWeatherHook(LightmapTextureManager manager, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo ci) {
+    private void renderWeatherHook(LightmapTextureManager manager, GpuBufferSlice fog, CallbackInfo ci) {
         if (ModuleManager.noRender.isEnabled() && ModuleManager.noRender.noWeather.getValue()) {
             ci.cancel();
         }
