@@ -4,9 +4,7 @@
   "package": "thunder.hack.injection",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "JsonEffectGlShaderMixin",
     "MixinArmorFeatureRenderer",
-    "MixinBackgroundRenderer",
     "MixinBlockCollisionSpliterator",
     "MixinBossBarHud",
     "MixinCamera",
@@ -18,7 +16,6 @@
     "MixinClientPlayerInteractionManager",
     "MixinClientPlayNetworkHandler",
     "MixinClientWorld",
-    "MixinCoreShader",
     "MixinDrawContext",
     "MixinDynamic",
     "MixinEndCrystalEntityRenderer",
@@ -42,12 +39,10 @@
     "MixinPlayerListEntry",
     "MixinPlayerListHud",
     "MixinScreen",
-    "MixinShaderEffect",
     "MixinSignBlockEntityRenderer",
     "MixinTextVisitFactory",
     "MixinTitleScreen",
     "MixinWorldRenderer",
-    "accesors.AccessiblePassesShaderEffect",
     "accesors.IClientPlayerEntity",
     "accesors.IClientWorldMixin",
     "accesors.IFrustum",
@@ -55,11 +50,9 @@
     "accesors.IInteractionManager",
     "accesors.IMinecraftClient",
     "accesors.INativeImage",
-    "accesors.IPostProcessShader",
-    "accesors.IRenderPhaseMixin",
     "accesors.ISignEditScreen",
     "accesors.IWorldRenderer",
-    "accesors.ShaderProgramAccessor"
+    "accesors.IDrawContextState"
   ],
   "injectors": {
     "defaultRequire": 1

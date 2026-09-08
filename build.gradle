@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -48,7 +48,8 @@ dependencies {
 
 	libImpl("meteordevelopment:orbit:${project.orbit_version}")
 
-	modCompileOnly "meteordevelopment:baritone:1.21-SNAPSHOT"
+	// TODO 1.21.11: baritone artifact for 1.21.11 unavailable; Pathfinder/MineEngine modules excluded meanwhile
+	// modCompileOnly "meteordevelopment:baritone:1.21-SNAPSHOT"
 
 	libImpl("io.netty:netty-handler-proxy:${project.netty_version}") { transitive = false }
 	libImpl("io.netty:netty-codec-socks:${project.netty_version}") { transitive = false }
@@ -73,10 +74,23 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 21
+	it.options.encoding = "UTF-8"
+	it.options.compilerArgs << "-Xmaxerrs" << "999999"
 }
 
 java {
 	withSourcesJar()
+}
+
+sourceSets {
+	main {
+		java {
+			// satin-based post process shaders are dropped for 1.21.11 (see ShaderManager stub)
+			exclude "thunder/hack/utility/render/shaders/**"
+			// baritone-dependent modules
+			exclude "thunder/hack/features/modules/world/autominer/**"
+		}
+	}
 }
 
 jar {

@@ -2,24 +2,37 @@ package thunder.hack.injection;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import org.joml.Matrix3x2fStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import thunder.hack.gui.font.FontRenderers;
+import thunder.hack.utility.render.Draw2D;
 
 @Mixin(DrawContext.class)
 public class MixinDrawContext {
 
     @Shadow
     @Final
-    private MatrixStack matrices;
+    private Matrix3x2fStack matrices;
+
+    @Shadow
+    @Final
+    private GuiRenderState state;
+
+    /** Track the live DrawContext so Draw2D batches can find the current render state. */
+    @Inject(method = "<init>", at = @At("TAIL"))
+    private void onConstruct(CallbackInfo ci) {
+        Draw2D.CURRENT = (DrawContext) (Object) this;
+    }
 
  //   @Inject(method = "drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/OrderedText;IIIZ)I", at = @At("HEAD"), cancellable = true)
     public void drawTextHook(TextRenderer textRenderer, OrderedText text, int x, int y, int color, boolean shadow, CallbackInfoReturnable<Integer> cir) {
@@ -29,7 +42,7 @@ public class MixinDrawContext {
             return true;
         });
 
-        FontRenderers.sf_medium.drawString(matrices, text1.getString(), x,y, color);
+        FontRenderers.sf_medium.drawString(matrices, text1.getString(), x, y, color);
         cir.setReturnValue((int) FontRenderers.sf_medium.getStringWidth(text.toString()));
     }
 }
