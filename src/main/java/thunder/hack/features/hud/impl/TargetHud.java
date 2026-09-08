@@ -6,7 +6,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
@@ -242,15 +241,15 @@ public class TargetHud extends HudElement {
         Render2DEngine.drawRect(context.getMatrices(), getPosX() + 50, getPosY() + 30, MathUtility.clamp((int) (60 * (health / target.getMaxHealth())), 0, 60), 10, color.getValue().getColorObject().brighter().brighter().brighter());
 
         if (target instanceof PlayerEntity) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkinTextures().texture());
+
         } else {
-            RenderSystem.setShaderTexture(0, mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+
         }
 
-        RenderSystem.setShaderColor(1f, 1f - hurtPercent, 1f - hurtPercent, 1f);
+
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 3.5f + hurtPercent, getPosY() + 3.5f + hurtPercent, 40 - hurtPercent * 2, 40 - hurtPercent * 2, 8, 8, 8, 8, 64, 64);
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 3.5f + hurtPercent, getPosY() + 3.5f + hurtPercent, 40 - hurtPercent * 2, 40 - hurtPercent * 2, 40, 8, 8, 8, 64, 64);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
 
         FontRenderers.modules.drawString(context.getMatrices(), ModuleManager.media.isEnabled() ? "Protected " : ModuleManager.nameProtect.isEnabled() && target == mc.player ? NameProtect.getCustomName() : target.getName().getString(), getPosX() + 50, getPosY() + 7, -1);
         FontRenderers.modules.drawCenteredString(context.getMatrices(), hpMode.getValue() == HPmodeEn.HP ? String.valueOf(Math.round(10.0 * getHealth()) / 10.0) : (((Math.round(10.0 * getHealth()) / 10.0) / 20f) * 100 + "%"), getPosX() + 81f, getPosY() + 34f, getHpTextColor(1f));
@@ -261,7 +260,7 @@ public class TargetHud extends HudElement {
             celestialHands(context, pe, getPosX(), getPosY());
         }
 
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
     }
 
     private void renderNurik(DrawContext context, float health, float animationFactor) {
@@ -280,28 +279,28 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkinTextures().texture());
+
         } else {
-            RenderSystem.setShaderTexture(0, mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+
         }
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(getPosX() + 3.5f + 20, getPosY() + 3.5f + 20);
         context.getMatrices().scale(1 - hurtPercent / 15f, 1 - hurtPercent / 15f, 1f);
         context.getMatrices().translate(-(getPosX() + 3.5f + 20), -(getPosY() + 3.5f + 20));
-        RenderSystem.enableBlend();
-        RenderSystem.colorMask(false, false, false, true);
-        RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 0.0F);
-        RenderSystem.clear(GL40C.GL_COLOR_BUFFER_BIT, false);
-        RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
+
+
+
+
+
         Render2DEngine.renderRoundedQuadInternal(context.getMatrices().peek().getPositionMatrix(), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 3.5f, getPosY() + 3.5f, getPosX() + 3.5f + 40, getPosY() + 3.5f + 40, 7, 10);
-        RenderSystem.blendFunc(GL40C.GL_DST_ALPHA, GL40C.GL_ONE_MINUS_DST_ALPHA);
-        RenderSystem.setShaderColor(animationFactor, animationFactor - hurtPercent / 2, animationFactor - hurtPercent / 2, (float) MathUtility.clamp(animation.getAnimationd(), 0, 1f));
+
+
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 3.5f, getPosY() + 3.5f, 40, 40, 8, 8, 8, 8, 64, 64);
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 3.5f, getPosY() + 3.5f, 40, 40, 40, 8, 8, 8, 64, 64);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.defaultBlendFunc();
+
+
         context.getMatrices().popMatrix();
 
         // Баллон
@@ -322,7 +321,7 @@ public class TargetHud extends HudElement {
                 Render2DEngine.applyOpacity(Colors.WHITE, animationFactor));
 
         if (target instanceof PlayerEntity) {
-            RenderSystem.setShaderColor(1f, 1f, 1f, (float) MathUtility.clamp(animation.getAnimationd(), 0, 1f));
+
 
             //Броня
             List<ItemStack> armor = ((PlayerEntity) target).getInventory().armor;
@@ -338,7 +337,7 @@ public class TargetHud extends HudElement {
                 context.getMatrices().popMatrix();
                 xItemOffset += 12;
             }
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
         }
     }
 
@@ -359,27 +358,27 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkinTextures().texture());
+
         } else {
-            RenderSystem.setShaderTexture(0, mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+
         }
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(getPosX() + 2.5 + 15, getPosY() + 2.5 + 15);
         context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f, 1f);
         context.getMatrices().translate(-(getPosX() + 2.5 + 15), -(getPosY() + 2.5 + 15));
-        RenderSystem.enableBlend();
-        RenderSystem.colorMask(false, false, false, true);
-        RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 0.0F);
-        RenderSystem.clear(GL40C.GL_COLOR_BUFFER_BIT, false);
-        RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
+
+
+
+
+
         Render2DEngine.renderRoundedQuadInternal(context.getMatrices().peek().getPositionMatrix(), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 30, getPosY() + 2.5 + 30, 5, 10);
-        RenderSystem.blendFunc(GL40C.GL_DST_ALPHA, GL40C.GL_ONE_MINUS_DST_ALPHA);
-        RenderSystem.setShaderColor(animationFactor, animationFactor - hurtPercent / 2, animationFactor - hurtPercent / 2, animationFactor);
+
+
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 2.5, getPosY() + 2.5, 30, 30, 8, 8, 8, 8, 64, 64);
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 2.5, getPosY() + 2.5, 30, 30, 40, 8, 8, 8, 64, 64);
-        RenderSystem.defaultBlendFunc();
+
         context.getMatrices().popMatrix();
 
         // Баллон
@@ -399,7 +398,7 @@ public class TargetHud extends HudElement {
 
         if (target instanceof PlayerEntity) {
             //Броня
-            RenderSystem.setShaderColor(1f, 1f, 1f, (float) MathUtility.clamp(animation.getAnimationd(), 0, 1f));
+
             List<ItemStack> armor = ((PlayerEntity) target).getInventory().armor;
             ItemStack[] items = new ItemStack[]{target.getMainHandStack(), armor.get(3), armor.get(2), armor.get(1), armor.get(0), target.getOffHandStack()};
 
@@ -413,7 +412,7 @@ public class TargetHud extends HudElement {
                 context.getMatrices().popMatrix();
                 xItemOffset += 9;
             }
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
         }
     }
 
@@ -430,19 +429,19 @@ public class TargetHud extends HudElement {
         {
             if (!imageMode.is(ImageModeEn.None)) {
                 if (imageMode.is(ImageModeEn.Anime)) {
-                    RenderSystem.setShaderTexture(0, TextureStorage.thudPic);
+
                 } else {
                     if (custom == null)
                         break imageRender;
 
-                    RenderSystem.setShaderTexture(0, custom);
+
                 }
                 context.getMatrices().pushMatrix();
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
+
+
                 Render2DEngine.drawRound(context.getMatrices(), getPosX() + 50, getPosY(), 100, 50, 12, new Color(0, 0, 0, 255));
-                RenderSystem.disableBlend();
-                RenderSystem.setShaderColor(0.3f, 0.3f, 0.3f, 1f);
+
+
                 Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 50, getPosY(), 95, 50, 0, 0, 100, 50, 100, 50);
                 context.getMatrices().popMatrix();
             }
@@ -491,30 +490,30 @@ public class TargetHud extends HudElement {
         headAnimation.setValue(hurtPercent2);
 
         if (target instanceof PlayerEntity) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkinTextures().texture());
+
         } else {
-            RenderSystem.setShaderTexture(0, mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+
         }
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(getPosX() + 2.5 + 15, getPosY() + 2.5 + 15);
         context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f, 1f);
         context.getMatrices().translate(-(getPosX() + 2.5 + 15), -(getPosY() + 2.5 + 15));
-        RenderSystem.enableBlend();
-        RenderSystem.colorMask(false, false, false, true);
-        RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 0.0F);
-        RenderSystem.clear(GL40C.GL_COLOR_BUFFER_BIT, false);
-        RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
+
+
+
+
+
 
         Render2DEngine.renderRoundedQuadInternal(context.getMatrices().peek().getPositionMatrix(), animationFactor, animationFactor, animationFactor, animationFactor,
                 getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 45, getPosY() + 2.5 + 45, 5, 10);
 
-        RenderSystem.blendFunc(GL40C.GL_DST_ALPHA, GL40C.GL_ONE_MINUS_DST_ALPHA);
-        RenderSystem.setShaderColor(animationFactor, animationFactor - hurtPercent / 2, animationFactor - hurtPercent / 2, animationFactor);
+
+
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 2.5, getPosY() + 2.5, 45, 45, 8, 8, 8, 8, 64, 64);
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 2.5, getPosY() + 2.5, 45, 45, 40, 8, 8, 8, 64, 64);
-        RenderSystem.defaultBlendFunc();
+
         context.getMatrices().popMatrix();
 
         healthAnimation.setValue(health);

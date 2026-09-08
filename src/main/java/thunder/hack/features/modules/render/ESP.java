@@ -102,8 +102,8 @@ public class ESP extends Module {
                     stack.translate(x, y, z);
 
                     Render3DEngine.setupRender();
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
+
                     BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
                     for (int i = 0; i <= 360; i += 6) {
@@ -114,7 +114,7 @@ public class ESP extends Module {
                     }
                     Render2DEngine.endBuilding(bufferBuilder);
 
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
                     bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
                     for (int i = 0; i <= 360; i += 6) {
                         double v = Math.sin(Math.toRadians(i));
@@ -125,11 +125,11 @@ public class ESP extends Module {
                     Render2DEngine.endBuilding(bufferBuilder);
 
                     Render3DEngine.endRender();
-                    RenderSystem.enableDepthTest();
+
                     stack.translate(-x, -y, -z);
                     stack.pop();
 
-                    RenderSystem.disableDepthTest();
+
                     MatrixStack matrices = new MatrixStack();
                     Camera camera = mc.gameRenderer.getCamera();
                     matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
@@ -137,13 +137,13 @@ public class ESP extends Module {
                     matrices.translate(x, y, z);
                     matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
                     matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
+
+
                     matrices.translate(0, 0, 0);
                     matrices.scale(-0.05f, -0.05f, 0);
                     FontRenderers.modules.drawCenteredString(Draw2D.CURRENT.getMatrices(), String.format("%.1f", ((aece.getRadius() * 10) - 5f)), 0, -10f, -1);
-                    RenderSystem.disableBlend();
-                    RenderSystem.enableDepthTest();
+
+
                 }
             }
         }
@@ -161,8 +161,8 @@ public class ESP extends Module {
                 stack.translate(x, y, z);
 
                 Render3DEngine.setupRender();
-                RenderSystem.disableDepthTest();
-                RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
+
                 BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
                 for (int i = 0; i <= 360; i += 6) {
@@ -173,7 +173,7 @@ public class ESP extends Module {
                 }
                 Render2DEngine.endBuilding(bufferBuilder);
 
-                RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
                 bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
                 for (int i = 0; i <= 360; i += 6) {
                     double v = Math.sin(Math.toRadians(i));
@@ -184,7 +184,7 @@ public class ESP extends Module {
                 Render2DEngine.endBuilding(bufferBuilder);
 
                 Render3DEngine.endRender();
-                RenderSystem.enableDepthTest();
+
                 stack.translate(-x, -y, -z);
                 stack.pop();
 
@@ -233,7 +233,7 @@ public class ESP extends Module {
                         || block == Blocks.SKELETON_SKULL
                         || block == Blocks.WITHER_SKELETON_SKULL) {
                     Render3DEngine.drawBoxOutline(new Box(blockPos), burrowColor.getValue().getColorObject(), 2);
-                    RenderSystem.disableDepthTest();
+
                     MatrixStack matrices = new MatrixStack();
                     Camera camera = mc.gameRenderer.getCamera();
                     matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
@@ -241,13 +241,13 @@ public class ESP extends Module {
                     matrices.translate(x + 0.5f, y + 0.5f, z + 0.5f);
                     matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
                     matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
+
+
                     matrices.translate(0, 0, 0);
                     matrices.scale(-0.025f, -0.025f, 0);
                     FontRenderers.modules.drawCenteredString(Draw2D.CURRENT.getMatrices(), "BURROW", 0, -5, burrowTextColor.getValue().getColor());
-                    RenderSystem.disableBlend();
-                    RenderSystem.enableDepthTest();
+
+
                 }
             }
         }
@@ -260,7 +260,7 @@ public class ESP extends Module {
                     double z = tnt.prevZ + (tnt.getPos().getZ() - tnt.prevZ) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
 
                     if (tntFuse.getValue()) {
-                        RenderSystem.disableDepthTest();
+
                         MatrixStack matrices = new MatrixStack();
                         Camera camera = mc.gameRenderer.getCamera();
                         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
@@ -268,13 +268,13 @@ public class ESP extends Module {
                         matrices.translate(x, y + 0.5f, z);
                         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
                         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                        RenderSystem.enableBlend();
-                        RenderSystem.defaultBlendFunc();
+
+
                         matrices.translate(0, 0, 0);
                         matrices.scale(-0.025f, -0.025f, 0);
                         FontRenderers.modules.drawCenteredString(Draw2D.CURRENT.getMatrices(), String.format("%.1f", ((float) tnt.getFuse() / 20f)) + "s", 0, -5, tntFuseText.getValue().getColor());
-                        RenderSystem.disableBlend();
-                        RenderSystem.enableDepthTest();
+
+
                     }
 
                     if (tntRadius.getValue()) {
@@ -308,7 +308,7 @@ public class ESP extends Module {
                     context.getMatrices().translate(xOffset, yOffset);
                     context.getMatrices().rotate((-yaw) * MathHelper.RADIANS_PER_DEGREE);
                     context.getMatrices().translate(-xOffset, -yOffset);
-                    RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
                     FontRenderers.modules.drawCenteredString(context.getMatrices(), String.format("%.1f", mc.player.distanceTo(pearl)) + "m", (float) (Math.sin(Math.toRadians(yaw)) * 50f) + xOffset, (float) (yOffset - (Math.cos(Math.toRadians(yaw)) * 50f)) - 20, -1);
                 }
             }
@@ -316,7 +316,7 @@ public class ESP extends Module {
 
         Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
         Render2DEngine.setupRender();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         for (Entity ent : mc.world.getEntities())

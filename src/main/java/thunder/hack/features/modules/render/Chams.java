@@ -1,6 +1,5 @@
 package thunder.hack.features.modules.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.model.ModelPart;
@@ -62,24 +61,24 @@ public class Chams extends Module {
     private static final float SINE_45_DEGREES = (float) Math.sin(0.7853981633974483);
 
     public void renderCrystal(EndCrystalEntity endCrystalEntity, float f, float g, MatrixStack matrixStack, int i, ModelPart core, ModelPart frame) {
-        RenderSystem.enableBlend();
+
         if (alternativeBlending.getValue())
-            RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-        else RenderSystem.defaultBlendFunc();
-        RenderSystem.disableCull();
-        RenderSystem.disableDepthTest();
+
+
+
+
         BufferBuilder buffer;
 
         if (crystalMode.getValue() != CMode.One) {
             if (crystalMode.getValue() == CMode.Three) {
-                RenderSystem.setShaderTexture(0, crystalTexture);
+
             } else {
-                RenderSystem.setShaderTexture(0, TextureStorage.crystalTexture2);
+
             }
-            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         } else {
-            RenderSystem.setShader(GameRenderer::getPositionProgram);
+
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         }
 
@@ -87,7 +86,7 @@ public class Chams extends Module {
         float h = staticCrystal.getValue() ? -1.4f : EndCrystalEntityRenderer.getYOffset(endCrystalEntity, g);
         float j = ((float) endCrystalEntity.endCrystalAge + g) * 3.0f;
         matrixStack.push();
-        RenderSystem.setShaderColor(crystalColor.getValue().getGlRed(), crystalColor.getValue().getGlGreen(), crystalColor.getValue().getGlBlue(), crystalColor.getValue().getGlAlpha());
+
         matrixStack.scale(2.0f, 2.0f, 2.0f);
         matrixStack.translate(0.0f, -0.5f, 0.0f);
         int k = OverlayTexture.DEFAULT_UV;
@@ -106,27 +105,27 @@ public class Chams extends Module {
         matrixStack.pop();
         matrixStack.pop();
         Render2DEngine.endBuilding(buffer);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.disableBlend();
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableCull();
+
+
+
+
     }
 
     public void renderPlayer(PlayerEntity pe, float f, float g, MatrixStack matrixStack, int i, EntityModel model, CallbackInfo ci, Runnable post) {
-        RenderSystem.enableBlend();
+
         if (alternativeBlending.getValue())
-            RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-        else RenderSystem.defaultBlendFunc();
-        RenderSystem.enableCull();
-        RenderSystem.disableDepthTest();
+
+
+
+
         BufferBuilder buffer;
 
         if (!simple.getValue()) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) pe).getSkinTextures().texture());
-            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+
+
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         } else {
-            RenderSystem.setShader(GameRenderer::getPositionProgram);
+
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         }
 
@@ -136,9 +135,9 @@ public class Chams extends Module {
         matrixStack.push();
 
         if (Managers.FRIEND.isFriend(pe)) {
-            RenderSystem.setShaderColor(friendColor.getValue().getGlRed(), friendColor.getValue().getGlGreen(), friendColor.getValue().getGlBlue(), friendColor.getValue().getGlAlpha());
+
         } else {
-            RenderSystem.setShaderColor(playerColor.getValue().getGlRed(), playerColor.getValue().getGlGreen(), playerColor.getValue().getGlBlue(), playerColor.getValue().getGlAlpha());
+
         }
 
         model.handSwingProgress = pe.getHandSwingProgress(g);
@@ -197,11 +196,11 @@ public class Chams extends Module {
         int p = LivingEntityRenderer.getOverlay(pe, 0);
         model.render(matrixStack, buffer, i, p);
         Render2DEngine.endBuilding(buffer);
-        RenderSystem.disableBlend();
-        RenderSystem.disableCull();
+
+
         matrixStack.pop();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.enableDepthTest();
+
+
         if (!playerTexture.getValue()) {
             ci.cancel();
             post.run();
@@ -280,6 +279,6 @@ public class Chams extends Module {
     @EventHandler
     public void onRenderHands(EventHeldItemRenderer e) {
         if (handItems.getValue())
-            RenderSystem.setShaderColor(handItemsColor.getValue().getRed() / 255f, handItemsColor.getValue().getGreen() / 255f, handItemsColor.getValue().getBlue() / 255f, handItemsColor.getValue().getAlpha() / 255f);
+
     }
 }

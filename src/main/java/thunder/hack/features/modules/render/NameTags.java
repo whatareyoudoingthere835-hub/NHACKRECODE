@@ -2,7 +2,6 @@ package thunder.hack.features.modules.render;
 
 import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Ordering;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -247,14 +246,14 @@ public class NameTags extends Module {
 
                 if (Managers.TELEMETRY.getOnlinePlayers().contains(ent.getGameProfile().getName())) {
                     Render2DEngine.drawRect(context.getMatrices(), tagX - 14, (float) (posY - 13f), 12, 11, color.brighter().brighter());
-                    RenderSystem.enableBlend();
-                    RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+
+
                     Color lColor = HudEditor.getColor(0);
-                    RenderSystem.setShaderColor(lColor.getRed() / 255f, lColor.getGreen() / 255f, lColor.getBlue() / 255f, 1f);
-                    RenderSystem.setShaderTexture(0, TextureStorage.miniLogo);
+
+
                     Render2DEngine.renderTexture(context.getMatrices(), tagX - 13, (float) (posY - 12.5f), 10, 10, 0, 0, 256, 256, 256, 256);
-                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-                    RenderSystem.disableBlend();
+
+
                 }
 
                 switch (cl) {
@@ -565,8 +564,8 @@ public class NameTags extends Module {
         ArrayList<StatusEffectInstance> effects = new ArrayList<>(player.getStatusEffects());
         if (effects.isEmpty()) return;
         x += effects.size() * 12.5f;
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+
+
         for (StatusEffectInstance statusEffectInstance : Ordering.natural().reverse().sortedCopy(effects)) {
             x -= 25;
             String power = "";
@@ -586,7 +585,7 @@ public class NameTags extends Module {
             context.getMatrices().popMatrix();
 
         }
-        RenderSystem.disableBlend();
+
     }
 
     public boolean renderShulkerToolTip(DrawContext context, int offsetX, int offsetY, ItemStack stack) {
@@ -614,7 +613,7 @@ public class NameTags extends Module {
     }
 
     private void draw(DrawContext context, List<ItemStack> itemStacks, int offsetX, int offsetY, float[] colors) {
-        RenderSystem.disableDepthTest();
+
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
         offsetX += 8;
@@ -622,7 +621,7 @@ public class NameTags extends Module {
 
         drawBackground(context, offsetX, offsetY, colors);
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
         DiffuseLighting.enableGuiDepthLighting();
         int row = 0;
         int i = 0;
@@ -636,16 +635,16 @@ public class NameTags extends Module {
             }
         }
         DiffuseLighting.disableGuiDepthLighting();
-        RenderSystem.enableDepthTest();
+
     }
 
     private void drawBackground(DrawContext context, int x, int y, float[] colors) {
-        RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(colors[0], colors[1], colors[2], 1F);
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+
+
+
+
         context.drawTexture(TextureStorage.container, x, y, 0, 0, 176, 67, 176, 67);
-        RenderSystem.enableBlend();
+
     }
 
     public enum Font {

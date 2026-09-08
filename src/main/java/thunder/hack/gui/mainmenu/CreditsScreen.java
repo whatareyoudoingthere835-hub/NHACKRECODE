@@ -67,8 +67,8 @@ public class CreditsScreen extends Screen {
         //  Render2DEngine.drawMainMenuShader(context.getMatrices(), 0, 0, halfOfWidth * 2f, halfOfHeight * 2);
         renderBackground(context, mouseX, mouseY, delta);
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+
+
         int offset = 0;
 
         for (Contributor contributor : contributors) {
@@ -91,11 +91,11 @@ public class CreditsScreen extends Screen {
 
             offset += 150;
         }
-        RenderSystem.disableBlend();
+
         Render2DEngine.drawHudBase(context.getMatrices(), mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30, 5, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 60, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
-        RenderSystem.setShaderColor(1f, 1f, 1f, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30) ? 0.7f : 1f);
+
         context.drawTexture(TextureStorage.thTeam, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30, 0, 0, 30, 30, 30, 30);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
     }
 
 

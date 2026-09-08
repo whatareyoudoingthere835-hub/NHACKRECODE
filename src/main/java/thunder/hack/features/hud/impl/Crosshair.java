@@ -1,7 +1,6 @@
 package thunder.hack.features.hud.impl;
 
 import org.joml.Matrix3x2fStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
@@ -97,12 +96,12 @@ public class Crosshair extends Module {
             case Dot -> {
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(xAnim + 4, yAnim + 4);
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-                RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+
+
+
                 BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
-                RenderSystem.setShaderTexture(0, TextureStorage.firefly);
+
                 Color color1 = colorMode.getValue() == ColorMode.Sync ? HudEditor.getColor(1) : color.getValue().getColorObject();
                 Matrix4f posMatrix = context.getMatrices().peek().getPositionMatrix();
                 bufferBuilder.vertex(posMatrix, 0, -8f, 0).texture(0f, 1f).color(color1.getRGB());
@@ -110,8 +109,8 @@ public class Crosshair extends Module {
                 bufferBuilder.vertex(posMatrix, -8f, 0, 0).texture(1f, 0).color(color1.getRGB());
                 bufferBuilder.vertex(posMatrix, 0, 0, 0).texture(0, 0).color(color1.getRGB());
                 BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.disableBlend();
+
+
                 context.getMatrices().popMatrix();
             }
             case Default -> {

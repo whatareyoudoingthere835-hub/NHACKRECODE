@@ -148,7 +148,7 @@ public class ClickGUI extends Screen {
         ClickGui.Image image = ModuleManager.clickGui.image.getValue();
 
         if (image != ClickGui.Image.None) {
-            RenderSystem.setShaderTexture(0, image.file);
+
 
             Render2DEngine.renderTexture(context.getMatrices(),
 

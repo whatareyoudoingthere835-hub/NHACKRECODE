@@ -57,7 +57,7 @@ public class LagNotifier extends Module {
 
     public void onRender2D(DrawContext context) {
         Render2DEngine.setupRender();
-        RenderSystem.defaultBlendFunc();
+
 
         if (!rubberbandTimer.passedMs(5000) && rubberbandNotify.getValue()) {
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
@@ -68,9 +68,9 @@ public class LagNotifier extends Module {
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
             FontRenderers.modules.drawCenteredString(context.getMatrices(), (isRu() ? "Сервер перестал отвечать! " : "The server stopped responding! ") + decimalFormat.format((float) packetTimer.getTimeMs() / 1000f), (float) mc.getWindow().getScaledWidth() / 2f, (float) mc.getWindow().getScaledHeight() / 3f, new Color(0xFFDF00).getRGB());
 
-            RenderSystem.setShaderColor(1f, 0.87f, 0f, 1f);
+
             context.drawTexture(TextureStorage.lagIcon, (int) ((float) mc.getWindow().getScaledWidth() / 2f - 40), (int) ((float) mc.getWindow().getScaledHeight() / 3f - 120), 0, 0, 80, 80, 80, 80);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
         }
 
         if (Managers.SERVER.getTPS() < 10 && notifyTimer.passedMs(60000) && tpsNotify.getValue()) {

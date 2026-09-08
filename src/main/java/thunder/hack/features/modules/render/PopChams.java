@@ -1,7 +1,6 @@
 package thunder.hack.features.modules.render;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -54,13 +53,13 @@ public final class PopChams extends Module {
 
     @Override
     public void onRender3D(MatrixStack stack) {
-        RenderSystem.enableBlend();
-        RenderSystem.disableDepthTest();
-        if (mode.is(Mode.Simple)) RenderSystem.defaultBlendFunc();
-        else RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+
+
+
+
         popList.forEach(person -> renderEntity(stack, person.player, person.modelPlayer, person.getTexture(), person.getAlpha()));
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
+
+
     }
 
     @EventHandler
@@ -114,19 +113,19 @@ public final class PopChams extends Module {
 
         BufferBuilder buffer;
         if (mode.is(Mode.Textured)) {
-            RenderSystem.setShaderTexture(0, texture);
-            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+
+
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         } else {
-            RenderSystem.setShader(GameRenderer::getPositionProgram);
+
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         }
 
-        RenderSystem.setShaderColor(color.getValue().getGlRed(), color.getValue().getGlGreen(), color.getValue().getGlBlue(), alpha / 255f);
+
 
         modelBase.render(matrices, buffer, 10, 0);
         Render2DEngine.endBuilding(buffer);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
         matrices.pop();
     }
 

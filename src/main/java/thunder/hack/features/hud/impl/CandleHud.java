@@ -1,7 +1,6 @@
 package thunder.hack.features.hud.impl;
 
 import org.joml.Matrix3x2fStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -65,13 +64,13 @@ public class CandleHud extends HudElement {
         x = x - 7;
         y = y - 7;
 
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-        RenderSystem.setShaderTexture(0, TextureStorage.firefly);
+
+
+
+
         Render2DEngine.renderTexture(matrices, x, y, width, height, 0, 0, width, height, width, height);
-        RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
+
     }
 
     private enum For {

@@ -1,6 +1,5 @@
 package thunder.hack.features.modules.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -73,35 +72,35 @@ public class Particles extends Module {
     public void onRender3D(MatrixStack stack) {
         if (FireFlies.getValue().isEnabled()) {
             stack.push();
-            RenderSystem.setShaderTexture(0, TextureStorage.firefly);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthMask(false);
-            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+
+
+
+
+
+
             BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
             fireFlies.forEach(p -> p.render(bufferBuilder));
             Render2DEngine.endBuilding(bufferBuilder);
-            RenderSystem.depthMask(true);
-            RenderSystem.disableDepthTest();
-            RenderSystem.disableBlend();
+
+
+
             stack.pop();
         }
 
         if (mode.getValue() != Mode.Off) {
             stack.push();
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthMask(false);
-            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+
+
+
+
+
             BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
             particles.forEach(p -> p.render(bufferBuilder));
             Render2DEngine.endBuilding(bufferBuilder);
-            RenderSystem.depthMask(true);
-            RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-            RenderSystem.disableDepthTest();
-            RenderSystem.disableBlend();
+
+
+
+
             stack.pop();
         }
     }
@@ -144,7 +143,7 @@ public class Particles extends Module {
 
         @Override
         public void render(BufferBuilder bufferBuilder) {
-            RenderSystem.setShaderTexture(0, TextureStorage.firefly);
+
             if (!trails.isEmpty()) {
                 Camera camera = mc.gameRenderer.getCamera();
                 for (Trails.Trail ctx : trails) {
@@ -212,11 +211,11 @@ public class Particles extends Module {
 
         public void render(BufferBuilder bufferBuilder) {
             switch (mode.getValue()) {
-                case Bloom -> RenderSystem.setShaderTexture(0, TextureStorage.firefly);
-                case SnowFlake -> RenderSystem.setShaderTexture(0, TextureStorage.snowflake);
-                case Dollars -> RenderSystem.setShaderTexture(0, TextureStorage.dollar);
-                case Hearts -> RenderSystem.setShaderTexture(0, TextureStorage.heart);
-                case Stars -> RenderSystem.setShaderTexture(0, TextureStorage.star);
+
+
+
+
+
             }
 
             Camera camera = mc.gameRenderer.getCamera();

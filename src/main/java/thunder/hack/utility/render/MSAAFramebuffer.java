@@ -34,7 +34,7 @@ public class MSAAFramebuffer extends Framebuffer {
     }
 
     public static void use(int samples, @NotNull Framebuffer mainBuffer, @NotNull Runnable drawAction) {
-        RenderSystem.assertOnRenderThreadOrInit();
+
         MSAAFramebuffer msaaBuffer = MSAAFramebuffer.getInstance(samples);
         msaaBuffer.resize(mainBuffer.textureWidth, mainBuffer.textureHeight, false);
 
@@ -62,7 +62,7 @@ public class MSAAFramebuffer extends Framebuffer {
 
     @Override
     public void initFbo(int width, int height, boolean getError) {
-        RenderSystem.assertOnRenderThreadOrInit();
+
         viewportWidth = width;
         viewportHeight = height;
         textureWidth = width;
@@ -94,7 +94,7 @@ public class MSAAFramebuffer extends Framebuffer {
 
     @Override
     public void delete() {
-        RenderSystem.assertOnRenderThreadOrInit();
+
         endRead();
         endWrite();
 

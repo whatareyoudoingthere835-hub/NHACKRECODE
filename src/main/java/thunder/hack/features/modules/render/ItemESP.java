@@ -102,7 +102,7 @@ public class ItemESP extends Module {
 
             Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
             Render2DEngine.setupRender();
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
 
             BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 

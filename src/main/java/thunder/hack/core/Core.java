@@ -161,9 +161,9 @@ public final class Core {
             int xPos = (int) (mc.getWindow().getScaledWidth() / 2f - 150);
             int yPos = (int) (mc.getWindow().getScaledHeight() / 2f - 150);
             float alpha = (1f - (skullTimer.getPassedTimeMs() / 3000f));
-            RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
+
             e.drawTexture(TextureStorage.skull, xPos, yPos, 0, 0, 300, 300, 300, 300);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
         } else showSkull = false;
     }
 
@@ -180,7 +180,7 @@ public final class Core {
             e.getMatrices().translate(xOffset, yOffset);
             e.getMatrices().rotate((-yaw) * MathHelper.RADIANS_PER_DEGREE);
             e.getMatrices().translate(-xOffset, -yOffset);
-            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
             FontRenderers.modules.drawCenteredString(e.getMatrices(), "gps (" + dst + "m)", (float) (Math.sin(Math.toRadians(yaw)) * 50f) + xOffset, (float) (yOffset - (Math.cos(Math.toRadians(yaw)) * 50f)) - 23, -1);
 
             if (dst < 10)

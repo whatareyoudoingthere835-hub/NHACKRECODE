@@ -192,7 +192,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
 
     @Unique
     private void draw(DrawContext context, List<ItemStack> itemStacks, int offsetX, int offsetY, int mouseX, int mouseY, float[] colors) {
-        RenderSystem.disableDepthTest();
+
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
         offsetX += 8;
@@ -200,7 +200,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
 
         drawBackground(context, offsetX, offsetY, colors);
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
         DiffuseLighting.enableGuiDepthLighting();
         int row = 0;
         int i = 0;
@@ -218,22 +218,22 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
             }
         }
         DiffuseLighting.disableGuiDepthLighting();
-        RenderSystem.enableDepthTest();
+
     }
 
     private void drawBackground(DrawContext context, int x, int y, float[] colors) {
-        RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(colors[0], colors[1], colors[2], 1F);
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+
+
+
+
         context.drawTexture(TextureStorage.container, x, y, 0, 0, 176, 67, 176, 67);
-        RenderSystem.enableBlend();
+
     }
 
     private void drawMapPreview(DrawContext context, ItemStack stack, int x, int y) {
-        RenderSystem.enableBlend();
+
         context.getMatrices().push();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
 
         int y1 = y - 12;
         int x1 = x + 8;

@@ -1,7 +1,6 @@
 package thunder.hack.features.modules.render;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.DrawContext;
@@ -101,10 +100,10 @@ public class LogoutSpots extends Module {
     }
 
     public void onRender3D(MatrixStack s) {
-        RenderSystem.enableBlend();
-        RenderSystem.disableDepthTest();
-        if (renderMode.is(RenderMode.Box)) RenderSystem.defaultBlendFunc();
-        else RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+
+
+
+
         for (UUID uuid : logoutCache.keySet()) {
             final PlayerEntity data = logoutCache.get(uuid);
             if (data != null) {
@@ -121,8 +120,8 @@ public class LogoutSpots extends Module {
                 }
             }
         }
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
+
+
     }
 
     public void onRender2D(DrawContext context) {
@@ -175,17 +174,17 @@ public class LogoutSpots extends Module {
         modelBase.setAngles((PlayerEntity) entity, entity.limbAnimator.getPos(), limbSpeed, entity.age, entity.headYaw - entity.bodyYaw, entity.getPitch());
         BufferBuilder buffer;
         if (renderMode.is(RenderMode.TexturedChams)) {
-            RenderSystem.setShaderTexture(0, texture);
-            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+
+
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         } else {
-            RenderSystem.setShader(GameRenderer::getPositionProgram);
+
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         }
-        RenderSystem.setShaderColor(color.getValue().getGlRed(), color.getValue().getGlGreen(), color.getValue().getGlBlue(), alpha / 255f);
+
         modelBase.render(matrices, buffer, 10, 0);
         Render2DEngine.endBuilding(buffer);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
         matrices.pop();
     }
 

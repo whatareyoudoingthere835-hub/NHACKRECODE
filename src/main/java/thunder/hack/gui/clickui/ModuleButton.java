@@ -1,7 +1,6 @@
 package thunder.hack.gui.clickui;
 
 import org.joml.Matrix3x2fStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
@@ -115,15 +114,15 @@ public class ModuleButton extends AbstractButton {
                 context.getMatrices().translate(px, py);
                 context.getMatrices().rotate((gearAnimation.getValue()) * MathHelper.RADIANS_PER_DEGREE);
                 context.getMatrices().translate(-px, -py);
-                RenderSystem.setShaderTexture(0, TextureStorage.Gear);
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+
+
+
                 Render2DEngine.renderGradientTexture(context.getMatrices(), px - gScale / 2f, py - gScale / 2f, gScale, gScale, 0, 0, gScale, gScale, gScale, gScale,
                         Render2DEngine.injectAlpha(HudEditor.getColor(270).darker(), 110),
                         Render2DEngine.injectAlpha(HudEditor.getColor(0).darker(), 110),
                         Render2DEngine.injectAlpha(HudEditor.getColor(180).darker(), 110),
                         Render2DEngine.injectAlpha(HudEditor.getColor(90).darker(), 110));
-                RenderSystem.disableBlend();
+
                 context.getMatrices().translate(px, py);
                 context.getMatrices().rotate(((float) Render2DEngine.interpolate(mc.player.age - 1, mc.player.age, Render3DEngine.getTickDelta()) * -4f) * MathHelper.RADIANS_PER_DEGREE);
                 context.getMatrices().translate(-px, -py);

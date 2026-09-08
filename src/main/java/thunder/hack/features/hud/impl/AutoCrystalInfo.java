@@ -38,7 +38,7 @@ public class AutoCrystalInfo extends HudElement {
 
         FontRenderers.sf_bold.drawGradientString(context.getMatrices(), "AutoCrystal Info", getPosX() + 2, getPosY() + 4, 10);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
 
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 

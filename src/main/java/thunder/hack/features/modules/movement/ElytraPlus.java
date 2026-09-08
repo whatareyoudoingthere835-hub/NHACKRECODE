@@ -417,9 +417,9 @@ public class ElytraPlus extends Module {
         if (mode.is(Mode.FireWork) && grim.getValue().isEnabled() && fireWorkExtender.getValue() && flying && flightZonePos != null) {
             stack.push();
             Render3DEngine.setupRender();
-            RenderSystem.disableCull();
+
             Tessellator tessellator = Tessellator.getInstance();
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
             BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
             float cos;
@@ -431,7 +431,7 @@ public class ElytraPlus extends Module {
                 bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) ((float) 128 - mc.getEntityRenderDispatcher().camera.getPos().getY()), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 0).getRGB());
             }
             Render2DEngine.endBuilding(bufferBuilder);
-            RenderSystem.enableCull();
+
             Render3DEngine.endRender();
             stack.pop();
         }
