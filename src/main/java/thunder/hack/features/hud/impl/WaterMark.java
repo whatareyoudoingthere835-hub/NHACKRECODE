@@ -71,20 +71,24 @@ public class WaterMark extends HudElement {
 
                 FontRenderers.sf_bold.drawGradientString(context.getMatrices(), "Recode", getPosX() + 18, getPosY() + 5, 20);
 
+        Render2DEngine.bindTexture(TextureStorage.miniLogo);
 
 
                 Render2DEngine.renderGradientTexture(context.getMatrices(), getPosX() + 1, getPosY() + 2, 11, 11, 0, 0, 128, 128, 128, 128,
                         HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90));
 
+        Render2DEngine.bindTexture(TextureStorage.playerIcon);
 
                 Render2DEngine.renderGradientTexture(context.getMatrices(), getPosX() + 58, getPosY() + 3, 8, 8, 0, 0, 128, 128, 128, 128,
                         HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90));
 
+        Render2DEngine.bindTexture(TextureStorage.serverIcon);
 
                 Render2DEngine.renderGradientTexture(context.getMatrices(), getPosX() + offset1, getPosY() + 2, 10, 10, 0, 0, 128, 128, 128, 128,
                         HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90));
 
                 if (Managers.PROXY.isActive()) {
+        Render2DEngine.bindTexture(TextureStorage.proxyIcon);
 
                     Render2DEngine.renderGradientTexture(context.getMatrices(), getPosX() + offset1 + offset2 + 16, getPosY() + 2, 10, 10, 0, 0, 128, 128, 128, 128,
                             HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90));

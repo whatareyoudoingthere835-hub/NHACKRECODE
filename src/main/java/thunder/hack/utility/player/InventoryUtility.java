@@ -46,8 +46,8 @@ public final class InventoryUtility {
 
         for (int b1 = 9; b1 < 45; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1 >= 36 ? b1 - 36 : b1);
-            if (itemStack != null && itemStack.getItem() instanceof AxeItem axe) {
-                float f1 = axe.getComponents().get(DataComponentTypes.MAX_DAMAGE);
+            if (itemStack != null && itemStack.getItem() instanceof AxeItem) {
+                float f1 = itemStack.getOrDefault(DataComponentTypes.MAX_DAMAGE, 0);
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
                 if (f1 > f) {
                     f = f1;
@@ -69,7 +69,7 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 0; b1 < 9; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof PickaxeItem) {
+            if (itemStack != null && ItemChecks.isPickaxe(itemStack)) {
                 float f1 = 0;
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemStack);
                 if (f1 > f) {
@@ -90,7 +90,7 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 9; b1 < 45; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof PickaxeItem) {
+            if (itemStack != null && ItemChecks.isPickaxe(itemStack)) {
                 float f1 = 0;
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemStack);
                 if (f1 > f) {
@@ -111,7 +111,7 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 0; b1 < 9; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof PickaxeItem) {
+            if (itemStack != null && ItemChecks.isPickaxe(itemStack)) {
                 float f1 = 0;
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemStack);
                 if (f1 > f) {
@@ -151,8 +151,8 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 9; b1 < 45; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof SwordItem sword) {
-                float f1 = sword.getComponents().get(DataComponentTypes.MAX_DAMAGE);
+            if (itemStack != null && ItemChecks.isSword(itemStack)) {
+                float f1 = itemStack.getOrDefault(DataComponentTypes.MAX_DAMAGE, 0);
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
                 if (f1 > f) {
                     f = f1;
@@ -172,8 +172,8 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 0; b1 < 9; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof SwordItem sword) {
-                float f1 = sword.getComponents().get(DataComponentTypes.MAX_DAMAGE);
+            if (itemStack != null && ItemChecks.isSword(itemStack)) {
+                float f1 = itemStack.getOrDefault(DataComponentTypes.MAX_DAMAGE, 0);
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
                 if (f1 > f) {
                     f = f1;
@@ -194,8 +194,8 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 0; b1 < 9; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof AxeItem axe) {
-                float f1 = axe.getComponents().get(DataComponentTypes.MAX_DAMAGE);
+            if (itemStack != null && itemStack.getItem() instanceof AxeItem) {
+                float f1 = itemStack.getOrDefault(DataComponentTypes.MAX_DAMAGE, 0);
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
                 if (f1 > f) {
                     f = f1;
@@ -324,16 +324,17 @@ public final class InventoryUtility {
         if (mc.player == null) return SearchInvResult.notFound();
 
         Item mainHand = mc.player.getMainHandStack().getItem();
-        if (mainHand instanceof SwordItem
-                || mainHand instanceof PickaxeItem
+        ItemStack mainHandStack = mc.player.getMainHandStack();
+        if (ItemChecks.isSword(mainHandStack)
+                || ItemChecks.isPickaxe(mainHandStack)
                 || mainHand instanceof AxeItem
                 || mainHand instanceof ShovelItem) {
             return new SearchInvResult(mc.player.getInventory().selectedSlot, true, mc.player.getMainHandStack());
         }
 
         return findInHotBar(
-                itemStack -> itemStack.getItem() instanceof SwordItem
-                        || itemStack.getItem() instanceof PickaxeItem
+                itemStack -> ItemChecks.isSword(itemStack)
+                        || ItemChecks.isPickaxe(itemStack)
                         || itemStack.getItem() instanceof AxeItem
                         || itemStack.getItem() instanceof ShovelItem
         );
@@ -343,10 +344,10 @@ public final class InventoryUtility {
         if (mc.player == null) return 0;
         float baseDamage = 1f;
 
-        if (weapon.getItem() instanceof SwordItem swordItem)
+        if (ItemChecks.isSword(weapon))
             baseDamage = 7;
 
-        if (weapon.getItem() instanceof AxeItem axeItem)
+        if (weapon.getItem() instanceof AxeItem)
             baseDamage = 9;
 
         if (mc.player.fallDistance > 0 || ModuleManager.criticals.isEnabled())

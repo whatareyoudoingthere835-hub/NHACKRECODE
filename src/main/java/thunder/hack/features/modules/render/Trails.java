@@ -108,6 +108,7 @@ public class Trails extends Module {
                 float alpha = color.getValue().getAlpha();
                 Camera camera = mc.gameRenderer.getCamera();
                 stack.push();
+        Render2DEngine.bindTexture(TextureStorage.firefly);
 
 
 
@@ -236,7 +237,9 @@ public class Trails extends Module {
 
 
             switch (mode.getValue()) {
-
+                case Stars -> Render2DEngine.bindTexture(TextureStorage.star);
+                case Bloom -> Render2DEngine.bindTexture(TextureStorage.firefly);
+                case Hearts -> Render2DEngine.bindTexture(TextureStorage.heart);
 
 
                 default -> {

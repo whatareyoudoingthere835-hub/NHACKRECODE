@@ -1,9 +1,9 @@
 package thunder.hack.features.modules.misc;
 
+import thunder.hack.utility.player.ItemChecks;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import thunder.hack.events.impl.EventSetting;
@@ -112,7 +112,7 @@ public class AntiGameSense extends Module {
     private void dropSword() {
         for (int i = 0; i < 9; i++) {
             ItemStack stack = mc.player.getInventory().getStack(i);
-            if (stack.getItem() instanceof SwordItem) {
+            if (ItemChecks.isSword(stack)) {
                 mc.interactionManager.clickSlot(
                         mc.player.currentScreenHandler.syncId,
                         i,

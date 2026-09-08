@@ -18,7 +18,7 @@ import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.item.Items;
-import net.minecraft.particle.EntityEffectParticleEffect;
+import net.minecraft.particle.EffectParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.util.math.*;
 import org.jetbrains.annotations.NotNull;
@@ -442,7 +442,7 @@ public class ESP extends Module {
 
     private int getAreaCloudColor(AreaEffectCloudEntity ent) {
         ParticleEffect particleEffect = ent.getParticleType();
-        if (particleEffect instanceof EntityEffectParticleEffect effect) {
+        if (particleEffect instanceof EffectParticleEffect effect) {
             return ((IAreaEffectCloudEntity)ent).getPotionContentsComponent().getColor();
         }
         return -1;

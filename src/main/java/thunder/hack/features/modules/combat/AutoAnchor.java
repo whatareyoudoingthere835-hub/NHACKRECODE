@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.combat;
 
+import thunder.hack.utility.player.ItemChecks;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -639,7 +640,7 @@ public final class AutoAnchor extends Module {
         boolean override = target.getHealth() + target.getAbsorptionAmount() <= facePlaceHp.getValue();
 
         if (armorBreaker.getValue().isEnabled())
-            for (ItemStack armor : target.getArmorItems())
+            for (ItemStack armor : ItemChecks.armorItems(target))
                 if (armor != null && !armor.getItem().equals(Items.AIR) && ((armor.getMaxDamage() - armor.getDamage()) / (float) armor.getMaxDamage()) * 100 < armorScale.getValue()) {
                     override = true;
                     break;

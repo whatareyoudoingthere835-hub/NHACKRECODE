@@ -1,5 +1,6 @@
 package thunder.hack.utility.world;
 
+import thunder.hack.utility.player.ItemChecks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -105,7 +106,7 @@ public final class ExplosionUtility {
 
                 if (toDamage <= 0f) toDamage = 0f;
                 else {
-                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(target.getArmorItems());
+                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(ItemChecks.armorItems(target));
 
                     if (protAmount > 0)
                         toDamage = DamageUtil.getInflictedDamage(toDamage, protAmount);
@@ -164,7 +165,7 @@ public final class ExplosionUtility {
 
                 if (toDamage <= 0f) toDamage = 0f;
                 else {
-                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(target.getArmorItems());
+                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(ItemChecks.armorItems(target));
 
                     if (protAmount > 0) toDamage = DamageUtil.getInflictedDamage(toDamage, protAmount);
                 }
@@ -257,7 +258,7 @@ public final class ExplosionUtility {
 
                 if (toDamage <= 0f) toDamage = 0f;
                 else {
-                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(target.getArmorItems());
+                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(ItemChecks.armorItems(target));
 
                     if (protAmount > 0) toDamage = DamageUtil.getInflictedDamage(toDamage, protAmount);
                 }

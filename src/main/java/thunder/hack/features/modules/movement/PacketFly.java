@@ -9,7 +9,7 @@ import thunder.hack.events.impl.PacketEvent;
 import thunder.hack.injection.accesors.IPlayerPositionLookS2CPacket;
 import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
-import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
+import net.minecraft.client.gui.screen.ProgressScreen;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.c2s.play.TeleportConfirmC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
@@ -120,7 +120,7 @@ public class PacketFly extends Module {
             if (
                     mc.player.isAlive()
                     && mc.world.isChunkLoaded((int) mc.player.getX() >> 4, (int) mc.player.getZ() >> 4)
-                    && !(mc.currentScreen instanceof DownloadingTerrainScreen)
+                    && !(mc.currentScreen instanceof ProgressScreen)
                     && mode.getValue() != Mode.Rubber
                     && teleport != null
                     && teleport.x == pac.getX()

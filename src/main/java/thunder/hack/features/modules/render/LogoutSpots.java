@@ -174,6 +174,7 @@ public class LogoutSpots extends Module {
         modelBase.setAngles((PlayerEntity) entity, entity.limbAnimator.getPos(), limbSpeed, entity.age, entity.headYaw - entity.bodyYaw, entity.getPitch());
         BufferBuilder buffer;
         if (renderMode.is(RenderMode.TexturedChams)) {
+        Render2DEngine.bindTexture(texture);
 
 
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);

@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.combat;
 
+import thunder.hack.utility.player.ItemChecks;
 import baritone.api.BaritoneAPI;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
@@ -253,7 +254,7 @@ public class Aura extends Module {
         Item handItem = mc.player.getMainHandStack().getItem();
         if (onlyWeapon.getValue()) {
             if (switchMode.getValue() == Switch.None) {
-                return handItem instanceof SwordItem || handItem instanceof AxeItem || handItem instanceof TridentItem;
+                return handItem instanceof AxeItem || handItem instanceof TridentItem || ItemChecks.isSword(mc.player.getMainHandStack());
             } else {
                 return (InventoryUtility.getSwordHotBar().found() || InventoryUtility.getAxeHotBar().found());
             }
@@ -904,7 +905,7 @@ public class Aura extends Module {
 
             case LowestDurability -> first_stage.stream().min(Comparator.comparing(e -> {
                         float v = 0;
-                        for (ItemStack armor : e.getArmorItems())
+                        for (ItemStack armor : ItemChecks.armorItems(e))
                             if (armor != null && !armor.getItem().equals(Items.AIR)) {
                                 v += ((armor.getMaxDamage() - armor.getDamage()) / (float) armor.getMaxDamage());
                             }
@@ -914,7 +915,7 @@ public class Aura extends Module {
 
             case HighestDurability -> first_stage.stream().max(Comparator.comparing(e -> {
                         float v = 0;
-                        for (ItemStack armor : e.getArmorItems())
+                        for (ItemStack armor : ItemChecks.armorItems(e))
                             if (armor != null && !armor.getItem().equals(Items.AIR)) {
                                 v += ((armor.getMaxDamage() - armor.getDamage()) / (float) armor.getMaxDamage());
                             }

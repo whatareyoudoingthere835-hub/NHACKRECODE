@@ -101,6 +101,7 @@ public class Crosshair extends Module {
 
                 BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
+        Render2DEngine.bindTexture(TextureStorage.firefly);
 
                 Color color1 = colorMode.getValue() == ColorMode.Sync ? HudEditor.getColor(1) : color.getValue().getColorObject();
                 Matrix4f posMatrix = context.getMatrices().peek().getPositionMatrix();

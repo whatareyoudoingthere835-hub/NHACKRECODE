@@ -249,6 +249,7 @@ public class NameTags extends Module {
 
 
                     Color lColor = HudEditor.getColor(0);
+        Render2DEngine.bindTexture(TextureStorage.miniLogo);
 
 
                     Render2DEngine.renderTexture(context.getMatrices(), tagX - 13, (float) (posY - 12.5f), 10, 10, 0, 0, 256, 256, 256, 256);

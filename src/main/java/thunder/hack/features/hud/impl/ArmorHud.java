@@ -1,9 +1,9 @@
 package thunder.hack.features.hud.impl;
 
+import thunder.hack.utility.player.ItemChecks;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import thunder.hack.features.hud.HudElement;
 import thunder.hack.setting.Setting;
@@ -33,7 +33,7 @@ public class ArmorHud extends HudElement {
 
                 context.drawItem(itemStack, (int) xItemOffset, (int) getPosY());
 
-                float offset = ((itemStack.getItem() instanceof ArmorItem ai) && ai.getSlotType() == EquipmentSlot.HEAD) ? -4 : 0;
+                float offset = (ItemChecks.armorSlot(itemStack) == EquipmentSlot.HEAD) ? -4 : 0;
                 Render2DEngine.addWindow(context.getMatrices(), (int) xItemOffset, getPosY() + offset + (15 - offset) * ((float) itemStack.getDamage() / (float) itemStack.getMaxDamage()), xItemOffset + 15, getPosY() + 15, 1f);
                 context.drawItem(itemStack, (int) xItemOffset, (int) getPosY());
                 Render2DEngine.popWindow();

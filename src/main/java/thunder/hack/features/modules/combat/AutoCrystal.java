@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.combat;
 
+import thunder.hack.utility.player.ItemChecks;
 import com.google.common.collect.Lists;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
@@ -16,7 +17,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.network.packet.s2c.play.ExperienceOrbSpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
@@ -344,9 +344,6 @@ public class AutoCrystal extends Module {
     public void onPacketReceive(PacketEvent.Receive e) {
         if (mc.player == null || mc.world == null) return;
 
-        if (e.getPacket() instanceof ExperienceOrbSpawnS2CPacket spawn)
-            processSpawnPacket(spawn.getId());
-
         if (e.getPacket() instanceof EntitySpawnS2CPacket spawn)
             processSpawnPacket(spawn.getId());
 
@@ -585,7 +582,7 @@ public class AutoCrystal extends Module {
 
         int prevSlot = -1;
         SearchInvResult antiWeaknessResult = InventoryUtility.getAntiWeaknessItem();
-        SearchInvResult antiWeaknessResultInv = InventoryUtility.findInInventory(itemStack -> itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof PickaxeItem || itemStack.getItem() instanceof AxeItem || itemStack.getItem() instanceof ShovelItem);
+        SearchInvResult antiWeaknessResultInv = InventoryUtility.findInInventory(itemStack -> ItemChecks.isSword(itemStack) || ItemChecks.isPickaxe(itemStack) || ItemChecks.isAxe(itemStack) || itemStack.getItem() instanceof ShovelItem);
 
         if (antiWeakness.getValue() != Switch.NONE)
             if (weaknessEffect != null && (strengthEffect == null || strengthEffect.getAmplifier() < weaknessEffect.getAmplifier()))
@@ -1066,7 +1063,7 @@ public class AutoCrystal extends Module {
             return true;
 
         if (armorBreaker.getValue().isEnabled())
-            for (ItemStack armor : target.getArmorItems())
+            for (ItemStack armor : ItemChecks.armorItems(target))
                 if (armor != null && !armor.getItem().equals(Items.AIR) && ((armor.getMaxDamage() - armor.getDamage()) / (float) armor.getMaxDamage()) * 100 < armorScale.getValue())
                     return true;
 

@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.combat;
 
+import thunder.hack.utility.player.ItemChecks;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
@@ -89,7 +90,7 @@ public final class AutoTotem extends Module {
     public void onSync(EventSync e) {
         swapTo(getItemSlot());
 
-        if (rcGap.not(RCGap.Off) && (mc.player.getMainHandStack().getItem() instanceof SwordItem) && mc.options.useKey.isPressed() && !mc.player.isUsingItem())
+        if (rcGap.not(RCGap.Off) && ItemChecks.isSword(mc.player.getMainHandStack()) && mc.options.useKey.isPressed() && !mc.player.isUsingItem())
             ((IMinecraftClient) mc).idoItemUse();
 
         delay--;
@@ -324,7 +325,7 @@ public final class AutoTotem extends Module {
         if (getTriggerHealth() <= healthF.getValue() && (InventoryUtility.findItemInInventory(Items.TOTEM_OF_UNDYING).found() || offHandItem == Items.TOTEM_OF_UNDYING))
             item = Items.TOTEM_OF_UNDYING;
 
-        if (!rcGap.is(RCGap.Off) && (mc.player.getMainHandStack().getItem() instanceof SwordItem) && mc.options.useKey.isPressed() && !(offHandItem instanceof ShieldItem)) {
+        if (!rcGap.is(RCGap.Off) && ItemChecks.isSword(mc.player.getMainHandStack()) && mc.options.useKey.isPressed() && !(offHandItem instanceof ShieldItem)) {
             if (rcGap.is(RCGap.Always) || (rcGap.is(RCGap.OnlySafe) && getTriggerHealth() > healthF.getValue())) {
                 if (crapple.found() || offHandItem == Items.GOLDEN_APPLE)
                     item = Items.GOLDEN_APPLE;

@@ -25,6 +25,7 @@ public class Particles {
     }
 
     public void drawStar(MatrixStack matrices, float x, float y, Color c) {
+        Render2DEngine.bindTexture(TextureStorage.star);
 
 
 

@@ -241,8 +241,10 @@ public class TargetHud extends HudElement {
         Render2DEngine.drawRect(context.getMatrices(), getPosX() + 50, getPosY() + 30, MathUtility.clamp((int) (60 * (health / target.getMaxHealth())), 0, 60), 10, color.getValue().getColorObject().brighter().brighter().brighter());
 
         if (target instanceof PlayerEntity) {
+        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkinTextures().texture());
 
         } else {
+        Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
 
         }
 
@@ -279,8 +281,10 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
+        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkinTextures().texture());
 
         } else {
+        Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
 
         }
 
@@ -358,8 +362,10 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
+        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkinTextures().texture());
 
         } else {
+        Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
 
         }
 
@@ -429,11 +435,13 @@ public class TargetHud extends HudElement {
         {
             if (!imageMode.is(ImageModeEn.None)) {
                 if (imageMode.is(ImageModeEn.Anime)) {
+        Render2DEngine.bindTexture(TextureStorage.thudPic);
 
                 } else {
                     if (custom == null)
                         break imageRender;
 
+        Render2DEngine.bindTexture(custom);
 
                 }
                 context.getMatrices().pushMatrix();
@@ -490,8 +498,10 @@ public class TargetHud extends HudElement {
         headAnimation.setValue(hurtPercent2);
 
         if (target instanceof PlayerEntity) {
+        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkinTextures().texture());
 
         } else {
+        Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
 
         }
 

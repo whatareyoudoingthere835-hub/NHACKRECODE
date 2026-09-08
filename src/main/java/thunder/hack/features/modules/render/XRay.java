@@ -1,11 +1,11 @@
 package thunder.hack.features.modules.render;
 
+import thunder.hack.utility.player.ItemChecks;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.PickaxeItem;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.util.Hand;
@@ -173,7 +173,7 @@ public class XRay extends Module {
             return;
         }
 
-        if (mc.player.getMainHandStack().getItem() instanceof PickaxeItem) {
+        if (ItemChecks.isPickaxe(mc.player.getMainHandStack())) {
             if (mc.player.age % 8 == 0) disable(isRu() ? "Убери кирку из руки!" : "Remove pickaxe from ur hand!");
             return;
         }

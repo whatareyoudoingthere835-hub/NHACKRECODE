@@ -52,7 +52,8 @@
     "accesors.INativeImage",
     "accesors.ISignEditScreen",
     "accesors.IWorldRenderer",
-    "accesors.IDrawContextState"
+    "accesors.IDrawContextState",
+    "thunder.hack.injection.accesors.IBufferBuilder"
   ],
   "injectors": {
     "defaultRequire": 1

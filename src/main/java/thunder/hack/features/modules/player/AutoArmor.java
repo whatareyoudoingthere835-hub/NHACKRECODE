@@ -5,8 +5,6 @@ import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
@@ -18,6 +16,7 @@ import thunder.hack.gui.hud.HudEditorGui;
 import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.player.InventoryUtility;
+import thunder.hack.utility.player.ItemChecks;
 import thunder.hack.utility.player.MovementUtility;
 
 import java.util.Arrays;
@@ -64,7 +63,7 @@ public class AutoArmor extends Module {
             int prot = getProtection(stack);
             if (prot > 0)
                 for (ArmorData e : armorList) {
-                    if (e.getEquipmentSlot() == (stack.getItem() instanceof ArmorItem ai ? ai.getSlotType() : EquipmentSlot.CHEST))
+                    if (e.getEquipmentSlot() == (ItemChecks.isArmor(stack) ? ItemChecks.armorSlot(stack) : EquipmentSlot.CHEST))
                         if (prot > e.getPrevProt() && prot > e.getNewProtection()) {
                             e.setNewSlot(i);
                             e.setNewProtection(prot);
@@ -103,17 +102,17 @@ public class AutoArmor extends Module {
     }
 
     private int getProtection(ItemStack is) {
-        if (is.getItem() instanceof ArmorItem || is.getItem() instanceof ElytraItem) {
+        if (ItemChecks.isArmor(is) || ItemChecks.isElytra(is)) {
             int prot = 0;
 
-            EquipmentSlot slot = is.getItem() instanceof ArmorItem ai ? ai.getSlotType() : EquipmentSlot.BODY;
+            EquipmentSlot slot = ItemChecks.armorSlot(is) != null ? ItemChecks.armorSlot(is) : EquipmentSlot.CHEST;
 
-            if (is.getItem() instanceof ElytraItem) {
-                if (!ElytraItem.isUsable(is))
+            if (ItemChecks.isElytra(is)) {
+                if (!ItemChecks.isElytraUsable(is))
                     return 0;
 
                 boolean ePlus = elytraPriority.is(ElytraPriority.ElytraPlus) && (ModuleManager.elytraRecast.isEnabled() || ModuleManager.elytraPlus.isEnabled());
-                boolean ignore = elytraPriority.is(ElytraPriority.Ignore) && mc.player.getInventory().getStack(38).getItem() instanceof ElytraItem;
+                boolean ignore = elytraPriority.is(ElytraPriority.Ignore) && ItemChecks.isElytra(mc.player.getInventory().getStack(38));
 
                 if (ePlus || ignore || elytraPriority.is(ElytraPriority.Always))
                     prot = 999;
@@ -127,7 +126,7 @@ public class AutoArmor extends Module {
                     if(head.is(EnchantPriority.Protection)) protectionMultiplier *= 2;
                     else blastMultiplier *= 2;
                 }
-                case BODY -> {
+                case CHEST -> {
                     if(body.is(EnchantPriority.Protection)) protectionMultiplier *= 2;
                     else blastMultiplier *= 2;
                 }
@@ -155,7 +154,7 @@ public class AutoArmor extends Module {
                     prot = -999;
             }
 
-            return (is.getItem() instanceof ArmorItem armorItem ? (armorItem.getProtection() + (int) Math.ceil(armorItem.getToughness())) * 10 : 0) + prot;
+            return (ItemChecks.isArmor(is) ? (int) Math.round(ItemChecks.protectionPoints(is)) * 10 : 0) + prot;
         } else if (!is.isEmpty()) return 0;
         return -1;
     }

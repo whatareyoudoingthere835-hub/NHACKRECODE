@@ -114,6 +114,7 @@ public class ModuleButton extends AbstractButton {
                 context.getMatrices().translate(px, py);
                 context.getMatrices().rotate((gearAnimation.getValue()) * MathHelper.RADIANS_PER_DEGREE);
                 context.getMatrices().translate(-px, -py);
+        Render2DEngine.bindTexture(TextureStorage.Gear);
 
 
 

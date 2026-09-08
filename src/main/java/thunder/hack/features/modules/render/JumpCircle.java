@@ -77,12 +77,12 @@ public class JumpCircle extends Module {
 
 
 
+        Identifier jumpCircleTexture = TextureStorage.default_circle;
         switch (mode.getValue()) {
-
-
-            case Custom ->
-
+            case Portal -> jumpCircleTexture = TextureStorage.bubble;
+            case Custom -> jumpCircleTexture = Objects.requireNonNullElse(custom, TextureStorage.default_circle);
         }
+        Render2DEngine.bindTexture(jumpCircleTexture);
 
 
         BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);

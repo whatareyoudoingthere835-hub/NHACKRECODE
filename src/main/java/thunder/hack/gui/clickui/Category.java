@@ -104,6 +104,7 @@ public class Category extends AbstractCategory {
         Render2DEngine.drawHudBase(context.getMatrices(), getX() + 2, getY() - 5, width - 4, height, 1, false);
 
         {
+        Render2DEngine.bindTexture(ICON);
 
 
 

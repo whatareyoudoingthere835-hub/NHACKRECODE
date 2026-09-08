@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.misc;
 
+import thunder.hack.utility.player.ItemChecks;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.component.DataComponentTypes;
@@ -99,7 +100,7 @@ public class MiddleClick extends Module {
     }
 
     private static boolean needXp() {
-        for (ItemStack stack : mc.player.getArmorItems())
+        for (ItemStack stack : ItemChecks.armorItems(mc.player))
             if (PlayerUtility.calculatePercentage(stack) < ModuleManager.middleClick.durability.getValue())
                 return true;
 

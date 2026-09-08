@@ -1,9 +1,9 @@
 package thunder.hack.features.modules.player;
 
+import thunder.hack.utility.player.ItemChecks;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import thunder.hack.core.Managers;
 import thunder.hack.features.modules.Module;
@@ -33,7 +33,7 @@ public class DurabilityAlert extends Module {
                 if (!Managers.FRIEND.isFriend(player)) continue;
                 if (player == mc.player) continue;
                 for (ItemStack stack : player.getInventory().armor) {
-                    if (stack.isEmpty() || !(stack.getItem() instanceof ArmorItem)) continue;
+                    if (stack.isEmpty() || !ItemChecks.isArmor(stack)) continue;
                     if (getDurability(stack) < percent.getValue() && timer.passedMs(30000)) {
                         mc.player.networkHandler.sendChatCommand("msg " + player.getName().getString() + (isRu() ? " Срочно чини броню!" : " Fix your armor right now!"));
 
@@ -45,7 +45,7 @@ public class DurabilityAlert extends Module {
 
         boolean flag = false;
         for (ItemStack stack : mc.player.getInventory().armor) {
-            if (stack.isEmpty() || !(stack.getItem() instanceof ArmorItem)) continue;
+            if (stack.isEmpty() || !ItemChecks.isArmor(stack)) continue;
             if (getDurability(stack) < percent.getValue()) {
                 need_alert = true;
                 flag = true;

@@ -113,6 +113,7 @@ public final class PopChams extends Module {
 
         BufferBuilder buffer;
         if (mode.is(Mode.Textured)) {
+        Render2DEngine.bindTexture(texture);
 
 
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);

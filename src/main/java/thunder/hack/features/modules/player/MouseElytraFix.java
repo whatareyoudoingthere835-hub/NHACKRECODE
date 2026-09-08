@@ -1,6 +1,6 @@
 package thunder.hack.features.modules.player;
 
-import net.minecraft.item.ArmorItem;
+import thunder.hack.utility.player.ItemChecks;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.SlotActionType;
 import thunder.hack.features.modules.Module;
@@ -15,8 +15,9 @@ public class MouseElytraFix extends Module {
 
     @Override
     public void onUpdate() {
-        if (mc.player.currentScreenHandler.getCursorStack().getItem() instanceof ArmorItem armor && !ElytraSwap.swapping) {
-            if (delay.every(300) && armor.getType() == ArmorItem.Type.CHESTPLATE)
+        ItemStack cursorStack = mc.player.currentScreenHandler.getCursorStack();
+        if (ItemChecks.armorSlot(cursorStack) == EquipmentSlot.CHEST && !ItemChecks.isElytra(cursorStack) && !ElytraSwap.swapping) {
+            if (delay.every(300))
                 if (mc.player.getInventory().getArmorStack(2).getItem() == Items.ELYTRA) {
                     mc.interactionManager.clickSlot(0, 6, 1, SlotActionType.PICKUP, mc.player);
                     int empty = findEmptySlot();

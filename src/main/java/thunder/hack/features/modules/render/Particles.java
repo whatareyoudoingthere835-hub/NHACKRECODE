@@ -72,6 +72,7 @@ public class Particles extends Module {
     public void onRender3D(MatrixStack stack) {
         if (FireFlies.getValue().isEnabled()) {
             stack.push();
+        Render2DEngine.bindTexture(TextureStorage.firefly);
 
 
 
@@ -143,6 +144,7 @@ public class Particles extends Module {
 
         @Override
         public void render(BufferBuilder bufferBuilder) {
+        Render2DEngine.bindTexture(TextureStorage.firefly);
 
             if (!trails.isEmpty()) {
                 Camera camera = mc.gameRenderer.getCamera();
@@ -211,11 +213,11 @@ public class Particles extends Module {
 
         public void render(BufferBuilder bufferBuilder) {
             switch (mode.getValue()) {
-
-
-
-
-
+                case Bloom -> Render2DEngine.bindTexture(TextureStorage.firefly);
+                case SnowFlake -> Render2DEngine.bindTexture(TextureStorage.snowflake);
+                case Dollars -> Render2DEngine.bindTexture(TextureStorage.dollar);
+                case Hearts -> Render2DEngine.bindTexture(TextureStorage.heart);
+                case Stars -> Render2DEngine.bindTexture(TextureStorage.star);
             }
 
             Camera camera = mc.gameRenderer.getCamera();

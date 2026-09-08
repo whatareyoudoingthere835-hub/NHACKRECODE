@@ -71,8 +71,10 @@ public class Chams extends Module {
 
         if (crystalMode.getValue() != CMode.One) {
             if (crystalMode.getValue() == CMode.Three) {
+        Render2DEngine.bindTexture(crystalTexture);
 
             } else {
+        Render2DEngine.bindTexture(TextureStorage.crystalTexture2);
 
             }
 
@@ -121,6 +123,7 @@ public class Chams extends Module {
         BufferBuilder buffer;
 
         if (!simple.getValue()) {
+        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) pe).getSkinTextures().texture());
 
 
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);

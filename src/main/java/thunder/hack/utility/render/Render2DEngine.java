@@ -2,6 +2,9 @@ package thunder.hack.utility.render;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BuiltBuffer;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.texture.Texture;
@@ -161,9 +164,16 @@ public class Render2DEngine {
         b.submit();
     }
 
-    /** legacy flush entry — geometry is no longer built this way; kept so stale call-sites compile */
+    /** legacy world-space rect helper writing straight into a {@link BufferBuilder} */
     @Deprecated
+    @SuppressWarnings("unchecked")
     public static void setRectPoints(Object bufferBuilder, Object matrix, float x, float y, float x1, float y1, Color c1, Color c2, Color c3, Color c4) {
+        if (bufferBuilder instanceof BufferBuilder bb && matrix instanceof org.joml.Matrix4f m) {
+            bb.vertex(m, x, y1, 0.0F).color(c1.getRGB());
+            bb.vertex(m, x1, y1, 0.0F).color(c2.getRGB());
+            bb.vertex(m, x1, y, 0.0F).color(c3.getRGB());
+            bb.vertex(m, x, y, 0.0F).color(c4.getRGB());
+        }
     }
 
     public static void setRectPoints(Batch batch, float x, float y, float x1, float y1, Color c1, Color c2, Color c3, Color c4) {
@@ -739,18 +749,39 @@ public class Render2DEngine {
         return colorVal > 255 ? 255 : Math.max(colorVal, 0);
     }
 
-    /** legacy no-op: BufferBuilder flushes are gone; use {@link Draw2D.Batch#submit()}. */
+    /**
+     * Legacy flush: takes a {@link BufferBuilder} obtained from {@code Tessellator.begin(...)},
+     * figures out its vertex format/draw mode via accessor mixin and draws it through a matching
+     * {@link THRenderLayers} world pipeline. GUI code should prefer {@link Draw2D.Batch}.
+     */
     @Deprecated
-    public static void endBuilding(Object bb) {
+    public static void endBuilding(Object obj) {
+        if (!(obj instanceof BufferBuilder bb)) return;
+        BuiltBuffer built = bb.endNullable();
+        if (built == null) return;
+        thunder.hack.injection.accesors.IBufferBuilder acc = (thunder.hack.injection.accesors.IBufferBuilder) bb;
+        flushBuffer(built, acc.th$vertexFormat(), acc.th$drawMode());
     }
 
     @Deprecated
-    public static void endBuildingTextured(Object bb) {
+    public static void endBuildingTextured(Object obj) {
+        endBuilding(obj);
+    }
+
+    private static void flushBuffer(BuiltBuffer built, com.mojang.blaze3d.vertex.VertexFormat format, VertexFormat.DrawMode mode) {
+        net.minecraft.client.render.RenderLayer layer;
+        if (format == net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR)
+            layer = THRenderLayers.worldTextured(mode, currentBoundTexture, false);
+        else if (format == net.minecraft.client.render.VertexFormats.LINES)
+            layer = THRenderLayers.worldLines(mode);
+        else
+            layer = THRenderLayers.worldColored(mode);
+        THRenderLayers.drawWorld(layer, built);
     }
 
     @Deprecated
-    public static Object beginBuilding(VertexFormat.DrawMode mode, Object format) {
-        return null;
+    public static BufferBuilder beginBuilding(VertexFormat.DrawMode mode, Object format) {
+        return Tessellator.getInstance().begin(mode, (com.mojang.blaze3d.vertex.VertexFormat) format);
     }
 
     public static class BlurredShadow {

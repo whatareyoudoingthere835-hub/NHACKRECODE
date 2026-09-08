@@ -28,6 +28,7 @@ public class PingHud extends HudElement {
             Render2DEngine.drawRect(context.getMatrices(), pX + 14, getPosY() + 2, 0.5f, 8, new Color(0x44FFFFFF, true));
 
             Render2DEngine.setupRender();
+        Render2DEngine.bindTexture(TextureStorage.pingIcon);
 
 
             Render2DEngine.renderGradientTexture(context.getMatrices(), pX + 2, getPosY() + 1, 10, 10, 0, 0, 512, 512, 512, 512,

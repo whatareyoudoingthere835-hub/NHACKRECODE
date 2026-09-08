@@ -64,6 +64,7 @@ public class CandleHud extends HudElement {
         x = x - 7;
         y = y - 7;
 
+        Render2DEngine.bindTexture(TextureStorage.firefly);
 
 
 

@@ -1,10 +1,10 @@
 package thunder.hack.features.modules.movement;
 
+import thunder.hack.utility.player.ItemChecks;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
@@ -100,7 +100,7 @@ public class ElytraRecast extends Module {
     private boolean checkElytra() {
         if (mc.player.input.jumping && !mc.player.getAbilities().flying && !mc.player.hasVehicle() && !mc.player.isClimbing()) {
             ItemStack is = mc.player.getEquippedStack(EquipmentSlot.CHEST);
-            return is.isOf(Items.ELYTRA) && (ElytraItem.isUsable(is) || allowBroken.getValue());
+            return is.isOf(Items.ELYTRA) && (ItemChecks.isElytraUsable(is) || allowBroken.getValue());
         }
         return false;
     }
@@ -108,7 +108,7 @@ public class ElytraRecast extends Module {
     private boolean check() {
         if (!mc.player.isTouchingWater() && !mc.player.hasStatusEffect(StatusEffects.LEVITATION)) {
             ItemStack is = mc.player.getEquippedStack(EquipmentSlot.CHEST);
-            if (is.isOf(Items.ELYTRA) && (ElytraItem.isUsable(is) || allowBroken.getValue())) {
+            if (is.isOf(Items.ELYTRA) && (ItemChecks.isElytraUsable(is) || allowBroken.getValue())) {
                 mc.player.startFallFlying();
                 return true;
             }
