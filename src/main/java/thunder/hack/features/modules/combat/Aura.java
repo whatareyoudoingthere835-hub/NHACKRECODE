@@ -1,7 +1,6 @@
 package thunder.hack.features.modules.combat;
 
 import thunder.hack.utility.player.ItemChecks;
-import baritone.api.BaritoneAPI;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.network.OtherClientPlayerEntity;
@@ -375,10 +374,10 @@ public class Aura extends Module {
         if(pauseBaritone.getValue() && ThunderHack.baritone){
             boolean isTargeted = (target != null);
             if (isTargeted && !wasTargeted) {
-                BaritoneAPI.getProvider().getPrimaryBaritone().getCommandManager().execute("pause");
+                thunder.hack.utility.BaritoneUtility.executeCommand("pause");
                 wasTargeted = true;
             } else if (!isTargeted && wasTargeted) {
-                BaritoneAPI.getProvider().getPrimaryBaritone().getCommandManager().execute("resume");
+                thunder.hack.utility.BaritoneUtility.executeCommand("resume");
                 wasTargeted = false;
             }
         }

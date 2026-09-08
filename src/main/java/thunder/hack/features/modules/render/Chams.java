@@ -6,6 +6,7 @@ import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EndCrystalEntityRenderer;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -85,7 +86,7 @@ public class Chams extends Module {
         }
 
         matrixStack.push();
-        float h = staticCrystal.getValue() ? -1.4f : EndCrystalEntityRenderer.getYOffset(endCrystalEntity, g);
+        float h = staticCrystal.getValue() ? -1.4f : -0.5F - MathHelper.cos(((float) endCrystalEntity.age + g) * 0.1F) * 0.1F;
         float j = ((float) endCrystalEntity.endCrystalAge + g) * 3.0f;
         matrixStack.push();
 
@@ -113,7 +114,7 @@ public class Chams extends Module {
 
     }
 
-    public void renderPlayer(PlayerEntity pe, float f, float g, MatrixStack matrixStack, int i, EntityModel model, CallbackInfo ci, Runnable post) {
+    public void renderPlayer(PlayerEntity pe, float g, LivingEntityRenderState state, MatrixStack matrixStack, int i, EntityModel model, CallbackInfo ci, Runnable post) {
 
         if (alternativeBlending.getValue())
 
@@ -143,9 +144,6 @@ public class Chams extends Module {
 
         }
 
-        model.handSwingProgress = pe.getHandSwingProgress(g);
-        model.riding = pe.hasVehicle();
-        model.child = false;
         float h = MathHelper.lerpAngleDegrees(g, pe.prevBodyYaw, pe.bodyYaw);
         float j = MathHelper.lerpAngleDegrees(g, pe.prevHeadYaw, pe.headYaw);
         float k = j - h;
@@ -172,7 +170,7 @@ public class Chams extends Module {
             k *= -1.0f;
         }
         if (pe.isInPose(EntityPose.SLEEPING) && (direction = pe.getSleepingDirection()) != null) {
-            n = pe.getEyeHeight(EntityPose.STANDING) - 0.1f;
+            n = state.standingEyeHeight - 0.1f;
             matrixStack.translate((float) (-direction.getOffsetX()) * n, 0.0f, (float) (-direction.getOffsetZ()) * n);
         }
         float l = pe.age + g;
@@ -194,10 +192,10 @@ public class Chams extends Module {
             if (n > 1.0f)
                 n = 1.0f;
         }
-        model.animateModel(pe, o, n, g);
-        model.setAngles(pe, o, n, l, k, m);
-        int p = LivingEntityRenderer.getOverlay(pe, 0);
-        model.render(matrixStack, buffer, i, p);
+        model.resetTransforms();
+        model.setAngles(state);
+        int p = LivingEntityRenderer.getOverlay(state, 0.0f);
+        model.render(state, matrixStack, buffer, i, p);
         Render2DEngine.endBuilding(buffer);
 
 

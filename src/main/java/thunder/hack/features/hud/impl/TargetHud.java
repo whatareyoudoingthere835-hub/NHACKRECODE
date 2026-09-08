@@ -36,6 +36,7 @@ import thunder.hack.utility.ThunderUtility;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.math.MathUtility;
 import thunder.hack.utility.render.Render2DEngine;
+import net.minecraft.client.render.entity.EntityRenderer;
 import thunder.hack.utility.render.Render3DEngine;
 import thunder.hack.utility.render.TextureStorage;
 import thunder.hack.utility.render.animation.EaseOutBack;
@@ -72,6 +73,14 @@ public class TargetHud extends HudElement {
 
     private boolean sentParticles, direction = false;
     private LivingEntity target;
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private net.minecraft.util.Identifier getEntityTexture(LivingEntity entity) {
+        var renderManager = mc.getEntityRenderManager();
+        var state = renderManager.getAndUpdateRenderState(entity, Render3DEngine.getTickDelta());
+        if (state == null) return null;
+        return ((EntityRenderer) renderManager.getRenderer(entity)).getTexture(state);
+    }
 
     // Флаг-состояние вспышки хп
     private LivingEntity lastHealthTarget;
@@ -244,7 +253,7 @@ public class TargetHud extends HudElement {
         Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkinTextures().texture());
 
         } else {
-        Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+        Render2DEngine.bindTexture(getEntityTexture(target));
 
         }
 
@@ -284,7 +293,7 @@ public class TargetHud extends HudElement {
         Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkinTextures().texture());
 
         } else {
-        Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+        Render2DEngine.bindTexture(getEntityTexture(target));
 
         }
 
@@ -365,7 +374,7 @@ public class TargetHud extends HudElement {
         Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkinTextures().texture());
 
         } else {
-        Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+        Render2DEngine.bindTexture(getEntityTexture(target));
 
         }
 
@@ -501,7 +510,7 @@ public class TargetHud extends HudElement {
         Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkinTextures().texture());
 
         } else {
-        Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+        Render2DEngine.bindTexture(getEntityTexture(target));
 
         }
 

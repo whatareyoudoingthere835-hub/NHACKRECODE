@@ -8,6 +8,8 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.model.Dilation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -83,7 +85,7 @@ public final class PopChams extends Module {
         popList.add(new Person(entity, ((AbstractClientPlayerEntity) e.getEntity()).getSkinTextures().texture()));
     }
 
-    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel<PlayerEntity> modelBase, Identifier texture, int alpha) {
+    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel<PlayerEntityRenderState> modelBase, Identifier texture, int alpha) {
         modelBase.leftPants.visible = secondLayer.getValue();
         modelBase.rightPants.visible = secondLayer.getValue();
         modelBase.leftSleeve.visible = secondLayer.getValue();
@@ -91,9 +93,9 @@ public final class PopChams extends Module {
         modelBase.jacket.visible = secondLayer.getValue();
         modelBase.hat.visible = secondLayer.getValue();
 
-        double x = entity.getX() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = entity.getY() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-        double z = entity.getZ() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+        double x = entity.getX() - mc.gameRenderer.getCamera().getPos().getX();
+        double y = entity.getY() - mc.gameRenderer.getCamera().getPos().getY();
+        double z = entity.getZ() - mc.gameRenderer.getCamera().getPos().getZ();
         ((IEntity) entity).setPos(entity.getPos().add(0, (double) ySpeed.getValue() / 50., 0));
 
         matrices.push();
@@ -105,11 +107,15 @@ public final class PopChams extends Module {
         matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw + yRotYaw)));
         prepareScale(matrices);
 
-        modelBase.animateModel((PlayerEntity) entity, entity.limbAnimator.getPos(), entity.limbAnimator.getSpeed(), Render3DEngine.getTickDelta());
-
-        float limbSpeed = Math.min(entity.limbAnimator.getSpeed(), 1f);
-
-        modelBase.setAngles((PlayerEntity) entity, entity.limbAnimator.getPos(), limbSpeed, entity.age, entity.headYaw - entity.bodyYaw, entity.getPitch());
+        PlayerEntityRenderState state = new PlayerEntityRenderState();
+        state.age = entity.age + Render3DEngine.getTickDelta();
+        state.bodyYaw = entity.bodyYaw;
+        state.relativeHeadYaw = entity.headYaw - entity.bodyYaw;
+        state.pitch = entity.getPitch();
+        state.limbSwingAnimationProgress = entity.limbAnimator.getPos(Render3DEngine.getTickDelta());
+        state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(Render3DEngine.getTickDelta()), 1f);
+        modelBase.resetTransforms();
+        modelBase.setAngles(state);
 
         BufferBuilder buffer;
         if (mode.is(Mode.Textured)) {
@@ -124,7 +130,7 @@ public final class PopChams extends Module {
 
 
 
-        modelBase.render(matrices, buffer, 10, 0);
+        modelBase.render(state, matrices, buffer, 10, 0);
         Render2DEngine.endBuilding(buffer);
 
         matrices.pop();
@@ -138,13 +144,14 @@ public final class PopChams extends Module {
 
     private class Person {
         private final PlayerEntity player;
-        private final PlayerEntityModel<PlayerEntity> modelPlayer;
+        private final PlayerEntityModel<PlayerEntityRenderState> modelPlayer;
         private Identifier texture;
         private int alpha;
 
         public Person(PlayerEntity player, Identifier texture) {
             this.player = player;
-            modelPlayer = new PlayerEntityModel<>(new EntityRendererFactory.Context(mc.getEntityRenderDispatcher(), mc.getItemRenderer(), mc.getBlockRenderManager(), mc.getEntityRenderDispatcher().getHeldItemRenderer(), mc.getResourceManager(), mc.getEntityModelLoader(), mc.textRenderer).getPart(EntityModelLayers.PLAYER), false);
+            modelPlayer = new PlayerEntityModel<>(
+                    PlayerEntityModel.getTexturedModelData(Dilation.NONE, false), false);
             modelPlayer.getHead().scale(new Vector3f(-0.3f, -0.3f, -0.3f));
             alpha = color.getValue().getAlpha();
             this.texture = texture;

@@ -38,7 +38,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector4d;
-import org.lwjgl.opengl.GL11;
 import thunder.hack.core.Managers;
 import thunder.hack.core.manager.player.FriendManager;
 import thunder.hack.core.manager.client.ModuleManager;
@@ -615,7 +614,7 @@ public class NameTags extends Module {
 
     private void draw(DrawContext context, List<ItemStack> itemStacks, int offsetX, int offsetY, float[] colors) {
 
-        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        RenderSystem.clear(256, true);
 
         offsetX += 8;
         offsetY -= 82;

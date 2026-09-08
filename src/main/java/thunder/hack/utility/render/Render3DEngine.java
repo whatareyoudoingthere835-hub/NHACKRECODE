@@ -117,7 +117,7 @@ public class Render3DEngine {
     }
 
     public static void setFilledBoxVertexes(@NotNull BufferBuilder bufferBuilder, Matrix4f m, @NotNull Box box, @NotNull Color c) {
-        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        Vec3d cam = mc.gameRenderer.getCamera().getPos();
         float minX = (float) (box.minX - cam.getX());
         float minY = (float) (box.minY - cam.getY());
         float minZ = (float) (box.minZ - cam.getZ());
@@ -174,7 +174,7 @@ public class Render3DEngine {
     }
 
     public static void setFilledSidePoints(BufferBuilder buffer, Matrix4f matrix, Box box, Color c, Direction dir) {
-        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        Vec3d cam = mc.gameRenderer.getCamera().getPos();
         float minX = (float) (box.minX - cam.getX());
         float minY = (float) (box.minY - cam.getY());
         float minZ = (float) (box.minZ - cam.getZ());
@@ -245,7 +245,7 @@ public class Render3DEngine {
     }
 
     public static @NotNull Vec3d worldSpaceToScreenSpace(@NotNull Vec3d pos) {
-        Camera camera = mc.getEntityRenderDispatcher().camera;
+        Camera camera = mc.gameRenderer.getCamera();
         int displayHeight = mc.getWindow().getHeight();
         int[] viewport = new int[]{0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight()};
         Vector3f target = new Vector3f();
@@ -273,7 +273,7 @@ public class Render3DEngine {
     }
 
     public static void setFilledFadePoints(Box box, BufferBuilder buffer, Matrix4f posMatrix, Color c, Color c1) {
-        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        Vec3d cam = mc.gameRenderer.getCamera().getPos();
         float minX = (float) (box.minX - cam.getX());
         float minY = (float) (box.minY - cam.getY());
         float minZ = (float) (box.minZ - cam.getZ());
@@ -465,7 +465,7 @@ public class Render3DEngine {
         ArrayList<Vec3d> vecs1 = new ArrayList<>();
         ArrayList<Vec3d> vecs2 = new ArrayList<>();
 
-        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        Vec3d cam = mc.gameRenderer.getCamera().getPos();
         double x = target.prevX + (target.getX() - target.prevX) * getTickDelta() - cam.getX();
         double y = target.prevY + (target.getY() - target.prevY) * getTickDelta() - cam.getY();
         double z = target.prevZ + (target.getZ() - target.prevZ) * getTickDelta() - cam.getZ();
@@ -603,7 +603,7 @@ public class Render3DEngine {
 
     public static void drawCircle3D(MatrixStack stack, Entity ent, float radius, int color, int points, boolean hudColor, int colorOffset) {
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        Vec3d cam = mc.gameRenderer.getCamera().getPos();
         double x = ent.prevX + (ent.getX() - ent.prevX) * getTickDelta() - cam.getX();
         double y = ent.prevY + (ent.getY() - ent.prevY) * getTickDelta() - cam.getY();
         double z = ent.prevZ + (ent.getZ() - ent.prevZ) * getTickDelta() - cam.getZ();
@@ -627,7 +627,7 @@ public class Render3DEngine {
         double cs = prevCircleStep + (circleStep - prevCircleStep) * getTickDelta();
         double prevSinAnim = absSinAnimation(cs - 0.45f);
         double sinAnim = absSinAnimation(cs);
-        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        Vec3d cam = mc.gameRenderer.getCamera().getPos();
         double x = target.prevX + (target.getX() - target.prevX) * getTickDelta() - cam.getX();
         double y = target.prevY + (target.getY() - target.prevY) * getTickDelta() - cam.getY() + prevSinAnim * target.getHeight();
         double z = target.prevZ + (target.getZ() - target.prevZ) * getTickDelta() - cam.getZ();
@@ -694,7 +694,7 @@ public class Render3DEngine {
     }
 
     public static Vec3d interpolatePos(float prevposX, float prevposY, float prevposZ, float posX, float posY, float posZ) {
-        Vec3d cam = mc.getEntityRenderDispatcher().camera.getPos();
+        Vec3d cam = mc.gameRenderer.getCamera().getPos();
         double x = prevposX + ((posX - prevposX) * getTickDelta()) - cam.getX();
         double y = prevposY + ((posY - prevposY) * getTickDelta()) - cam.getY();
         double z = prevposZ + ((posZ - prevposZ) * getTickDelta()) - cam.getZ();

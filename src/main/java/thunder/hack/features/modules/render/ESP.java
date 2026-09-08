@@ -92,9 +92,9 @@ public class ESP extends Module {
         if (lingeringPotions.getValue()) {
             for (Entity ent : mc.world.getEntities()) {
                 if (ent instanceof AreaEffectCloudEntity aece) {
-                    double x = aece.getX() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-                    double y = aece.getY() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-                    double z = aece.getZ() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+                    double x = aece.getX() - mc.gameRenderer.getCamera().getPos().getX();
+                    double y = aece.getY() - mc.gameRenderer.getCamera().getPos().getY();
+                    double z = aece.getZ() - mc.gameRenderer.getCamera().getPos().getZ();
 
                     float middle = aece.getRadius();
 
@@ -152,9 +152,9 @@ public class ESP extends Module {
             dizorentAnimation = fast(dizorentAnimation, mc.player.getMainHandStack().getItem() == Items.ENDER_EYE ? 10 : 0, 15f);
 
             if (mc.player.getMainHandStack().getItem() == Items.ENDER_EYE) {
-                double x = Render2DEngine.interpolate(mc.player.prevX, mc.player.getX(), Render3DEngine.getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getX();
-                double y = Render2DEngine.interpolate(mc.player.prevY, mc.player.getY(), Render3DEngine.getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getY();
-                double z = Render2DEngine.interpolate(mc.player.prevZ, mc.player.getZ(), Render3DEngine.getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+                double x = Render2DEngine.interpolate(mc.player.prevX, mc.player.getX(), Render3DEngine.getTickDelta()) - mc.gameRenderer.getCamera().getPos().getX();
+                double y = Render2DEngine.interpolate(mc.player.prevY, mc.player.getY(), Render3DEngine.getTickDelta()) - mc.gameRenderer.getCamera().getPos().getY();
+                double z = Render2DEngine.interpolate(mc.player.prevZ, mc.player.getZ(), Render3DEngine.getTickDelta()) - mc.gameRenderer.getCamera().getPos().getZ();
 
 
                 stack.push();
@@ -199,9 +199,9 @@ public class ESP extends Module {
         if (beaconRadius.getValue()) {
             for (BlockEntity be : StorageEsp.getBlockEntities()) {
                 if (be instanceof BeaconBlockEntity bbe) {
-                    double x = be.getPos().getX() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-                    double y = be.getPos().getY() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-                    double z = be.getPos().getZ() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+                    double x = be.getPos().getX() - mc.gameRenderer.getCamera().getPos().getX();
+                    double y = be.getPos().getY() - mc.gameRenderer.getCamera().getPos().getY();
+                    double z = be.getPos().getZ() - mc.gameRenderer.getCamera().getPos().getZ();
 
                     Render3DEngine.drawBoxOutline(new Box(be.getPos()), beakonColor.getValue().getColorObject(), 2);
                     float range = ((IBeaconBlockEntity) bbe).getLevel() * 10 + 11;
@@ -222,9 +222,9 @@ public class ESP extends Module {
                 BlockPos blockPos = BlockPos.ofFloored(pl.getPos().add(0,0.15f,0));
                 Block block = mc.world.getBlockState(blockPos).getBlock();
 
-                double x = blockPos.getX() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-                double y = blockPos.getY() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-                double z = blockPos.getZ() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+                double x = blockPos.getX() - mc.gameRenderer.getCamera().getPos().getX();
+                double y = blockPos.getY() - mc.gameRenderer.getCamera().getPos().getY();
+                double z = blockPos.getZ() - mc.gameRenderer.getCamera().getPos().getZ();
 
                 if (block == Blocks.OBSIDIAN
                         || block == Blocks.CRYING_OBSIDIAN
@@ -255,9 +255,9 @@ public class ESP extends Module {
         if (tntFuse.getValue() || tntRadius.getValue()) {
             for (Entity ent : mc.world.getEntities()) {
                 if (ent instanceof TntEntity tnt) {
-                    double x = tnt.prevX + (tnt.getPos().getX() - tnt.prevX) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-                    double y = tnt.prevY + (tnt.getPos().getY() - tnt.prevY) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-                    double z = tnt.prevZ + (tnt.getPos().getZ() - tnt.prevZ) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+                    double x = tnt.prevX + (tnt.getPos().getX() - tnt.prevX) * Render3DEngine.getTickDelta() - mc.gameRenderer.getCamera().getPos().getX();
+                    double y = tnt.prevY + (tnt.getPos().getY() - tnt.prevY) * Render3DEngine.getTickDelta() - mc.gameRenderer.getCamera().getPos().getY();
+                    double z = tnt.prevZ + (tnt.getPos().getZ() - tnt.prevZ) * Render3DEngine.getTickDelta() - mc.gameRenderer.getCamera().getPos().getZ();
 
                     if (tntFuse.getValue()) {
 

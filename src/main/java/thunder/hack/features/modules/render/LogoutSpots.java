@@ -9,6 +9,8 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.model.Dilation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -110,10 +112,8 @@ public class LogoutSpots extends Module {
                 if (renderMode.is(RenderMode.Box)) {
                     Render3DEngine.drawBoxOutline(data.getBoundingBox(), color.getValue().getColorObject(), 2);
                 } else {
-                    PlayerEntityModel<PlayerEntity> modelPlayer = new PlayerEntityModel<>(new EntityRendererFactory.Context(
-                            mc.getEntityRenderDispatcher(), mc.getItemRenderer(),
-                            mc.getBlockRenderManager(), mc.getEntityRenderDispatcher().getHeldItemRenderer(),
-                            mc.getResourceManager(), mc.getEntityModelLoader(), mc.textRenderer).getPart(EntityModelLayers.PLAYER), false);
+                    PlayerEntityModel<PlayerEntityRenderState> modelPlayer = new PlayerEntityModel<>(
+                            PlayerEntityModel.getTexturedModelData(Dilation.NONE, false), false);
                     modelPlayer.getHead().scale(new Vector3f(-0.3f, -0.3f, -0.3f));
 
                     renderEntity(s, data, modelPlayer, ((OtherClientPlayerEntity)data).getSkinTextures().texture(), color.getValue().getAlpha());
@@ -153,7 +153,7 @@ public class LogoutSpots extends Module {
         }
     }
 
-    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel<PlayerEntity> modelBase, Identifier texture, int alpha) {
+    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel<PlayerEntityRenderState> modelBase, Identifier texture, int alpha) {
         modelBase.leftPants.visible = true;
         modelBase.rightPants.visible = true;
         modelBase.leftSleeve.visible = true;
@@ -161,17 +161,23 @@ public class LogoutSpots extends Module {
         modelBase.jacket.visible = true;
         modelBase.hat.visible = true;
 
-        double x = entity.getX() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = entity.getY() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-        double z = entity.getZ() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+        double x = entity.getX() - mc.gameRenderer.getCamera().getPos().getX();
+        double y = entity.getY() - mc.gameRenderer.getCamera().getPos().getY();
+        double z = entity.getZ() - mc.gameRenderer.getCamera().getPos().getZ();
         ((IEntity) entity).setPos(entity.getPos());
         matrices.push();
         matrices.translate((float) x, (float) y, (float) z);
         matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw)));
         prepareScale(matrices);
-        modelBase.animateModel((PlayerEntity) entity, entity.limbAnimator.getPos(), entity.limbAnimator.getSpeed(), Render3DEngine.getTickDelta());
-        float limbSpeed = Math.min(entity.limbAnimator.getSpeed(), 1f);
-        modelBase.setAngles((PlayerEntity) entity, entity.limbAnimator.getPos(), limbSpeed, entity.age, entity.headYaw - entity.bodyYaw, entity.getPitch());
+        PlayerEntityRenderState state = new PlayerEntityRenderState();
+        state.age = entity.age + Render3DEngine.getTickDelta();
+        state.bodyYaw = entity.bodyYaw;
+        state.relativeHeadYaw = entity.headYaw - entity.bodyYaw;
+        state.pitch = entity.getPitch();
+        state.limbSwingAnimationProgress = entity.limbAnimator.getPos(Render3DEngine.getTickDelta());
+        state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(Render3DEngine.getTickDelta()), 1f);
+        modelBase.resetTransforms();
+        modelBase.setAngles(state);
         BufferBuilder buffer;
         if (renderMode.is(RenderMode.TexturedChams)) {
         Render2DEngine.bindTexture(texture);
@@ -183,7 +189,7 @@ public class LogoutSpots extends Module {
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         }
 
-        modelBase.render(matrices, buffer, 10, 0);
+        modelBase.render(state, matrices, buffer, 10, 0);
         Render2DEngine.endBuilding(buffer);
 
         matrices.pop();

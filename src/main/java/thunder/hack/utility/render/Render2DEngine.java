@@ -7,7 +7,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.client.texture.Texture;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
@@ -278,25 +278,7 @@ public class Render2DEngine {
         }
     }
 
-    public static void registerBufferedImageTexture(Texture i, BufferedImage bi) {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(bi, "png", baos);
-            byte[] bytes = baos.toByteArray();
-            registerTexture(i, bytes);
-        } catch (Exception ignored) {
-        }
-    }
 
-    private static void registerTexture(Texture i, byte[] content) {
-        try {
-            java.nio.ByteBuffer data = org.lwjgl.system.MemoryUtil.memAlloc(content.length).put(content);
-            data.flip();
-            NativeImageBackedTexture tex = new NativeImageBackedTexture(NativeImage.read(data));
-            mc.execute(() -> mc.getTextureManager().registerTexture(i.getId(), tex));
-        } catch (Exception ignored) {
-        }
-    }
 
     /* ------------------------------------------------------------------
      * textures

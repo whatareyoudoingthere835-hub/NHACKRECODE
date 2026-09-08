@@ -425,10 +425,10 @@ public class ElytraPlus extends Module {
             float cos;
             float sin;
             for (int i = 0; i <= 30; i++) {
-                cos = (float) ((flightZonePos.getX() - mc.getEntityRenderDispatcher().camera.getPos().getX()) + Math.cos(i * (Math.PI * 2f) / 30f) * 95);
-                sin = (float) ((flightZonePos.getZ() - mc.getEntityRenderDispatcher().camera.getPos().getZ()) + Math.sin(i * (Math.PI * 2f) / 30f) * 95);
-                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) -mc.getEntityRenderDispatcher().camera.getPos().getY(), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 255).getRGB());
-                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) ((float) 128 - mc.getEntityRenderDispatcher().camera.getPos().getY()), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 0).getRGB());
+                cos = (float) ((flightZonePos.getX() - mc.gameRenderer.getCamera().getPos().getX()) + Math.cos(i * (Math.PI * 2f) / 30f) * 95);
+                sin = (float) ((flightZonePos.getZ() - mc.gameRenderer.getCamera().getPos().getZ()) + Math.sin(i * (Math.PI * 2f) / 30f) * 95);
+                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) -mc.gameRenderer.getCamera().getPos().getY(), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 255).getRGB());
+                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) ((float) 128 - mc.gameRenderer.getCamera().getPos().getY()), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 0).getRGB());
             }
             Render2DEngine.endBuilding(bufferBuilder);
 

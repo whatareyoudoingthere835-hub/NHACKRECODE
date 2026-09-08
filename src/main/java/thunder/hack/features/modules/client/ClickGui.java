@@ -1,6 +1,5 @@
 package thunder.hack.features.modules.client;
 
-import baritone.api.BaritoneAPI;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.util.Identifier;
 import thunder.hack.ThunderHack;
@@ -38,7 +37,7 @@ public class ClickGui extends Module {
     @Override
     public void onEnable() {
         if(pauseBaritone.getValue() && !fullNullCheck() && ThunderHack.baritone){
-            BaritoneAPI.getProvider().getPrimaryBaritone().getCommandManager().execute("pause");
+            thunder.hack.utility.BaritoneUtility.executeCommand("pause");
         }
         setGui();
     }
@@ -46,7 +45,7 @@ public class ClickGui extends Module {
     @Override
     public void onDisable() {
         if(pauseBaritone.getValue() && !fullNullCheck() && ThunderHack.baritone){
-            BaritoneAPI.getProvider().getPrimaryBaritone().getCommandManager().execute("resume");
+            thunder.hack.utility.BaritoneUtility.executeCommand("resume");
         }
     }
 

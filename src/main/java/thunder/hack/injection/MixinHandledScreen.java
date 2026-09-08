@@ -23,7 +23,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -193,7 +193,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
     @Unique
     private void draw(DrawContext context, List<ItemStack> itemStacks, int offsetX, int offsetY, int mouseX, int mouseY, float[] colors) {
 
-        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        RenderSystem.clear(256, true);
 
         offsetX += 8;
         offsetY -= 82;
@@ -231,29 +231,8 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
     }
 
     private void drawMapPreview(DrawContext context, ItemStack stack, int x, int y) {
-
-        context.getMatrices().push();
-
-
-        int y1 = y - 12;
-        int x1 = x + 8;
-        int z = 300;
-
-        MapState mapState = FilledMapItem.getMapState(stack, client.world);
-
-        if (mapState != null) {
-            mapState.getPlayerSyncData(client.player);
-
-            x1 += 8;
-            y1 += 8;
-            z = 310;
-            double scale = (double) (100 - 16) / 128.0D;
-            context.getMatrices().translate(x1, y1);
-            context.getMatrices().scale((float) scale, (float) scale, 0);
-            VertexConsumerProvider.Immediate consumer = client.getBufferBuilders().getEntityVertexConsumers();
-            client.gameRenderer.getMapRenderer().draw(context.getMatrices(), consumer, (MapIdComponent) stack.get(DataComponentTypes.MAP_ID), mapState, false, 0xF000F0);
-        }
-        context.getMatrices().pop();
+        // 1.21.11: DrawContext#drawItem renders the map preview itself through the dynamic item renderer
+        context.drawItem(stack, x, y);
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
