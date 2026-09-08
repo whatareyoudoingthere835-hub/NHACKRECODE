@@ -1,6 +1,5 @@
 package thunder.hack.gui.font;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
@@ -161,13 +160,9 @@ class GlyphMap {
                     backingBuffer.put(abgr);
                 }
             }
-            NativeImageBackedTexture tex = new NativeImageBackedTexture(image);
+            NativeImageBackedTexture tex = new NativeImageBackedTexture(() -> "thunderhack_font_glyphmap", image);
             tex.upload();
-            if (RenderSystem.isOnRenderThread()) {
-                MinecraftClient.getInstance().getTextureManager().registerTexture(i, tex);
-            } else {
-                RenderSystem.recordRenderCall(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(i, tex));
-            }
+            MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(i, tex));
         } catch (Throwable e) {
             e.printStackTrace();
         }
