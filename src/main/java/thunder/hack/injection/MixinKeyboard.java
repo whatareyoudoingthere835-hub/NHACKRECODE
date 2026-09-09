@@ -23,7 +23,6 @@ public class MixinKeyboard {
     private void onKey(long windowPointer, int action, KeyInput input, CallbackInfo ci) {
         int key = input.key();
         int scanCode = input.scancode();
-        int modifiers = input.modifiers();
         if(Module.fullNullCheck()) return;
         boolean whitelist = mc.currentScreen == null || mc.currentScreen instanceof ClickGUI || mc.currentScreen instanceof HudEditorGui;
         if (!whitelist) return;
