@@ -80,9 +80,7 @@ public final class ExplosionUtility {
             explosion = th$dummyExplosion();
             if (explosion == null) return 0f;
 
-        ((IExplosion) explosion).setX(explosionPos.x);
-        ((IExplosion) explosion).setY(explosionPos.y);
-        ((IExplosion) explosion).setZ(explosionPos.z);
+        ((IExplosion) explosion).setPos(explosionPos);
 
 
         if (!new Box(MathHelper.floor(explosionPos.x - 11), MathHelper.floor(explosionPos.y - 11), MathHelper.floor(explosionPos.z - 11), MathHelper.floor(explosionPos.x + 13), MathHelper.floor(explosionPos.y + 13), MathHelper.floor(explosionPos.z + 13)).intersects(target.getBoundingBox()))
@@ -139,9 +137,7 @@ public final class ExplosionUtility {
             explosion = th$dummyExplosion();
             if (explosion == null) return 0f;
 
-        ((IExplosion) explosion).setX(explosionPos.x);
-        ((IExplosion) explosion).setY(explosionPos.y);
-        ((IExplosion) explosion).setZ(explosionPos.z);
+        ((IExplosion) explosion).setPos(explosionPos);
 
 
         if (!new Box(MathHelper.floor(explosionPos.x - 11d), MathHelper.floor(explosionPos.y - 11d), MathHelper.floor(explosionPos.z - 11d), MathHelper.floor(explosionPos.x + 13d), MathHelper.floor(explosionPos.y + 13d), MathHelper.floor(explosionPos.z + 13d)).intersects(predict))
@@ -227,9 +223,7 @@ public final class ExplosionUtility {
             explosion = th$dummyExplosion();
             if (explosion == null) return 0f;
 
-        ((IExplosion) explosion).setX(explosionPos.x);
-        ((IExplosion) explosion).setY(explosionPos.y);
-        ((IExplosion) explosion).setZ(explosionPos.z);
+        ((IExplosion) explosion).setPos(explosionPos);
 
 
         double maxDist = 12;
