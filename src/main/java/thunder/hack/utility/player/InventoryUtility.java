@@ -301,16 +301,16 @@ public final class InventoryUtility {
     public static void saveAndSwitchTo(int slot) {
         saveSlot();
         if (mc.player == null || mc.getNetworkHandler() == null) return;
-        if (mc.player.getInventory().setSelectedSlot(= slot && Managers.PLAYER.serverSideSlot == slot)
-            return);
+        if (mc.player.getInventory().getSelectedSlot() == slot && Managers.PLAYER.serverSideSlot == slot)
+            return;
         mc.player.getInventory().setSelectedSlot(slot);
         ((IInteractionManager) mc.interactionManager).syncSlot();
     }
 
     public static void switchTo(int slot) {
         if (mc.player == null || mc.getNetworkHandler() == null) return;
-        if (mc.player.getInventory().setSelectedSlot(= slot && Managers.PLAYER.serverSideSlot == slot)
-            return);
+        if (mc.player.getInventory().getSelectedSlot() == slot && Managers.PLAYER.serverSideSlot == slot)
+            return;
         mc.player.getInventory().setSelectedSlot(slot);
         ((IInteractionManager) mc.interactionManager).syncSlot();
     }
