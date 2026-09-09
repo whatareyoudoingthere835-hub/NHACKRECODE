@@ -95,20 +95,6 @@ public class MixinPlayerEntity {
         }
     }
 
-    @Inject(method = "jump", at = @At("HEAD"))
-    private void onJumpPre(CallbackInfo ci) {
-        ThunderHack.EVENT_BUS.post(new EventPlayerJump(true));
-    }
-
-    @Inject(method = "jump", at = @At("RETURN"))
-    private void onJumpPost(CallbackInfo ci) {
-        ThunderHack.EVENT_BUS.post(new EventPlayerJump(false));
-    }
-
-    @Inject(method = "eatFood", at = @At("RETURN"))
-    public void eatFoodHook(World world, ItemStack stack, FoodComponent foodComponent, CallbackInfoReturnable<ItemStack> cir) {
-        ThunderHack.EVENT_BUS.post(new EventEatFood(cir.getReturnValue()));
-    }
 
     @Inject(method = "shouldDismount", at = @At("HEAD"), cancellable = true)
     protected void shouldDismountHook(CallbackInfoReturnable<Boolean> cir) {
