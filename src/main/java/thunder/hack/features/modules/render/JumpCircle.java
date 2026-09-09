@@ -93,7 +93,7 @@ public class JumpCircle extends Module {
             float sizeAnim = circleScale.getValue() - (float) Math.pow(1 - ((c.timer.getPassedTimeMs() * (easeOut.getValue() ? 2f : 1f)) / 5000f), 4);
 
             stack.push();
-            stack.translate(c.pos().x - gameRenderer.getCamera().getCameraPos().getX(), c.pos().y - gameRenderer.getCamera().getCameraPos().getY(), c.pos().z - gameRenderer.getCamera().getCameraPos().getZ());
+            stack.translate(c.pos().x - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x, c.pos().y - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y, c.pos().z - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z);
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
             stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(sizeAnim * rotateSpeed.getValue() * 1000f));
             float scale = sizeAnim * 2f;

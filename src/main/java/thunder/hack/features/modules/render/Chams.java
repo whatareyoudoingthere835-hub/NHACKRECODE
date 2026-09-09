@@ -91,15 +91,15 @@ public class Chams extends Module {
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         matrixStack.translate(0.0f, 1.5f + h / 2.0f, 0.0f);
         matrixStack.multiply(new Quaternionf().setAngleAxis(1.0471976f, SINE_45_DEGREES, 0.0f, SINE_45_DEGREES));
-        frame.render(matrixStack, buffer, i, k);
+        frame.render(matrixStack, buffer, i, k, 0xFFFFFFFF);
         matrixStack.scale(0.875f, 0.875f, 0.875f);
         matrixStack.multiply(new Quaternionf().setAngleAxis(1.0471976f, SINE_45_DEGREES, 0.0f, SINE_45_DEGREES));
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-        frame.render(matrixStack, buffer, i, k);
+        frame.render(matrixStack, buffer, i, k, 0xFFFFFFFF);
         matrixStack.scale(0.875f, 0.875f, 0.875f);
         matrixStack.multiply(new Quaternionf().setAngleAxis(1.0471976f, SINE_45_DEGREES, 0.0f, SINE_45_DEGREES));
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
-        core.render(matrixStack, buffer, i, k);
+        core.render(matrixStack, buffer, i, k, 0xFFFFFFFF);
         matrixStack.pop();
         matrixStack.pop();
         Render2DEngine.endBuilding(buffer);
@@ -114,7 +114,7 @@ public class Chams extends Module {
         BufferBuilder buffer;
 
         if (!simple.getValue()) {
-        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) thunder.hack.utility.SkinUtility.skin(pe)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(pe)));
 
 
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
@@ -134,12 +134,12 @@ public class Chams extends Module {
 
         }
 
-        float h = MathHelper.lerpAngleDegrees(g, pe.prevBodyYaw, pe.bodyYaw);
-        float j = MathHelper.lerpAngleDegrees(g, pe.prevHeadYaw, pe.headYaw);
+        float h = MathHelper.lerpAngleDegrees(g, state.prevBodyYaw, state.bodyYaw);
+        float j = MathHelper.lerpAngleDegrees(g, state.prevHeadYaw, state.headYaw);
         float k = j - h;
         if (pe.hasVehicle() && (entity = pe.getVehicle()) instanceof LivingEntity) {
             LivingEntity livingEntity2 = (LivingEntity) entity;
-            h = MathHelper.lerpAngleDegrees(g, livingEntity2.prevBodyYaw, livingEntity2.bodyYaw);
+            h = MathHelper.lerpAngleDegrees(g, livingEntity2.getBodyYaw(), livingEntity2.getBodyYaw());
             k = j - h;
             float l = MathHelper.wrapDegrees(k);
             if (l < -85.0f) {
@@ -154,7 +154,7 @@ public class Chams extends Module {
             }
             k = j - h;
         }
-        float m = MathHelper.lerp(g, pe.prevPitch, pe.getPitch());
+        float m = MathHelper.lerp(g, state.prevPitch, state.pitch);
         if (pe.isSleeping()) {
             m *= -1.0f;
             k *= -1.0f;
@@ -184,7 +184,7 @@ public class Chams extends Module {
         }
         model.resetTransforms();
         model.setAngles(state);
-        int p = LivingEntityRenderer.getOverlay(state, 0.0f);
+        int p = net.minecraft.client.render.OverlayTexture.DEFAULT_UV;
         model.render(state, matrixStack, buffer, i, p);
         Render2DEngine.endBuilding(buffer);
 
@@ -204,7 +204,7 @@ public class Chams extends Module {
         float l;
         float m;
         if (abstractClientPlayerEntity.isGliding()) {
-            setupTransforms(abstractClientPlayerEntity, matrixStack, f, g, h);
+            // 1.21.11: LivingEntityRenderer.setupTransforms is private
             l = (float) abstractClientPlayerEntity.getFallFlyingTicks() + h;
             m = MathHelper.clamp(l * l / 100.0F, 0.0F, 1.0F);
             if (!abstractClientPlayerEntity.isUsingRiptide()) {
@@ -221,7 +221,7 @@ public class Chams extends Module {
                 matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float) (Math.signum(o) * Math.acos(n))));
             }
         } else if (j > 0.0F) {
-            setupTransforms(abstractClientPlayerEntity, matrixStack, f, g, h);
+            // 1.21.11: LivingEntityRenderer.setupTransforms is private
             l = abstractClientPlayerEntity.isTouchingWater() ? -90.0F - k : -90.0F;
             m = MathHelper.lerp(j, 0.0F, l);
             matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(m));
@@ -229,7 +229,7 @@ public class Chams extends Module {
                 matrixStack.translate(0.0F, -1.0F, 0.3F);
             }
         } else {
-            setupTransforms(abstractClientPlayerEntity, matrixStack, f, g, h);
+            // 1.21.11: LivingEntityRenderer.setupTransforms is private
         }
     }
 

@@ -1,6 +1,6 @@
 package thunder.hack.gui.windows;
 
-import net.minecraft.client.render.RenderPipelines;
+import net.minecraft.client.gl.RenderPipelines;
 
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.input.KeyInput;

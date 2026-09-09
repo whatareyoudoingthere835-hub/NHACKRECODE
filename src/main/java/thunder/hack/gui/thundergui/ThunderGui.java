@@ -226,11 +226,11 @@ public class ThunderGui extends Screen {
         Render2DEngine.drawRound(context.getMatrices(), main_posX + 5, main_posY + 5, 90, 30, 7f, ThunderHackGui.getColorByTheme(1));
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().scale(0.85f, 0.85f);
-        context.getMatrices().translate((main_posX + 10) / 0.85, (main_posY + 15) / 0.85);
+        context.getMatrices().scale((float) (0.85f), (float) (0.85f));
+        context.getMatrices().translate((float) ((main_posX + 10) / 0.85), (float) ((main_posY + 15) / 0.85));
         FontRenderers.thglitch.drawString(context.getMatrices(), "THUNDERHACK", 0, 0, ThunderHackGui.getColorByTheme(2).getRGB());
-        context.getMatrices().translate(-(main_posX + 10) / 0.85, -(main_posY + 15) / 0.85);
-        context.getMatrices().scale(1, 1);
+        context.getMatrices().translate((float) (-(main_posX + 10) / 0.85), (float) (-(main_posY + 15) / 0.85));
+        context.getMatrices().scale((float) (1), (float) (1));
         context.getMatrices().popMatrix();
 
         FontRenderers.settings.drawString(context.getMatrices(), "recode v" + ThunderHack.VERSION, main_posX + 91 - (FontRenderers.settings.getStringWidth("recode v" + ThunderHack.VERSION)), main_posY + 30, ThunderHackGui.getColorByTheme(3).getRGB());
@@ -483,7 +483,7 @@ public class ThunderGui extends Screen {
             try {
                 net.minecraft.util.Util.getOperatingSystem().open(new File("ThunderHackRecode/configs/").toURI());
             } catch (Exception e) {
-                Command.sendMessage("Не удалось открыть проводник!", false);
+                Command.sendMessage("Не удалось открыть проводник!");
             }
         }
 

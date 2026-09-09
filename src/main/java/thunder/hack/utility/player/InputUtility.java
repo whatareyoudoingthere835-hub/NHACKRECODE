@@ -22,7 +22,7 @@ public final class InputUtility {
 
     public static float forward() {
         PlayerInput i = input();
-        return (i.forward() ? 1f : 0f) - (i.back() ? 1f : 0f);
+        return (i.forward() ? 1f : 0f) - (i.backward() ? 1f : 0f);
     }
 
     public static float strafe() {
@@ -44,7 +44,7 @@ public final class InputUtility {
 
     public static void setForward(boolean value) {
         PlayerInput i = input();
-        player().input.playerInput = new PlayerInput(value, i.back(), i.left(), i.right(), i.jump(), i.sneak(), i.sprint());
+        player().input.playerInput = new PlayerInput(value, i.backward(), i.left(), i.right(), i.jump(), i.sneak(), i.sprint());
     }
 
     public static void setBack(boolean value) {
@@ -55,22 +55,22 @@ public final class InputUtility {
     public static void setStrafe(boolean value) {
         // value > 0 style calls handled by callers; boolean form: true = right
         PlayerInput i = input();
-        player().input.playerInput = new PlayerInput(i.forward(), i.back(), !value, value, i.jump(), i.sneak(), i.sprint());
+        player().input.playerInput = new PlayerInput(i.forward(), i.backward(), !value, value, i.jump(), i.sneak(), i.sprint());
     }
 
     public static void setJump(boolean value) {
         PlayerInput i = input();
-        player().input.playerInput = new PlayerInput(i.forward(), i.back(), i.left(), i.right(), value, i.sneak(), i.sprint());
+        player().input.playerInput = new PlayerInput(i.forward(), i.backward(), i.left(), i.right(), value, i.sneak(), i.sprint());
     }
 
     public static void setSneak(boolean value) {
         PlayerInput i = input();
-        player().input.playerInput = new PlayerInput(i.forward(), i.back(), i.left(), i.right(), i.jump(), value, i.sprint());
+        player().input.playerInput = new PlayerInput(i.forward(), i.backward(), i.left(), i.right(), i.jump(), value, i.sprint());
     }
 
     public static void setSprint(boolean value) {
         PlayerInput i = input();
-        player().input.playerInput = new PlayerInput(i.forward(), i.back(), i.left(), i.right(), i.jump(), i.sneak(), value);
+        player().input.playerInput = new PlayerInput(i.forward(), i.backward(), i.left(), i.right(), i.jump(), i.sneak(), value);
     }
 
     /** scale form used by old {@code movementForward *= k} call sites (k==0 clears input) */
@@ -81,7 +81,7 @@ public final class InputUtility {
     public static void scaleStrafe(float k) {
         if (k == 0f) {
             PlayerInput i = input();
-            player().input.playerInput = new PlayerInput(i.forward(), i.back(), false, false, i.jump(), i.sneak(), i.sprint());
+            player().input.playerInput = new PlayerInput(i.forward(), i.backward(), false, false, i.jump(), i.sneak(), i.sprint());
         }
     }
 }

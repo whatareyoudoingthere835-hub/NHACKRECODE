@@ -94,9 +94,9 @@ public class ESP extends Module {
         if (lingeringPotions.getValue()) {
             for (Entity ent : mc.world.getEntities()) {
                 if (ent instanceof AreaEffectCloudEntity aece) {
-                    double x = aece.getX() - gameRenderer.getCamera().getCameraPos().getX();
-                    double y = aece.getY() - gameRenderer.getCamera().getCameraPos().getY();
-                    double z = aece.getZ() - gameRenderer.getCamera().getCameraPos().getZ();
+                    double x = aece.getX() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+                    double y = aece.getY() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+                    double z = aece.getZ() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
                     float middle = aece.getRadius();
 
@@ -133,7 +133,7 @@ public class ESP extends Module {
 
 
                     PoseStack matrices = new PoseStack();
-                    Camera camera = mc.gameRenderer.getCamera();
+                    Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
                     matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
                     matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                     matrices.translate(x, y, z);
@@ -154,9 +154,9 @@ public class ESP extends Module {
             dizorentAnimation = fast(dizorentAnimation, mc.player.getMainHandStack().getItem() == Items.ENDER_EYE ? 10 : 0, 15f);
 
             if (mc.player.getMainHandStack().getItem() == Items.ENDER_EYE) {
-                double x = Render2DEngine.interpolate((mc.player.getX() - mc.player.getVelocity().x), mc.player.getX(), Render3DEngine.getTickDelta(false)) - gameRenderer.getCamera().getCameraPos().getX();
-                double y = Render2DEngine.interpolate((mc.player.getY() - mc.player.getVelocity().y), mc.player.getY(), Render3DEngine.getTickDelta(false)) - gameRenderer.getCamera().getCameraPos().getY();
-                double z = Render2DEngine.interpolate((mc.player.getZ() - mc.player.getVelocity().z), mc.player.getZ(), Render3DEngine.getTickDelta(false)) - gameRenderer.getCamera().getCameraPos().getZ();
+                double x = Render2DEngine.interpolate((mc.player.getX() - mc.player.getVelocity().x), mc.player.getX(), Render3DEngine.getTickDelta(false)) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+                double y = Render2DEngine.interpolate((mc.player.getY() - mc.player.getVelocity().y), mc.player.getY(), Render3DEngine.getTickDelta(false)) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+                double z = Render2DEngine.interpolate((mc.player.getZ() - mc.player.getVelocity().z), mc.player.getZ(), Render3DEngine.getTickDelta(false)) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
 
                 stack.push();
@@ -201,9 +201,9 @@ public class ESP extends Module {
         if (beaconRadius.getValue()) {
             for (BlockEntity be : StorageEsp.getBlockEntities()) {
                 if (be instanceof BeaconBlockEntity bbe) {
-                    double x = be.getPos().getX() - gameRenderer.getCamera().getCameraPos().getX();
-                    double y = be.getPos().getY() - gameRenderer.getCamera().getCameraPos().getY();
-                    double z = be.getPos().getZ() - gameRenderer.getCamera().getCameraPos().getZ();
+                    double x = be.getPos().getX() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+                    double y = be.getPos().getY() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+                    double z = be.getPos().getZ() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
                     Render3DEngine.drawBoxOutline(new Box(be.getPos()), beakonColor.getValue().getColorObject(), 2);
                     float range = ((IBeaconBlockEntity) bbe).getLevel() * 10 + 11;
@@ -224,9 +224,9 @@ public class ESP extends Module {
                 BlockPos blockPos = BlockPos.ofFloored(new Vec3d(pl.getX(), pl.getY(), pl.getZ()).add(0,0.15f,0));
                 Block block = mc.world.getBlockState(blockPos).getBlock();
 
-                double x = blockPos.getX() - gameRenderer.getCamera().getCameraPos().getX();
-                double y = blockPos.getY() - gameRenderer.getCamera().getCameraPos().getY();
-                double z = blockPos.getZ() - gameRenderer.getCamera().getCameraPos().getZ();
+                double x = blockPos.getX() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+                double y = blockPos.getY() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+                double z = blockPos.getZ() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
                 if (block == Blocks.OBSIDIAN
                         || block == Blocks.CRYING_OBSIDIAN
@@ -237,7 +237,7 @@ public class ESP extends Module {
                     Render3DEngine.drawBoxOutline(new Box(blockPos), burrowColor.getValue().getColorObject(), 2);
 
                     PoseStack matrices = new PoseStack();
-                    Camera camera = mc.gameRenderer.getCamera();
+                    Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
                     matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
                     matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                     matrices.translate(x + 0.5f, y + 0.5f, z + 0.5f);
@@ -257,14 +257,14 @@ public class ESP extends Module {
         if (tntFuse.getValue() || tntRadius.getValue()) {
             for (Entity ent : mc.world.getEntities()) {
                 if (ent instanceof TntEntity tnt) {
-                    double x = tnt.prevX + (new Vec3d(tnt.getX(), tnt.getY(), tnt.getZ()).getX() - tnt.prevX) * Render3DEngine.getTickDelta(false) - gameRenderer.getCamera().getCameraPos().getX();
-                    double y = tnt.prevY + (new Vec3d(tnt.getX(), tnt.getY(), tnt.getZ()).getY() - tnt.prevY) * Render3DEngine.getTickDelta(false) - gameRenderer.getCamera().getCameraPos().getY();
-                    double z = tnt.prevZ + (new Vec3d(tnt.getX(), tnt.getY(), tnt.getZ()).getZ() - tnt.prevZ) * Render3DEngine.getTickDelta(false) - gameRenderer.getCamera().getCameraPos().getZ();
+                    double x = (tnt.getX() - tnt.getVelocity().x) * Render3DEngine.getTickDelta(false) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+                    double y = tnt.prevY + (tnt.getY() - tnt.prevY) * Render3DEngine.getTickDelta(false) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+                    double z = tnt.prevZ + (tnt.getZ() - tnt.prevZ) * Render3DEngine.getTickDelta(false) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
                     if (tntFuse.getValue()) {
 
                         PoseStack matrices = new PoseStack();
-                        Camera camera = mc.gameRenderer.getCamera();
+                        Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
                         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
                         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                         matrices.translate(x, y + 0.5f, z);
@@ -299,8 +299,8 @@ public class ESP extends Module {
                     float xOffset = mc.getWindow().getScaledWidth() / 2f;
                     float yOffset = mc.getWindow().getScaledHeight() / 2f;
 
-                    float xPos = (float) (pearl.prevX + (new Vec3d(pearl.getX(), pearl.getY(), pearl.getZ()).getX() - pearl.prevX) * Render3DEngine.getTickDelta(false));
-                    float zPos = (float) (pearl.prevZ + (new Vec3d(pearl.getX(), pearl.getY(), pearl.getZ()).getZ() - pearl.prevZ) * Render3DEngine.getTickDelta(false));
+                    float xPos = (float) ((pearl.getX() - pearl.getVelocity().x) * Render3DEngine.getTickDelta(false));
+                    float zPos = (float) (pearl.prevZ + (pearl.getZ() - pearl.prevZ) * Render3DEngine.getTickDelta(false));
 
                     float yaw = getRotations(new Vec2f(xPos, zPos)) - mc.player.getYaw();
                     context.getMatrices().translate((float) (xOffset), (float) (yOffset));
@@ -316,7 +316,7 @@ public class ESP extends Module {
             }
         }
 
-        Matrix4f matrix = new Matrix4f().set(context.getMatrices());
+        Matrix4f matrix = Render2DEngine.toMatrix4f(context.getMatrices());
         Render2DEngine.setupRender();
 
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);

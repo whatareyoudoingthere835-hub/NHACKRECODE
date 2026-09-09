@@ -13,7 +13,7 @@ public class PlayerEntityCopy extends OtherClientPlayerEntity {
 
         copyFrom(mc.player);
         getPlayerListEntry();
-        dataTracker.set(PLAYER_MODEL_PARTS, mc.player.getDataTracker().get(PLAYER_MODEL_PARTS));
+        // 1.21.11: PLAYER_MODEL_PARTS not accessible - cosmetic sync skipped
         setUuid(UUID.randomUUID());
     }
 

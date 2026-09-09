@@ -36,8 +36,8 @@ public class Tracers extends Module {
             double z1 = (mc.player.getZ() - mc.player.getVelocity().z) + (mc.player.getZ() - (mc.player.getZ() - mc.player.getVelocity().z)) * Render3DEngine.getTickDelta(false);
 
             Vec3d vec2 = new Vec3d(0, 0, 75)
-                    .rotateX(-(float) Math.toRadians(mc.gameRenderer.getCamera().getPitch()))
-                    .rotateY(-(float) Math.toRadians(mc.gameRenderer.getCamera().getYaw()))
+                    .rotateX(-(float) Math.toRadians(mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPitch()))
+                    .rotateY(-(float) Math.toRadians(mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw()))
                     .add(x1, y1, z1);
 
             double x = (player.getX() - player.getVelocity().x) + (player.getX() - (player.getX() - player.getVelocity().x)) * Render3DEngine.getTickDelta(false);

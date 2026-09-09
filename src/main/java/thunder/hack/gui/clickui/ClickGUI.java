@@ -144,7 +144,7 @@ public class ClickGUI extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (ModuleManager.clickGui.blur.getValue())
-            applyBlur(delta);
+            // 1.21.11: Screen.applyBlur reworked - GUI blur skipped
 
         anyHovered = false;
 

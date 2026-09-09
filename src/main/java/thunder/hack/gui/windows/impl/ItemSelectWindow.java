@@ -99,7 +99,7 @@ public class ItemSelectWindow extends WindowBase {
                 continue;
 
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate(getX() + 6, itemPlate.offset + getY() + 32 + getScrollOffset());
+            context.getMatrices().translate((float) (getX() + 6), (float) (itemPlate.offset + getY() + 32 + getScrollOffset()));
             context.drawItem(itemPlate.item().getDefaultStack(), 0, 0);
             context.getMatrices().popMatrix();
 

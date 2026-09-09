@@ -38,7 +38,7 @@ public class NoSlow extends Module {
     public void onUpdate() {
         if (returnSneak) {
             mc.options.sneakKey.setPressed(false);
-            mc.player.input.playerInput = player.input.playerInput.withSprint(true);
+            mc.player.input.playerInput = mc.player.input.playerInput.withSprint(true);
             returnSneak = false;
         }
 

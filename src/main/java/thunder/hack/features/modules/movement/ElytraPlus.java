@@ -426,10 +426,10 @@ public class ElytraPlus extends Module {
             float cos;
             float sin;
             for (int i = 0; i <= 30; i++) {
-                cos = (float) ((flightZonePos.getX() - gameRenderer.getCamera().getCameraPos().getX()) + Math.cos(i * (Math.PI * 2f) / 30f) * 95);
-                sin = (float) ((flightZonePos.getZ() - gameRenderer.getCamera().getCameraPos().getZ()) + Math.sin(i * (Math.PI * 2f) / 30f) * 95);
-                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) -gameRenderer.getCamera().getCameraPos().getY(), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 255).getRGB());
-                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) ((float) 128 - gameRenderer.getCamera().getCameraPos().getY()), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 0).getRGB());
+                cos = (float) ((flightZonePos.getX() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x) + Math.cos(i * (Math.PI * 2f) / 30f) * 95);
+                sin = (float) ((flightZonePos.getZ() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z) + Math.sin(i * (Math.PI * 2f) / 30f) * 95);
+                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) -net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y, sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 255).getRGB());
+                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) ((float) 128 - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 0).getRGB());
             }
             Render2DEngine.endBuilding(bufferBuilder);
 

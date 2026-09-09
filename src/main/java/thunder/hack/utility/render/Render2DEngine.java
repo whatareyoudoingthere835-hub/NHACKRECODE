@@ -1,5 +1,7 @@
 package thunder.hack.utility.render;
 
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BuiltBuffer;
@@ -55,8 +57,8 @@ public class Render2DEngine {
 
     public static void addWindow(Matrix3x2fStack stack, Rectangle r1) {
         Matrix3x2f m = new Matrix3x2f(stack);
-        float[] a = m.transform(r1.x(), r1.y(), new float[2]);
-        float[] b = m.transform(r1.x1(), r1.y1(), new float[2]);
+        float[] a = m.transform((float) r1.x(), (float) r1.y(), new float[2]);
+        float[] b = m.transform((float) r1.x1(), (float) r1.y1(), new float[2]);
         Rectangle r = new Rectangle(a[0], a[1], b[0], b[1]);
         if (clipStack.isEmpty()) {
             clipStack.push(r);
@@ -775,6 +777,14 @@ public class Render2DEngine {
                     .registerTexture(id, new NativeImageBackedTexture(id::toString, nativeImage));
         } catch (Exception ignored) {
         }
+    }
+
+    public static Matrix4f toMatrix4f(org.joml.Matrix3x2fc m) {
+        return new Matrix4f(
+                m.m00(), m.m01(), 0f, m.m02(),
+                m.m10(), m.m11(), 0f, m.m12(),
+                0f, 0f, 1f, 0f,
+                0f, 0f, 0f, 1f);
     }
 
     public static class BlurredShadow {

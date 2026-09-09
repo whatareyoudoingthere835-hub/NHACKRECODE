@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+
 import net.minecraft.util.math.Vec3d;
 import thunder.hack.utility.player.ItemChecks;
 import meteordevelopment.orbit.EventHandler;
@@ -311,13 +313,13 @@ public class Aura extends Module {
     }
 
     private void disableSprint() {
-        mc.player.input.playerInput = player.input.playerInput.withSprint(false);
+        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(false);
         mc.options.sprintKey.setPressed(false);
         sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
     }
 
     private void enableSprint() {
-        mc.player.input.playerInput = player.input.playerInput.withSprint(true);
+        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(true);
         mc.options.sprintKey.setPressed(true);
         sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SPRINTING));
     }

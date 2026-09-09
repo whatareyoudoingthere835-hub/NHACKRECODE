@@ -42,7 +42,7 @@ public class LoginCommand extends Command {
 
     public void login(String name) {
         try {
-            setSession(new Session(name, Uuids.getOfflinePlayerUuid(name), "", Optional.empty(), Optional.empty(), Session.AccountType.MOJANG));
+            setSession(new Session(name, Uuids.getOfflinePlayerUuid(name), "", Optional.empty(), Optional.empty(), Session.AccountType.LEGACY));
         } catch (Exception exception) {
             sendMessage((isRu() ? "Неверное имя! " : "Incorrect username! ") + exception);
         }

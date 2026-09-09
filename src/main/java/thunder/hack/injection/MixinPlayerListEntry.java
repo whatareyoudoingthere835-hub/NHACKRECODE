@@ -36,7 +36,8 @@ public class MixinPlayerListEntry {
     }
 
     @Inject(method = "getSkinTextures", at = @At("TAIL"), cancellable = true)
-    private void getCapeTexture(CallbackInfoReturnable<SkinTextures> cir) {
+    private void getCapeTexture(GameProfile profile, CallbackInfoReturnable<SkinTextures> cir) {
+        if (true) return; // 1.21.11: SkinOverride type changed - cape injection disabled
         if (customCapeTexture != null) {
             SkinTextures prev = cir.getReturnValue();
             cir.setReturnValue(prev.withOverride(SkinTextures.SkinOverride.create(

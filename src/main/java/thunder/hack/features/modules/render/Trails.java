@@ -107,7 +107,7 @@ public class Trails extends Module {
                 if (entity != mc.player && onlySelf.getValue())
                     continue;
                 float alpha = color.getValue().getAlpha();
-                Camera camera = mc.gameRenderer.getCamera();
+                Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
                 stack.push();
         Render2DEngine.bindTexture(TextureStorage.firefly);
 
@@ -280,7 +280,7 @@ public class Trails extends Module {
         }
 
         for (Entity en : Managers.ASYNC.getAsyncEntities()) {
-            if (en instanceof ArrowEntity ae && (ae.prevY != ae.getY()) && arrows.is(Particles.Particles))
+            if (en instanceof ArrowEntity ae && (ae.getVelocity().y != 0) && arrows.is(Particles.Particles))
                 for (int i = 0; i < 5; i++)
                     particles.add(new Particle(en.getX(), en.getY(), en.getZ(), HudEditor.getColor(mc.player.age)));
 
@@ -314,9 +314,9 @@ public class Trails extends Module {
         }
 
         public Vec3d interpolate(float pt) {
-            double x = from.x + ((to.x - from.x) * pt) - gameRenderer.getCamera().getCameraPos().getX();
-            double y = from.y + ((to.y - from.y) * pt) - gameRenderer.getCamera().getCameraPos().getY();
-            double z = from.z + ((to.z - from.z) * pt) - gameRenderer.getCamera().getCameraPos().getZ();
+            double x = from.x + ((to.x - from.x) * pt) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+            double y = from.y + ((to.y - from.y) * pt) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+            double z = from.z + ((to.z - from.z) * pt) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
             return new Vec3d(x, y, z);
         }
 
@@ -430,14 +430,14 @@ public class Trails extends Module {
             motionY /= 1.005;
         }
 
-        public void render(Matrix3x2fStack matrixStack, BufferBuilder bufferBuilder) {
+        public void render(PoseStack matrixStack, BufferBuilder bufferBuilder) {
             update();
             float scale = starsScale.getValue() / 10f;
-            final double posX = x - gameRenderer.getCamera().getCameraPos().getX();
-            final double posY = y - gameRenderer.getCamera().getCameraPos().getY();
-            final double posZ = z - gameRenderer.getCamera().getCameraPos().getZ();
+            final double posX = x - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+            final double posY = y - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+            final double posZ = z - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
-            Camera camera = mc.gameRenderer.getCamera();
+            Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
 
             PoseStack matrices = new PoseStack();
             matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));

@@ -1,6 +1,6 @@
 package thunder.hack.utility.render;
 
-import net.minecraft.client.render.RenderPipelines;
+import net.minecraft.client.gl.RenderPipelines;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexFormat;

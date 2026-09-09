@@ -52,9 +52,9 @@ public class Companion extends HudElement {
         super.onRender2D(context);
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate((int) getPosX() + 100, (int) getPosY() + 100);
-        context.getMatrices().scale((float) scale.getValue() / 100f, (float) scale.getValue() / 100f, 1);
-        context.getMatrices().translate(-((int) getPosX() + 100), -((int) getPosY() + 100));
+        context.getMatrices().translate((float) ((int) getPosX() + 100), (float) ((int) getPosY() + 100));
+        context.getMatrices().scale((float) scale.getValue() / 100f, (float) scale.getValue() / 100f);
+        context.getMatrices().translate((float) (-((int) getPosX() + 100)), (float) (-((int) getPosY() + 100)));
         if (mode.getValue() == Mode.Boykisser)
             context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.boykisser, (int) getPosX(), (int) getPosY(), 0, currentFrame * 128, 130, 128, 130, 6784, -1);
         else if (mode.getValue() == Mode.Paimon)

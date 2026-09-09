@@ -153,12 +153,12 @@ public class MainMenuScreen extends Screen {
             FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), onlineUsers, halfOfWidth, halfOfHeight * 2 - 15, Color.GREEN);
 
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate(halfOfWidth - 10 - FontRenderers.sf_medium.getStringWidth(onlineUsers) / 2f, halfOfHeight * 2 - 17);
+            context.getMatrices().translate((float) (halfOfWidth - 10 - FontRenderers.sf_medium.getStringWidth(onlineUsers) / 2f), (float) (halfOfHeight * 2 - 17));
             Render2DEngine.drawBloom(context.getMatrices(), Render2DEngine.applyOpacity(Color.GREEN, 0.6f), 9f);
             context.getMatrices().popMatrix();
 
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate(halfOfWidth - 10 - FontRenderers.sf_medium.getStringWidth(onlineUsers) / 2f, halfOfHeight * 2 - 17);
+            context.getMatrices().translate((float) (halfOfWidth - 10 - FontRenderers.sf_medium.getStringWidth(onlineUsers) / 2f), (float) (halfOfHeight * 2 - 17));
             Render2DEngine.drawBloom(context.getMatrices(), Render2DEngine.applyOpacity(Color.GREEN, (float) (0.5f + (Math.sin((double) System.currentTimeMillis() / 500)) / 2f)), 9f);
             context.getMatrices().popMatrix();
         }

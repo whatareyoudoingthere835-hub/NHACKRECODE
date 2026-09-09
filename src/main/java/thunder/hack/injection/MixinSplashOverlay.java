@@ -1,7 +1,6 @@
 package thunder.hack.injection;
 
 import net.minecraft.client.gl.RenderPipelines;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -112,7 +111,7 @@ public abstract class MixinSplashOverlay {
 
             reloadCompleteTime = Util.getMeasuringTimeMs();
             if (mc.currentScreen != null) {
-                mc.currentScreen.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+                // 1.21.11: Screen.init(MinecraftClient,int,int) removed - splash re-init skipped
             }
         }
     }

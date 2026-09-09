@@ -44,7 +44,7 @@ public class MoreKnockback extends Module {
             sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
             sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SPRINTING));
             debug("wtap");
-            mc.player.input.playerInput = player.input.playerInput.withSprint(true);
+            mc.player.input.playerInput = mc.player.input.playerInput.withSprint(true);
             mc.player.lastSprinting = true;
         }
     }

@@ -17,7 +17,7 @@ public class AutoSprint extends Module {
 
     @Override
     public void onUpdate() {
-        mc.player.input.playerInput = player.input.playerInput.withSprint(
+        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(
                 mc.player.getHungerManager().getFoodLevel() > 6
                         && !mc.player.horizontalCollision
                         && thunder.hack.utility.player.InputUtility.forward() > 0

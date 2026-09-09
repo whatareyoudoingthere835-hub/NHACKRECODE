@@ -89,7 +89,7 @@ public class Hotbar extends HudElement {
         if (!itemStack.isEmpty()) {
             context.getMatrices().pushMatrix();
             context.getMatrices().translate((float) (i + 8), (float) (j + 12));
-            context.getMatrices().scale(0.9f, 0.9f);
+            context.getMatrices().scale((float) (0.9f), (float) (0.9f));
             context.getMatrices().translate((float) (-(i + 8)), (float) (-(j + 12)));
             context.drawItem(itemStack, i, j);
             context.drawStackOverlay(mc.textRenderer, itemStack, i, j);
@@ -97,7 +97,7 @@ public class Hotbar extends HudElement {
         }
     }
 
-    public static void renderXpBar(int x, PoseStack matrices) {
+    public static void renderXpBar(int x, org.joml.Matrix3x2fStack matrices) {
 
         int k;
         int l;

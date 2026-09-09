@@ -178,8 +178,8 @@ public class FontRenderer implements Closeable {
         float r2 = r, g2 = g, b2 = b;
         stack.pushMatrix();
         y -= 3f;
-        stack.translate(roundToDecimal(x, 1), roundToDecimal(y, 1));
-        stack.scale(1f / this.scaleMul, 1f / this.scaleMul);
+        stack.translate((float) (roundToDecimal(x, 1)), (float) (roundToDecimal(y, 1)));
+        stack.scale((float) (1f / this.scaleMul), (float) (1f / this.scaleMul));
 
         char[] chars = s.toCharArray();
         float xOffset = 0;

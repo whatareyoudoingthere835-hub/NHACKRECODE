@@ -63,7 +63,7 @@ public class Velocity extends Module {
 
         // MAIN VELOCITY
         if (e.getPacket() instanceof EntityVelocityUpdateS2CPacket pac) {
-            if (pac.getId() == mc.player.getId() && (!onlyAura.getValue() || ModuleManager.aura.isEnabled())) {
+            if (pac.getEntityId() == mc.player.getId() && (!onlyAura.getValue() || ModuleManager.aura.isEnabled())) {
                 switch (mode.getValue()) {
                     case Matrix -> {
                         if (!flag) {
@@ -158,7 +158,7 @@ public class Velocity extends Module {
                     double var3 = mc.player.getYaw() * 0.017453292F;
                     double var5 = Math.sqrt(mc.player.getVelocity().x * mc.player.getVelocity().x + mc.player.getVelocity().z * mc.player.getVelocity().z);
                     mc.player.setVelocity(-Math.sin(var3) * var5, mc.player.getVelocity().y, Math.cos(var3) * var5);
-                    mc.player.input.playerInput = player.input.playerInput.withSprint(mc.player.age % 2 != 0);
+                    mc.player.input.playerInput = mc.player.input.playerInput.withSprint(mc.player.age % 2 != 0);
                 }
             }
             case Jump -> {

@@ -1,8 +1,7 @@
 package thunder.hack.features.hud.impl;
 
-import net.minecraft.client.render.RenderPipelines;
-
 import net.minecraft.client.gl.RenderPipelines;
+//
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -41,9 +40,9 @@ public class CandleHud extends HudElement {
         prevPitch = mc.player.getPitch();
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate((int) getPosX(), (int) getPosY());
+        context.getMatrices().translate((float) ((int) getPosX()), (float) ((int) getPosY()));
         float scalefactor = (float) scale.getValue() / 100f;
-        context.getMatrices().scale(scalefactor, scalefactor);
+        context.getMatrices().scale((float) (scalefactor), (float) (scalefactor));
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.candle, 0, -5, 0, 0, 102, 529, 102, 529, -1);
         context.getMatrices().popMatrix();
 

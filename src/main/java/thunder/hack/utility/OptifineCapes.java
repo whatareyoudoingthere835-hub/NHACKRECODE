@@ -55,37 +55,10 @@ public final class OptifineCapes {
     }
 
     public static NativeImage parseCape(NativeImage image) {
-        int imageWidth = 64;
-        int imageHeight = 32;
-        int imageSrcWidth = image.getWidth();
-        int srcHeight = image.getHeight();
-
-        for (int imageSrcHeight = image.getHeight(); imageWidth < imageSrcWidth || imageHeight < imageSrcHeight; imageHeight *= 2) {
-            imageWidth *= 2;
-        }
-
-        NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
-        java.awt.image.BufferedImage bi = th$toBufferedImage(image);
-        for (int x = 0; x < imageSrcWidth; x++) {
-            for (int y = 0; y < srcHeight; y++) {
-                imgNew.writePixel(x, y, bi == null ? 0 : th$swap(bi, x, y));
-            }
-        }
-        image.close();
-        return imgNew;
+        // 1.21.11: NativeImage pixel read/write API changed - texture used as-is
+        return image;
     }
 
-    private static int th$swap(java.awt.image.BufferedImage bi, int x, int y) {
-        int p = bi.getRGB(x, y);
-        return (p & 0xFF000000) | ((p & 0xFF) << 16) | (p & 0x00FF00) | ((p >> 16) & 0xFF);
-    }
 
-    private static java.awt.image.BufferedImage th$toBufferedImage(net.minecraft.client.texture.NativeImage image) {
-        try {
-            return javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(image.toByteArray()));
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
 }

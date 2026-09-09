@@ -1,8 +1,7 @@
 package thunder.hack.core;
 
-import net.minecraft.client.render.RenderPipelines;
-
 import net.minecraft.client.gl.RenderPipelines;
+//
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
@@ -227,7 +226,7 @@ public final class Core {
             return;
         }
 
-        float g = -((Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) + ((Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) - Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) * tickDelta);
+        float g = (float) -((Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) + ((Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) - Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) * tickDelta);
         float h = MathHelper.lerp(tickDelta, 0.0F, 0.0F);
         matrices.translate(MathHelper.sin(g * (float) Math.PI) * h * 0.1f, -Math.abs(MathHelper.cos(g * (float) Math.PI) * h) * 0.3, 0.0f);
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0f));

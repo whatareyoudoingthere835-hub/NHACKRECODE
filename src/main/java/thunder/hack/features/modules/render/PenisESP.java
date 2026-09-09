@@ -44,7 +44,7 @@ public class PenisESP extends Module {
 
             drawBall(player, ballSize.getValue(), gradation.getValue(), left, penisColor.getValue().getColorObject(), 0);
             drawBall(player, ballSize.getValue(), gradation.getValue(), right, penisColor.getValue().getColorObject(), 0);
-            drawPenis(player, event.getMatrices(), size, forward);
+            drawPenis(player, event, size, forward);
         }
     }
 

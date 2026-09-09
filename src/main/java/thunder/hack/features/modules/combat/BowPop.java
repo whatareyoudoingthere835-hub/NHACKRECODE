@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.*;
 import thunder.hack.events.impl.PacketEvent;

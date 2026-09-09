@@ -53,14 +53,14 @@ public class GapplesHud extends HudElement {
 
         context.getMatrices().translate((float) (xPos + 20), (float) (yPos - 9));
         context.drawItem(targetItem.getDefaultStack(), 0, 0);
-        context.getMatrices().translate(-(xPos + 20), -(yPos - 9));
+        context.getMatrices().translate((float) (-(xPos + 20)), (float) (-(yPos - 9)));
 
 
-        context.getMatrices().translate((xPos + 28), (yPos - 1));
-        context.getMatrices().scale(factor2, factor2);
+        context.getMatrices().translate((float) ((xPos + 28)), (float) ((yPos - 1)));
+        context.getMatrices().scale((float) (factor2), (float) (factor2));
         context.drawItem(targetItem.getDefaultStack(), -8, -8);
-        context.getMatrices().scale(factor2 != 0 ? 1f / factor2 : 1f, factor2 != 0 ? 1f / factor2 : 1f);
-        context.getMatrices().translate(-(xPos + 28), -(yPos - 1));
+        context.getMatrices().scale((float) (factor2 != 0 ? 1f / factor2 : 1f), (float) (factor2 != 0 ? 1f / factor2 : 1f));
+        context.getMatrices().translate((float) (-(xPos + 28)), (float) (-(yPos - 1)));
 
 
 

@@ -41,7 +41,7 @@ public class TotemCounter extends HudElement {
 
         context.getMatrices().translate((float) (xPos - 36), (float) (yPos - 9));
         context.drawItem(Items.TOTEM_OF_UNDYING.getDefaultStack(), 0, 0);
-        context.getMatrices().translate(-(xPos - 36), -(yPos - 9));
+        context.getMatrices().translate((float) (-(xPos - 36)), (float) (-(yPos - 9)));
 
 
         if (factor > 0)

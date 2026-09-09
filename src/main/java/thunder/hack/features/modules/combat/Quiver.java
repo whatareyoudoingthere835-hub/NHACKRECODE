@@ -95,9 +95,18 @@ public final class Quiver extends Module {
 
     private SearchInvResult getArrow(String name) {
         return InventoryUtility.findInInventory(stack -> {
-            if (stack.getItem() instanceof TippedArrowItem tai) {
-                String key = tai.getTranslationKey(stack);
-                return key.contains("effect." + name);
+            if (stack.getItem() instanceof TippedArrowItem) {
+                var contents = stack.get(net.minecraft.component.DataComponentTypes.POTION_CONTENTS);
+                if (contents == null) return false;
+                var effs = contents.getEffects();
+                if (effs == null) return false;
+                for (var ap : effs) {
+                    try {
+                        if (ap.effect().valueOrThrow().getTranslationKey().contains("effect." + name)) return true;
+                    } catch (Exception ignored) {
+                    }
+                }
+                return false;
             }
             return false;
         });

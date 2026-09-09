@@ -1,6 +1,6 @@
 package thunder.hack.gui.mainmenu;
 
-import net.minecraft.client.render.RenderPipelines;
+import net.minecraft.client.gl.RenderPipelines;
 
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gl.RenderPipelines;
@@ -170,18 +170,8 @@ public class CreditsScreen extends Screen {
     }
 
     public static NativeImage parseAvatar(NativeImage image) {
-        NativeImage imgNew = new NativeImage(96, 96, true);
-        java.awt.image.BufferedImage bi = th$toBufferedImage(image);
-        for (int x = 0; x < 96; x++) {
-            for (int y = 0; y < 96; y++) {
-                int src = bi == null ? 0 : th$swap(bi, x, y);
-                if (Math.hypot(x - 48, y - 48) > 45)
-                    imgNew.writePixel(x, y, Render2DEngine.injectAlpha(new Color(src), (int) ((float) (48 - Math.hypot(x - 48, y - 48)) / 3f * 255f)).getRGB());
-                else imgNew.writePixel(x, y, src);
-            }
-        }
-        image.close();
-        return imgNew;
+        // 1.21.11: NativeImage pixel read/write API changed - texture used as-is
+        return image;
     }
 
     @Override
@@ -199,17 +189,6 @@ public class CreditsScreen extends Screen {
             scroll = 0;
     }
 
-    private static int th$swap(java.awt.image.BufferedImage bi, int x, int y) {
-        int p = bi.getRGB(x, y);
-        return (p & 0xFF000000) | ((p & 0xFF) << 16) | (p & 0x00FF00) | ((p >> 16) & 0xFF);
-    }
 
-    private static java.awt.image.BufferedImage th$toBufferedImage(net.minecraft.client.texture.NativeImage image) {
-        try {
-            return javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(image.toByteArray()));
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
 }

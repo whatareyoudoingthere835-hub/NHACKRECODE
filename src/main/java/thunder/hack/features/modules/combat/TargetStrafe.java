@@ -140,9 +140,9 @@ public class TargetStrafe extends Module {
 
     public float getAIMoveSpeed() {
         boolean prevSprinting = mc.player.isSprinting();
-        mc.player.input.playerInput = player.input.playerInput.withSprint(false);
+        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(false);
         float speed = mc.player.getMovementSpeed() * 1.3f;
-        mc.player.input.playerInput = player.input.playerInput.withSprint(prevSprinting);
+        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(prevSprinting);
         return speed;
     }
 

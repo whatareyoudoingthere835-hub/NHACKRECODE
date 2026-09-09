@@ -73,7 +73,7 @@ public class AntiAFK extends Module {
             if(!isAfk()) return;
 
             if(move.getValue())
-                mc.player.input.playerInput = player.input.playerInput.withSprint(false);
+                mc.player.input.playerInput = mc.player.input.playerInput.withSprint(false);
 
             if (spin.getValue()) {
                 double gcdFix = (Math.pow(mc.options.getMouseSensitivity().getValue() * 0.6 + 0.2, 3.0)) * 1.2;

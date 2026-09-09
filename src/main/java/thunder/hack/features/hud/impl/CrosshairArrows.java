@@ -51,7 +51,7 @@ public class CrosshairArrows extends HudElement {
         context.getMatrices().pushMatrix();
         context.getMatrices().translate((float) (middleW), (float) (middleH));
         float tiltDeg = 90f / Math.abs(90f / MathUtility.clamp(mc.player.getPitch(), pitchLock.getValue(), 90f)) - 102f;
-        context.getMatrices().scale(1f, (float) Math.cos(Math.toRadians(tiltDeg)));
+        context.getMatrices().scale((float) (1f), (float) Math.cos(Math.toRadians(tiltDeg)));
         context.getMatrices().translate((float) (-middleW), (float) (-middleH));
 
         smoothYaw = AnimationUtility.fast(smoothYaw, mc.player.getYaw(), 13);

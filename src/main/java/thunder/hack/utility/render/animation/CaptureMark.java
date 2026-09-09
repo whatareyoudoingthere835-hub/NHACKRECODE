@@ -20,7 +20,7 @@ public class CaptureMark {
     private static boolean flipSpeed;
 
     public static void render(Entity target) {
-        Camera camera = mc.gameRenderer.getCamera();
+        Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
 
         double tPosX = Render2DEngine.interpolate((target.getX() - target.getVelocity().x), target.getX(), Render3DEngine.getTickDelta(false)) - camera.getCameraPos().x;
         double tPosY = Render2DEngine.interpolate((target.getY() - target.getVelocity().y), target.getY(), Render3DEngine.getTickDelta(false)) - camera.getCameraPos().y;

@@ -105,7 +105,7 @@ public class Crosshair extends Module {
         Render2DEngine.bindTexture(TextureStorage.firefly);
 
                 Color color1 = colorMode.getValue() == ColorMode.Sync ? HudEditor.getColor(1) : color.getValue().getColorObject();
-                Matrix4f posMatrix = new Matrix4f().set(context.getMatrices());
+                Matrix4f posMatrix = Render2DEngine.toMatrix4f(context.getMatrices());
                 bufferBuilder.vertex(posMatrix, 0, -8f, 0).texture(0f, 1f).color(color1.getRGB());
                 bufferBuilder.vertex(posMatrix, -8f, -8f, 0).texture(1f, 1f).color(color1.getRGB());
                 bufferBuilder.vertex(posMatrix, -8f, 0, 0).texture(1f, 0).color(color1.getRGB());

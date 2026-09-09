@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.misc;
 
+import net.minecraft.util.math.Vec3d;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;

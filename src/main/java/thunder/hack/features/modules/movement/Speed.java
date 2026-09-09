@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;

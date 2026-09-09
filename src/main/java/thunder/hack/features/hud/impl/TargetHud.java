@@ -80,7 +80,7 @@ public class TargetHud extends HudElement {
         var renderManager = mc.getEntityRenderDispatcher();
         var state = renderManager.getAndUpdateRenderState(entity, Render3DEngine.getTickDelta(false));
         if (state == null) return null;
-        return ((EntityRenderer) renderManager.getRenderer(entity)).getTexture(state);
+        return thunder.hack.utility.SkinUtility.skin(entity);
     }
 
     // Флаг-состояние вспышки хп
@@ -251,7 +251,7 @@ public class TargetHud extends HudElement {
         Render2DEngine.drawRect(context.getMatrices(), getPosX() + 50, getPosY() + 30, MathUtility.clamp((int) (60 * (health / target.getMaxHealth())), 0, 60), 10, color.getValue().getColorObject().brighter().brighter().brighter());
 
         if (target instanceof PlayerEntity) {
-        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) thunder.hack.utility.SkinUtility.skin(target)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target)));
 
         } else {
         Render2DEngine.bindTexture(getEntityTexture(target));
@@ -291,7 +291,7 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
-        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) thunder.hack.utility.SkinUtility.skin(target)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target)));
 
         } else {
         Render2DEngine.bindTexture(getEntityTexture(target));
@@ -299,16 +299,16 @@ public class TargetHud extends HudElement {
         }
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate(getPosX() + 3.5f + 20, getPosY() + 3.5f + 20);
-        context.getMatrices().scale(1 - hurtPercent / 15f, 1 - hurtPercent / 15f);
-        context.getMatrices().translate(-(getPosX() + 3.5f + 20), -(getPosY() + 3.5f + 20));
+        context.getMatrices().translate((float) (getPosX() + 3.5f + 20), (float) (getPosY() + 3.5f + 20));
+        context.getMatrices().scale((float) (1 - hurtPercent / 15f), (float) (1 - hurtPercent / 15f));
+        context.getMatrices().translate((float) (-(getPosX() + 3.5f + 20)), (float) (-(getPosY() + 3.5f + 20)));
 
 
 
 
 
 
-        Render2DEngine.renderRoundedQuadInternal(new Matrix4f().set(context.getMatrices()), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 3.5f, getPosY() + 3.5f, getPosX() + 3.5f + 40, getPosY() + 3.5f + 40, 7, 10);
+        Render2DEngine.renderRoundedQuadInternal(Render2DEngine.toMatrix4f(context.getMatrices()), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 3.5f, getPosY() + 3.5f, getPosX() + 3.5f + 40, getPosY() + 3.5f + 40, 7, 10);
 
 
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 3.5f, getPosY() + 3.5f, 40, 40, 8, 8, 8, 8, 64, 64);
@@ -344,8 +344,8 @@ public class TargetHud extends HudElement {
             float xItemOffset = getPosX() + 48;
             for (ItemStack itemStack : items) {
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(xItemOffset, getPosY() + 15);
-                context.getMatrices().scale(0.75f, 0.75f);
+                context.getMatrices().translate((float) (xItemOffset), (float) (getPosY() + 15));
+                context.getMatrices().scale((float) (0.75f), (float) (0.75f));
                 context.drawItem(itemStack, 0, 0);
                 context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
                 context.getMatrices().popMatrix();
@@ -372,7 +372,7 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
-        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) thunder.hack.utility.SkinUtility.skin(target)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target)));
 
         } else {
         Render2DEngine.bindTexture(getEntityTexture(target));
@@ -380,16 +380,16 @@ public class TargetHud extends HudElement {
         }
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate(getPosX() + 2.5 + 15, getPosY() + 2.5 + 15);
-        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f);
-        context.getMatrices().translate(-(getPosX() + 2.5 + 15), -(getPosY() + 2.5 + 15));
+        context.getMatrices().translate((float) (getPosX() + 2.5 + 15), (float) (getPosY() + 2.5 + 15));
+        context.getMatrices().scale((float) (1 - hurtPercent / 20f), (float) (1 - hurtPercent / 20f));
+        context.getMatrices().translate((float) (-(getPosX() + 2.5 + 15)), (float) (-(getPosY() + 2.5 + 15)));
 
 
 
 
 
 
-        Render2DEngine.renderRoundedQuadInternal(new Matrix4f().set(context.getMatrices()), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 30, getPosY() + 2.5 + 30, 5, 10);
+        Render2DEngine.renderRoundedQuadInternal(Render2DEngine.toMatrix4f(context.getMatrices()), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 30, getPosY() + 2.5 + 30, 5, 10);
 
 
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 2.5, getPosY() + 2.5, 30, 30, 8, 8, 8, 8, 64, 64);
@@ -421,8 +421,8 @@ public class TargetHud extends HudElement {
             float xItemOffset = getPosX() + 38;
             for (ItemStack itemStack : items) {
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(xItemOffset, getPosY() + 13);
-                context.getMatrices().scale(0.5f, 0.5f);
+                context.getMatrices().translate((float) (xItemOffset), (float) (getPosY() + 13));
+                context.getMatrices().scale((float) (0.5f), (float) (0.5f));
                 context.drawItem(itemStack, 0, 0);
                 context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
                 context.getMatrices().popMatrix();
@@ -508,7 +508,7 @@ public class TargetHud extends HudElement {
         headAnimation.setValue(hurtPercent2);
 
         if (target instanceof PlayerEntity) {
-        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) thunder.hack.utility.SkinUtility.skin(target)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target)));
 
         } else {
         Render2DEngine.bindTexture(getEntityTexture(target));
@@ -516,9 +516,9 @@ public class TargetHud extends HudElement {
         }
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate(getPosX() + 2.5 + 15, getPosY() + 2.5 + 15);
-        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f);
-        context.getMatrices().translate(-(getPosX() + 2.5 + 15), -(getPosY() + 2.5 + 15));
+        context.getMatrices().translate((float) (getPosX() + 2.5 + 15), (float) (getPosY() + 2.5 + 15));
+        context.getMatrices().scale((float) (1 - hurtPercent / 20f), (float) (1 - hurtPercent / 20f));
+        context.getMatrices().translate((float) (-(getPosX() + 2.5 + 15)), (float) (-(getPosY() + 2.5 + 15)));
 
 
 
@@ -526,7 +526,7 @@ public class TargetHud extends HudElement {
 
 
 
-        Render2DEngine.renderRoundedQuadInternal(new Matrix4f().set(context.getMatrices()), animationFactor, animationFactor, animationFactor, animationFactor,
+        Render2DEngine.renderRoundedQuadInternal(Render2DEngine.toMatrix4f(context.getMatrices()), animationFactor, animationFactor, animationFactor, animationFactor,
                 getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 45, getPosY() + 2.5 + 45, 5, 10);
 
 
@@ -558,8 +558,8 @@ public class TargetHud extends HudElement {
             for (ItemStack itemStack : items) {
                 if (itemStack.isEmpty()) continue;
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(xItemOffset, getPosY() + 35);
-                context.getMatrices().scale(0.75f, 0.75f);
+                context.getMatrices().translate((float) (xItemOffset), (float) (getPosY() + 35));
+                context.getMatrices().scale((float) (0.75f), (float) (0.75f));
                 context.drawItem(itemStack, 0, 0);
                 context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
 
@@ -576,7 +576,7 @@ public class TargetHud extends HudElement {
         for (int i = 0; i < 4; i++)
             if (!target.getInventory().getStack(36 + (3 - i)).isEmpty()) {
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(posX + (i > 1 ? 138 : 118), posY + (i % 2 == 0 ? 5 : 26));
+                context.getMatrices().translate((float) (posX + (i > 1 ? 138 : 118)), (float) (posY + (i % 2 == 0 ? 5 : 26)));
                 context.drawItem(target.getInventory().getStack(36 + (3 - i)), 0, 0);
                 context.drawStackOverlay(mc.textRenderer, target.getInventory().getStack(36 + (3 - i)), 0, 0);
                 context.getMatrices().popMatrix();
@@ -587,15 +587,15 @@ public class TargetHud extends HudElement {
         for (int i = 0; i < 2; i++)
             if (!(i == 0 ? target.getMainHandStack() : target.getOffHandStack()).isEmpty()) {
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(posX + (i == 0 ? 50 : 77), posY + 14);
-                context.getMatrices().scale(0.75f, 0.75f);
+                context.getMatrices().translate((float) (posX + (i == 0 ? 50 : 77)), (float) (posY + 14));
+                context.getMatrices().scale((float) (0.75f), (float) (0.75f));
                 context.drawItem((i == 0 ? target.getMainHandStack() : target.getOffHandStack()), 0, 0);
                 context.getMatrices().popMatrix();
                 FontRenderers.settings.drawString(context.getMatrices(), "x" + (i == 0 ? target.getMainHandStack() : target.getOffHandStack()).getCount(), posX + (i == 0 ? 50 : 77) + 12, posY + 21, -1);
             }
     }
 
-    private void drawPotionEffect(PoseStack ms, PlayerEntity entity) {
+    private void drawPotionEffect(org.joml.Matrix3x2fStack ms, PlayerEntity entity) {
         StringBuilder finalString = new StringBuilder();
         for (StatusEffectInstance potionEffect : entity.getStatusEffects()) {
             StatusEffect potion = potionEffect.getEffectType().value();

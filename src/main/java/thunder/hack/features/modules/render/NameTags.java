@@ -1,8 +1,7 @@
 package thunder.hack.features.modules.render;
 
-import net.minecraft.client.render.RenderPipelines;
-
 import net.minecraft.client.gl.RenderPipelines;
+//
 import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Ordering;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -171,25 +170,25 @@ public class NameTags extends Module {
                 if (armorMode.getValue() != Armor.Durability) stacks.add(ent.getMainHandStack());
 
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(tagX - 2 + (textWidth + 4) / 2f, (float) (posY - 13f) + 6.5f);
-                context.getMatrices().scale(scale, scale);
-                context.getMatrices().translate(-(tagX - 2 + (textWidth + 4) / 2f), -(float) ((posY - 13f) + 6.5f));
+                context.getMatrices().translate((float) (tagX - 2 + (textWidth + 4) / 2f), (float) (posY - 13f) + 6.5f);
+                context.getMatrices().scale((float) (scale), (float) (scale));
+                context.getMatrices().translate((float) (-(tagX - 2 + (textWidth + 4) / 2f)), (float) (-(float) ((posY - 13f) + 6.5f)));
 
                 float item_offset = 0;
                 if (armorMode.getValue() != Armor.None) for (ItemStack armorComponent : stacks) {
                     if (!armorComponent.isEmpty()) {
                         if (armorMode.getValue() == Armor.Full) {
                             context.getMatrices().pushMatrix();
-                            context.getMatrices().translate(posX - 55 + item_offset, (float) (posY - 33f));
-                            context.getMatrices().scale(1.1f, 1.1f);
+                            context.getMatrices().translate((float) (posX - 55 + item_offset), (float) (posY - 33f));
+                            context.getMatrices().scale((float) (1.1f), (float) (1.1f));
 
                             context.drawItem(armorComponent, 0, 0);
                             context.drawStackOverlay(mc.textRenderer, armorComponent, 0, 0);
                             context.getMatrices().popMatrix();
                         } else {
                             context.getMatrices().pushMatrix();
-                            context.getMatrices().translate(posX - 35 + item_offset, (float) (posY - 20));
-                            context.getMatrices().scale(0.7f, 0.7f);
+                            context.getMatrices().translate((float) (posX - 35 + item_offset), (float) (posY - 20));
+                            context.getMatrices().scale((float) (0.7f), (float) (0.7f));
 
                             float durability = armorComponent.getMaxDamage() - armorComponent.getDamage();
                             int percent = (int) ((durability / (float) armorComponent.getMaxDamage()) * 100F);
@@ -223,7 +222,7 @@ public class NameTags extends Module {
                                             FontRenderers.sf_bold.drawString(context.getMatrices(), encName, posX - 50 + item_offset, (float) posY - 45 + enchantmentY, -1);
                                         } else {
                                             context.getMatrices().pushMatrix();
-                                            context.getMatrices().translate((posX - 50f + item_offset), (posY - 45f + enchantmentY));
+                                            context.getMatrices().translate((float) ((posX - 50f + item_offset)), (float) ((posY - 45f + enchantmentY)));
                                             context.drawText(mc.textRenderer, encName, 0, 0, -1, false);
                                             context.getMatrices().popMatrix();
                                         }
@@ -283,7 +282,7 @@ public class NameTags extends Module {
                     FontRenderers.sf_bold.drawString(context.getMatrices(), final_string, tagX, (float) posY - 10, -1);
                 } else {
                     context.getMatrices().pushMatrix();
-                    context.getMatrices().translate(tagX, ((float) posY - 11));
+                    context.getMatrices().translate((float) (tagX), (float) (((float) posY - 11)));
                     context.drawText(mc.textRenderer, final_string, 0, 0, -1, false);
                     context.getMatrices().popMatrix();
                 }
@@ -294,7 +293,7 @@ public class NameTags extends Module {
                     int p = MathHelper.ceil(ent.getAbsorptionAmount());
                     context.getMatrices().pushMatrix();
                     context.getMatrices().translate((float) (posX - 44), (float) (posY));
-                    context.getMatrices().scale(1.1f, 1.1f);
+                    context.getMatrices().scale((float) (1.1f), (float) (1.1f));
                     renderHealthBar(context, ent, f, i, p);
                     context.getMatrices().popMatrix();
                 }

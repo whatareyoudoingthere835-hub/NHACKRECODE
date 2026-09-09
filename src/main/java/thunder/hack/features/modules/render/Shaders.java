@@ -83,7 +83,7 @@ public class Shaders extends Module {
 
     public void onRender3D(PoseStack matrices) {
         if (hands.getValue())
-            Managers.SHADER.renderShader(() -> ((IGameRenderer) mc.gameRenderer).irenderHand(mc.gameRenderer.getCamera(), Render3DEngine.getTickDelta(false), matrices.peek().getPositionMatrix()), handsMode.getValue());
+            Managers.SHADER.renderShader(() -> ((IGameRenderer) mc.gameRenderer).irenderHand(mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera(), Render3DEngine.getTickDelta(false), matrices.peek().getPositionMatrix()), handsMode.getValue());
     }
 
     @Override

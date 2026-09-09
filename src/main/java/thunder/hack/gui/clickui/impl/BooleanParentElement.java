@@ -1,8 +1,7 @@
 package thunder.hack.gui.clickui.impl;
 
-import net.minecraft.client.render.RenderPipelines;
-
 import net.minecraft.client.gl.RenderPipelines;
+//
 import net.minecraft.util.math.MathHelper;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
@@ -46,12 +45,12 @@ public class BooleanParentElement extends AbstractElement {
         arrowAnimation = fast(arrowAnimation, getParentSetting().getValue().isExtended() ? 0 : 1, 15f);
 
         matrixStack.pushMatrix();
-        matrixStack.translate(tx, ty, 0);
+        matrixStack.translate((float) (tx), (float) (ty));
         matrixStack.rotate((-180f * arrowAnimation) * MathHelper.RADIANS_PER_DEGREE);
-        matrixStack.translate(-tx, -ty, 0);
-        matrixStack.translate((x + width - 14), (y + 4.5f), 0);
+        matrixStack.translate((float) (-tx), (float) (-ty));
+        matrixStack.translate((float) ((x + width - 14)), (float) ((y + 4.5f)));
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6, -1);
-        matrixStack.translate(-(x + width - 14), -(y + 4.5f), 0);
+        matrixStack.translate((float) (-(x + width - 14)), (float) (-(y + 4.5f)));
         matrixStack.popMatrix();
 
         FontRenderers.sf_medium_mini.drawString(matrixStack, setting.getName(), x + 6, y + height / 2 - 1f, new Color(-1).getRGB());

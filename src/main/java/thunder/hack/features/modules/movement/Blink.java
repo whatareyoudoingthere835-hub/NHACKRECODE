@@ -95,7 +95,7 @@ public class Blink extends Module {
 
     @EventHandler
     public void onPacketReceive(PacketEvent.Receive event) {
-        if (event.getPacket() instanceof EntityVelocityUpdateS2CPacket vel && vel.getId() == mc.player.getId() && disableOnVelocity.getValue())
+        if (event.getPacket() instanceof EntityVelocityUpdateS2CPacket vel && vel.getEntityId() == mc.player.getId() && disableOnVelocity.getValue())
             disable(isRu() ? "Выключенно из-за велосити(инжектор на боблокс)!" : "Disabled due to velocity!");
     }
 
@@ -133,8 +133,8 @@ public class Blink extends Module {
             mc.player.setPos(lastPos.getX(), lastPos.getY(), lastPos.getZ());
             mc.player.setVelocity(prevVelocity);
             mc.player.changeLookDirection((prevYaw) - mc.player.getYaw(), 0);
-            mc.player.input.playerInput = player.input.playerInput.withSprint(prevSprinting);
-            mc.player.input.playerInput = player.input.playerInput.withSneak(false);
+            mc.player.input.playerInput = mc.player.input.playerInput.withSprint(prevSprinting);
+            mc.player.input.playerInput = mc.player.input.playerInput.withSneak(false);
             mc.options.sneakKey.setPressed(false);
             sending.set(true);
             while (!storedTransactions.isEmpty())

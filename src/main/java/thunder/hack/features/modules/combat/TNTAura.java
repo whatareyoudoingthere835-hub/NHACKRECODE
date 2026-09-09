@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.util.math.Vec3d;
+
 import com.google.common.collect.Lists;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.TntBlock;

@@ -55,44 +55,44 @@ public class TotemAnimation extends Module {
             case FadeOut -> {
                 final float x2 = (float) (Math.sin(((adjustedProgress * 112) / 180f)) * 100);
                 final float y2 = (float) (Math.cos(((adjustedProgress * 112) / 180f)) * 50);
-                m.translate(cx + x2, cy + y2);
+                m.translate((float) (cx + x2), (float) (cy + y2));
                 m.scale(scale / 50.0F);
             }
 
             case Size -> {
-                m.translate(cx, cy);
+                m.translate((float) (cx), (float) (cy));
                 m.scale(scale / 50.0F);
             }
 
             case Otkisuli -> {
-                m.translate(cx, cy);
+                m.translate((float) (cx), (float) (cy));
                 m.rotate(adjustedProgress * 2f);
                 m.scale(1.5f + adjustedProgress * 0.05f);
             }
 
             case Insert -> {
-                m.translate(cx, cy);
+                m.translate((float) (cx), (float) (cy));
                 m.rotate(adjustedProgress * 3f);
                 m.scale(Math.max(0.25f, 2.5f - adjustedProgress * 0.15f));
             }
 
             case Fall -> {
                 float downFactor = (float) (Math.pow(adjustedProgress, 3) * 40f);
-                m.translate(cx, cy + downFactor);
+                m.translate((float) (cx), (float) (cy + downFactor));
                 m.rotate(adjustedProgress * 5f);
                 m.scale(2f);
             }
 
             case Rocket -> {
                 float downFactor = (float) (Math.pow(adjustedProgress, 3) * 40f) - 20;
-                m.translate(cx, cy - downFactor);
+                m.translate((float) (cx), (float) (cy - downFactor));
                 m.rotate(adjustedProgress * floatingItemTimeLeft * 0.2f);
                 m.scale(2f);
             }
 
             case Roll -> {
                 float rightFactor = (float) (Math.pow(adjustedProgress, 2) * 20f);
-                m.translate(cx + rightFactor, cy);
+                m.translate((float) (cx + rightFactor), (float) (cy));
                 m.rotate(adjustedProgress * 40f);
                 m.scale(2f);
             }

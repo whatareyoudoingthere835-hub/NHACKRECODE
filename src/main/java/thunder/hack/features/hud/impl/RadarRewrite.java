@@ -69,18 +69,18 @@ public class RadarRewrite extends HudElement {
             int color = 0;
 
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue());
+            context.getMatrices().translate((float) (middleW + CRadius.getValue()), (float) (middleH + CRadius.getValue()));
             float tiltDeg = 90f / Math.abs(90f / MathUtility.clamp(mc.player.getPitch(), pitchLock.getValue(), 90f)) - 102f;
-            context.getMatrices().scale(1f, (float) Math.cos(Math.toRadians(tiltDeg)));
-            context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()));
+            context.getMatrices().scale((float) (1f), (float) Math.cos(Math.toRadians(tiltDeg)));
+            context.getMatrices().translate((float) (-(middleW + CRadius.getValue())), (float) (-(middleH + CRadius.getValue())));
 
             for (PlayerEntity e : Lists.newArrayList(mc.world.getPlayers())) {
                 if (e != mc.player) {
                     context.getMatrices().pushMatrix();
                     float yaw = getRotations(e) - mc.player.getYaw();
-                    context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue());
+                    context.getMatrices().translate((float) (middleW + CRadius.getValue()), (float) (middleH + CRadius.getValue()));
                     context.getMatrices().rotate((yaw) * MathHelper.RADIANS_PER_DEGREE);
-                    context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()));
+                    context.getMatrices().translate((float) (-(middleW + CRadius.getValue())), (float) (-(middleH + CRadius.getValue())));
 
                     if (Managers.FRIEND.isFriend(e))
                         color = colorf.getValue().getColor();
@@ -91,9 +91,9 @@ public class RadarRewrite extends HudElement {
 
                     Render2DEngine.drawTracerPointer(context.getMatrices(), middleW + CRadius.getValue(), middleH - xOffset.getValue() + CRadius.getValue(), width.getValue() * 5F, tracerWidth.getValue(), down.getValue(), true, glow.getValue(), color);
 
-                    context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue());
+                    context.getMatrices().translate((float) (middleW + CRadius.getValue()), (float) (middleH + CRadius.getValue()));
                     context.getMatrices().rotate((-yaw) * MathHelper.RADIANS_PER_DEGREE);
-                    context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()));
+                    context.getMatrices().translate((float) (-(middleW + CRadius.getValue())), (float) (-(middleH + CRadius.getValue())));
                     context.getMatrices().popMatrix();
                 }
             }

@@ -1,8 +1,7 @@
 package thunder.hack.gui.clickui.impl;
 
-import net.minecraft.client.render.RenderPipelines;
-
 import net.minecraft.client.gl.RenderPipelines;
+//
 import net.minecraft.util.math.MathHelper;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
@@ -48,13 +47,13 @@ public class ModeElement extends AbstractElement {
         float thetaRotation = -180f * animation;
         matrixStack.pushMatrix();
 
-        matrixStack.translate(tx, ty, 0);
+        matrixStack.translate((float) (tx), (float) (ty));
         matrixStack.rotate((thetaRotation) * MathHelper.RADIANS_PER_DEGREE);
-        matrixStack.translate(-tx, -ty, 0);
+        matrixStack.translate((float) (-tx), (float) (-ty));
 
-        matrixStack.translate((x + width - 14), y + 4.5f, 0);
+        matrixStack.translate((float) ((x + width - 14)), (float) (y + 4.5f));
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6, -1);
-        matrixStack.translate(-(x + width - 14), -y - 4.5f, 0);
+        matrixStack.translate((float) (-(x + width - 14)), (float) (-y - 4.5f));
 
         matrixStack.popMatrix();
 

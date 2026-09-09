@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+
 import thunder.hack.injection.accesors.ILivingEntity;
 
 import thunder.hack.utility.player.ItemChecks;

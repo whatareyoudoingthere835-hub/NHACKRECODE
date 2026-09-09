@@ -4,7 +4,6 @@ import net.minecraft.client.render.VertexConsumer;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
-import org.joml.Quaternionfc;
 
 /**
  * Replacement for the removed vanilla PoseStack (1.21.9+). Backed by a joml
@@ -42,19 +41,6 @@ public class PoseStack extends Matrix4fStack {
 
     public void scale(double s) {
         scale((float) s, (float) s, (float) s);
-    }
-
-    @Override
-    public boolean multiply(Quaternionfc quaternion) {
-        return super.multiply(quaternion);
-    }
-
-    public void multiply(Matrix4f matrix) {
-        super.multiply(matrix);
-    }
-
-    public void multiplyCurrent(Matrix4f matrix) {
-        super.multiply(matrix);
     }
 
     public Matrix4f last() {

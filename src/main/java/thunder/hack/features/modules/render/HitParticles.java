@@ -175,18 +175,18 @@ public class HitParticles extends Module {
             float size = starsScale.getValue();
             float scale = mode.is(Mode.Text) ? 0.025f * size : 0.07f;
 
-            final double posX = Render2DEngine.interpolate(px, x, Render3DEngine.getTickDelta(false)) - gameRenderer.getCamera().getCameraPos().getX();
-            final double posY = Render2DEngine.interpolate(py, y, Render3DEngine.getTickDelta(false)) + 0.1 - gameRenderer.getCamera().getCameraPos().getY();
-            final double posZ = Render2DEngine.interpolate(pz, z, Render3DEngine.getTickDelta(false)) - gameRenderer.getCamera().getCameraPos().getZ();
+            final double posX = Render2DEngine.interpolate(px, x, Render3DEngine.getTickDelta(false)) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+            final double posY = Render2DEngine.interpolate(py, y, Render3DEngine.getTickDelta(false)) + 0.1 - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+            final double posZ = Render2DEngine.interpolate(pz, z, Render3DEngine.getTickDelta(false)) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
             matrixStack.pushMatrix();
-            matrixStack.translate(posX, posY);
+            matrixStack.translate((float) (posX), (float) (posY));
 
             matrixStack.scale(scale, scale, scale);
 
             matrixStack.translate(size / 2, size / 2, size / 2);
-            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-mc.gameRenderer.getCamera().getYaw()));
-            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(mc.gameRenderer.getCamera().getPitch()));
+            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw()));
+            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPitch()));
 
             if (mode.is(Mode.Text))
                 matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));

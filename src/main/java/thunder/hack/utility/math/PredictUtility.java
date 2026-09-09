@@ -57,7 +57,7 @@ public class PredictUtility {
     }
 
     public static PlayerEntity equipAndReturn(PlayerEntity original, Vec3d posVec) {
-        PlayerEntity copyEntity = new PlayerEntity(mc.world, original.getBlockPos(), original.getYaw(), new GameProfile(UUID.fromString("66123666-1234-5432-6666-667563866600"), "PredictEntity339")) {
+        PlayerEntity copyEntity = new PlayerEntity(mc.world, new GameProfile(UUID.fromString("66123666-1234-5432-6666-667563866600"), "PredictEntity339")) {
             @Override
             public boolean isSpectator() {
                 return false;
@@ -67,12 +67,17 @@ public class PredictUtility {
             public boolean isCreative() {
                 return false;
             }
+
+            @Override
+            public net.minecraft.world.GameMode getGameMode() {
+                return net.minecraft.world.GameMode.SURVIVAL;
+            }
         };
 
         copyEntity.setPosition(posVec);
         copyEntity.setHealth(original.getHealth());
-        copyEntity.prevX = original.prevX;
-        copyEntity.prevZ = original.prevZ;
+        // 1.21.11: prev-position not writable
+        // 1.21.11: prev-position not writable
         copyEntity.prevY = original.prevY;
         copyEntity.getInventory().clone(original.getInventory());
         for (StatusEffectInstance se : original.getStatusEffects()) {

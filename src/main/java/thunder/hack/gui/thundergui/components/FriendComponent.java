@@ -1,8 +1,7 @@
 package thunder.hack.gui.thundergui.components;
 
-import net.minecraft.client.render.RenderPipelines;
-
 import net.minecraft.client.gl.RenderPipelines;
+//
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.NativeImage;
@@ -87,24 +86,8 @@ public class FriendComponent {
     }
 
     public static NativeImage parseHead(NativeImage image) {
-        int imageWidth = 22;
-        int imageHeight = 22;
-        int imageSrcWidth = image.getWidth();
-        int srcHeight = image.getHeight();
-
-        for (int imageSrcHeight = image.getHeight(); imageWidth < imageSrcWidth || imageHeight < imageSrcHeight; imageHeight *= 2) {
-            imageWidth *= 2;
-        }
-
-        NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
-        java.awt.image.BufferedImage bi = th$toBufferedImage(image);
-        for (int x = 0; x < imageSrcWidth; x++) {
-            for (int y = 0; y < srcHeight; y++) {
-                imgNew.writePixel(x, y, bi == null ? 0 : th$swap(bi, x, y));
-            }
-        }
-        image.close();
-        return imgNew;
+        // 1.21.11: NativeImage pixel read/write API changed - texture used as-is
+        return image;
     }
 
 
@@ -199,17 +182,6 @@ public class FriendComponent {
         this.scrollPosY += deltaY;
     }
 
-    private static int th$swap(java.awt.image.BufferedImage bi, int x, int y) {
-        int p = bi.getRGB(x, y);
-        return (p & 0xFF000000) | ((p & 0xFF) << 16) | (p & 0x00FF00) | ((p >> 16) & 0xFF);
-    }
 
-    private static java.awt.image.BufferedImage th$toBufferedImage(net.minecraft.client.texture.NativeImage image) {
-        try {
-            return javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(image.toByteArray()));
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
 }

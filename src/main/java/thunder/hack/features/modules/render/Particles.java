@@ -148,7 +148,7 @@ public class Particles extends Module {
         Render2DEngine.bindTexture(TextureStorage.firefly);
 
             if (!trails.isEmpty()) {
-                Camera camera = mc.gameRenderer.getCamera();
+                Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
                 for (Trails.Trail ctx : trails) {
                     Vec3d pos = ctx.interpolate(1f);
                     PoseStack matrices = new PoseStack();
@@ -221,7 +221,7 @@ public class Particles extends Module {
                 case Stars -> Render2DEngine.bindTexture(TextureStorage.star);
             }
 
-            Camera camera = mc.gameRenderer.getCamera();
+            Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
             Color color1 = lmode.getValue() == ColorMode.Sync ? HudEditor.getColor(age * 2) : color.getValue().getColorObject();
             Vec3d pos = Render3DEngine.interpolatePos(prevposX, prevposY, prevposZ, posX, posY, posZ);
 

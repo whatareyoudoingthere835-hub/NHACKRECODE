@@ -71,19 +71,20 @@ public final class PopChams extends Module {
     private void onTotemPop(@NotNull TotemPopEvent e) {
         if (e.getEntity().equals(mc.player) || mc.world == null) return;
 
-        PlayerEntity entity = new PlayerEntity(mc.world, BlockPos.ORIGIN, e.getEntity().bodyYaw, new GameProfile(e.getEntity().getUuid(), e.getEntity().getName().getString())) {
+        PlayerEntity entity = new PlayerEntity(mc.world, new GameProfile(e.getEntity().getUuid(), e.getEntity().getName().getString())) {
             @Override public boolean isSpectator() {return false;}
             @Override public boolean isCreative() {return false;}
+            @Override public net.minecraft.world.GameMode getGameMode() {return net.minecraft.world.GameMode.SURVIVAL;}
         };
 
         entity.copyPositionAndRotation(e.getEntity());
         entity.setBodyYaw(e.getEntity().getBodyYaw());
         entity.setHeadYaw(e.getEntity().getHeadYaw());
         entity.handSwingProgress = e.getEntity().handSwingProgress;
-        entity.handSwingTicks = e.getEntity().handSwingTicks;
-        entity.input.playerInput = entity.input.playerInput.withSneak(e.getEntity().isSneaking());
+        // 1.21.11: handSwingTicks not settable
+        // 1.21.11: input is ClientPlayerEntity-only
         // limb animation transfer unsupported on 1.21.11 LimbAnimator
-        popList.add(new Person(entity, ((AbstractClientPlayerEntity) thunder.hack.utility.SkinUtility.skin(e.getEntity()))));
+        popList.add(new Person(entity, thunder.hack.utility.SkinUtility.skin(e.getEntity()))));
     }
 
     private void renderEntity(@NotNull PoseStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
@@ -94,9 +95,9 @@ public final class PopChams extends Module {
         modelBase.jacket.visible = secondLayer.getValue();
         modelBase.hat.visible = secondLayer.getValue();
 
-        double x = entity.getX() - gameRenderer.getCamera().getCameraPos().getX();
-        double y = entity.getY() - gameRenderer.getCamera().getCameraPos().getY();
-        double z = entity.getZ() - gameRenderer.getCamera().getCameraPos().getZ();
+        double x = entity.getX() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+        double y = entity.getY() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+        double z = entity.getZ() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
         ((IEntity) entity).setPos(new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(0, (double) ySpeed.getValue() / 50., 0));
 
         matrices.push();
@@ -105,16 +106,16 @@ public final class PopChams extends Module {
         float yRotYaw = ((alpha / 255f) * 360f * rotSpeed.getValue());
         yRotYaw = yRotYaw == 0 ? 0 : Render2DEngine.interpolateFloat(yRotYaw, yRotYaw - (((aSpeed.getValue() / 255f) * 360f * rotSpeed.getValue())), Render3DEngine.getTickDelta(false));
 
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw + yRotYaw)));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw() + yRotYaw)));
         prepareScale(matrices);
 
         PlayerEntityRenderState state = new PlayerEntityRenderState();
         state.age = entity.age + Render3DEngine.getTickDelta(false);
-        state.bodyYaw = entity.bodyYaw;
-        state.relativeHeadYaw = entity.headYaw - entity.bodyYaw;
+        state.setBodyYaw(entity.getBodyYaw());
+        state.relativeHeadYaw = entity.getHeadYaw() - entity.getBodyYaw();
         state.pitch = entity.getPitch();
         state.limbSwingAnimationProgress = 0f; // 1.21.11: not readable
-        state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(), 1f);
+        state.limbSwingAmplitude = 1f;
         modelBase.resetTransforms();
         modelBase.setAngles(state);
 

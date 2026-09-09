@@ -73,7 +73,7 @@ public class FakePlayer extends Module {
     public void onPacketReceive(PacketEvent.Receive e) {
         if (e.getPacket() instanceof ExplosionS2CPacket explosion && fakePlayer != null && fakePlayer.hurtTime == 0) {
             fakePlayer.onDamaged(mc.world.getDamageSources().generic());
-            fakePlayer.setHealth(fakePlayer.getHealth() + fakePlayer.getAbsorptionAmount() - ExplosionUtility.getAutoCrystalDamage(new Vec3d(explosion.getX(), explosion.getY(), explosion.getZ()), fakePlayer, 0, false));
+            fakePlayer.setHealth(fakePlayer.getHealth() + fakePlayer.getAbsorptionAmount() - ExplosionUtility.getAutoCrystalDamage(explosion.center(), fakePlayer, 0, false));
             if (fakePlayer.isDead()) {
                 if (fakePlayer.getOffHandStack().getItem() == net.minecraft.item.Items.TOTEM_OF_UNDYING) {
                     fakePlayer.setHealth(10f);

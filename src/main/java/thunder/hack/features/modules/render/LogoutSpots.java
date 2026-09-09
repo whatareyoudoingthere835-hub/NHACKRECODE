@@ -58,7 +58,7 @@ public class LogoutSpots extends Module {
             if (pac.getActions().contains(PlayerListS2CPacket.Action.ADD_PLAYER)) {
                 for (PlayerListS2CPacket.Entry ple : pac.getPlayerAdditionEntries()) {
                     for (UUID uuid : logoutCache.keySet()) {
-                        if (!uuid.equals(ple.profile().getId())) continue;
+                        if (!uuid.equals(ple.profile().id())) continue;
                         PlayerEntity pl = logoutCache.get(uuid);
                         if (ignoreBots.getValue() && isABot(pl)) continue;
                         if (notifications.getValue())
@@ -162,18 +162,18 @@ public class LogoutSpots extends Module {
         modelBase.jacket.visible = true;
         modelBase.hat.visible = true;
 
-        double x = entity.getX() - gameRenderer.getCamera().getCameraPos().getX();
-        double y = entity.getY() - gameRenderer.getCamera().getCameraPos().getY();
-        double z = entity.getZ() - gameRenderer.getCamera().getCameraPos().getZ();
+        double x = entity.getX() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
+        double y = entity.getY() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+        double z = entity.getZ() - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
         ((IEntity) entity).setPos(new Vec3d(entity.getX(), entity.getY(), entity.getZ()));
         matrices.push();
         matrices.translate((float) x, (float) y, (float) z);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw)));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw())));
         prepareScale(matrices);
         PlayerEntityRenderState state = new PlayerEntityRenderState();
         state.age = entity.age + Render3DEngine.getTickDelta(false);
-        state.bodyYaw = entity.bodyYaw;
-        state.relativeHeadYaw = entity.headYaw - entity.bodyYaw;
+        state.setBodyYaw(entity.getBodyYaw());
+        state.relativeHeadYaw = entity.getHeadYaw() - entity.getBodyYaw();
         state.pitch = entity.getPitch();
         state.limbSwingAnimationProgress = 0f; // 1.21.11: not readable
         state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(), 1f);

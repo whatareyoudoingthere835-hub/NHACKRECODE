@@ -117,8 +117,8 @@ public class BlockESP extends Module {
 
                 if (tracers.getValue()) {
                     Vec3d vec2 = new Vec3d(0, 0, 75)
-                            .rotateX(-(float) Math.toRadians(mc.gameRenderer.getCamera().getPitch()))
-                            .rotateY(-(float) Math.toRadians(mc.gameRenderer.getCamera().getYaw()))
+                            .rotateX(-(float) Math.toRadians(mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPitch()))
+                            .rotateY(-(float) Math.toRadians(mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw()))
                             .add(mc.getCameraEntity().getEyePos());
 
                     Render3DEngine.drawLineDebug(vec2, vec.getVector(), color.getValue().getColorObject());

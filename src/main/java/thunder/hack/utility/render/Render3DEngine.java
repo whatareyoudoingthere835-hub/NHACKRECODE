@@ -118,13 +118,13 @@ public class Render3DEngine {
     }
 
     public static void setFilledBoxVertexes(@NotNull BufferBuilder bufferBuilder, Matrix4f m, @NotNull Box box, @NotNull Color c) {
-        Vec3d cam = gameRenderer.getCamera().getCameraPos();
-        float minX = (float) (box.minX - cam.getX());
-        float minY = (float) (box.minY - cam.getY());
-        float minZ = (float) (box.minZ - cam.getZ());
-        float maxX = (float) (box.maxX - cam.getX());
-        float maxY = (float) (box.maxY - cam.getY());
-        float maxZ = (float) (box.maxZ - cam.getZ());
+        Vec3d cam = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos();
+        float minX = (float) (box.minX - cam.x);
+        float minY = (float) (box.minY - cam.y);
+        float minZ = (float) (box.minZ - cam.z);
+        float maxX = (float) (box.maxX - cam.x);
+        float maxY = (float) (box.maxY - cam.y);
+        float maxZ = (float) (box.maxZ - cam.z);
 
         int color = c.getRGB();
 
@@ -175,13 +175,13 @@ public class Render3DEngine {
     }
 
     public static void setFilledSidePoints(BufferBuilder buffer, Matrix4f matrix, Box box, Color c, Direction dir) {
-        Vec3d cam = gameRenderer.getCamera().getCameraPos();
-        float minX = (float) (box.minX - cam.getX());
-        float minY = (float) (box.minY - cam.getY());
-        float minZ = (float) (box.minZ - cam.getZ());
-        float maxX = (float) (box.maxX - cam.getX());
-        float maxY = (float) (box.maxY - cam.getY());
-        float maxZ = (float) (box.maxZ - cam.getZ());
+        Vec3d cam = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos();
+        float minX = (float) (box.minX - cam.x);
+        float minY = (float) (box.minY - cam.y);
+        float minZ = (float) (box.minZ - cam.z);
+        float maxX = (float) (box.maxX - cam.x);
+        float maxY = (float) (box.maxY - cam.y);
+        float maxZ = (float) (box.maxZ - cam.z);
 
         int color = c.getRGB();
 
@@ -246,7 +246,7 @@ public class Render3DEngine {
     }
 
     public static @NotNull Vec3d worldSpaceToScreenSpace(@NotNull Vec3d pos) {
-        Camera camera = mc.gameRenderer.getCamera();
+        Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
         int displayHeight = mc.getWindow().getHeight();
         int[] viewport = new int[]{0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight()};
         Vector3f target = new Vector3f();
@@ -274,13 +274,13 @@ public class Render3DEngine {
     }
 
     public static void setFilledFadePoints(Box box, BufferBuilder buffer, Matrix4f posMatrix, Color c, Color c1) {
-        Vec3d cam = gameRenderer.getCamera().getCameraPos();
-        float minX = (float) (box.minX - cam.getX());
-        float minY = (float) (box.minY - cam.getY());
-        float minZ = (float) (box.minZ - cam.getZ());
-        float maxX = (float) (box.maxX - cam.getX());
-        float maxY = (float) (box.maxY - cam.getY());
-        float maxZ = (float) (box.maxZ - cam.getZ());
+        Vec3d cam = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos();
+        float minX = (float) (box.minX - cam.x);
+        float minY = (float) (box.minY - cam.y);
+        float minZ = (float) (box.minZ - cam.z);
+        float maxX = (float) (box.maxX - cam.x);
+        float maxY = (float) (box.maxY - cam.y);
+        float maxZ = (float) (box.maxZ - cam.z);
 
         int bottom = c.getRGB();
         int top = c1.getRGB();
@@ -444,7 +444,7 @@ public class Render3DEngine {
     public static @NotNull PoseStack matrixFrom(double x, double y, double z) {
         PoseStack matrices = new PoseStack();
 
-        Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
+        Camera camera = MinecraftClient.getInstance().net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
 
@@ -466,10 +466,10 @@ public class Render3DEngine {
         ArrayList<Vec3d> vecs1 = new ArrayList<>();
         ArrayList<Vec3d> vecs2 = new ArrayList<>();
 
-        Vec3d cam = gameRenderer.getCamera().getCameraPos();
-        double x = (target.getX() - target.getVelocity().x) + (target.getX() - (target.getX() - target.getVelocity().x)) * getTickDelta() - cam.getX();
-        double y = (target.getY() - target.getVelocity().y) + (target.getY() - (target.getY() - target.getVelocity().y)) * getTickDelta() - cam.getY();
-        double z = (target.getZ() - target.getVelocity().z) + (target.getZ() - (target.getZ() - target.getVelocity().z)) * getTickDelta() - cam.getZ();
+        Vec3d cam = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos();
+        double x = (target.getX() - target.getVelocity().x) + (target.getX() - (target.getX() - target.getVelocity().x)) * getTickDelta() - cam.x;
+        double y = (target.getY() - target.getVelocity().y) + (target.getY() - (target.getY() - target.getVelocity().y)) * getTickDelta() - cam.y;
+        double z = (target.getZ() - target.getVelocity().z) + (target.getZ() - (target.getZ() - target.getVelocity().z)) * getTickDelta() - cam.z;
 
         double height = target.getHeight();
 
@@ -604,10 +604,10 @@ public class Render3DEngine {
 
     public static void drawCircle3D(PoseStack stack, Entity ent, float radius, int color, int points, boolean hudColor, int colorOffset) {
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-        Vec3d cam = gameRenderer.getCamera().getCameraPos();
-        double x = (ent.getX() - ent.getVelocity().x) + (ent.getX() - (ent.getX() - ent.getVelocity().x)) * getTickDelta() - cam.getX();
-        double y = (ent.getY() - ent.getVelocity().y) + (ent.getY() - (ent.getY() - ent.getVelocity().y)) * getTickDelta() - cam.getY();
-        double z = (ent.getZ() - ent.getVelocity().z) + (ent.getZ() - (ent.getZ() - ent.getVelocity().z)) * getTickDelta() - cam.getZ();
+        Vec3d cam = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos();
+        double x = (ent.getX() - ent.getVelocity().x) + (ent.getX() - (ent.getX() - ent.getVelocity().x)) * getTickDelta() - cam.x;
+        double y = (ent.getY() - ent.getVelocity().y) + (ent.getY() - (ent.getY() - ent.getVelocity().y)) * getTickDelta() - cam.y;
+        double z = (ent.getZ() - ent.getVelocity().z) + (ent.getZ() - (ent.getZ() - ent.getVelocity().z)) * getTickDelta() - cam.z;
         stack.push();
         stack.translate(x, y, z);
 
@@ -628,11 +628,11 @@ public class Render3DEngine {
         double cs = prevCircleStep + (circleStep - prevCircleStep) * getTickDelta();
         double prevSinAnim = absSinAnimation(cs - 0.45f);
         double sinAnim = absSinAnimation(cs);
-        Vec3d cam = gameRenderer.getCamera().getCameraPos();
-        double x = (target.getX() - target.getVelocity().x) + (target.getX() - (target.getX() - target.getVelocity().x)) * getTickDelta() - cam.getX();
-        double y = (target.getY() - target.getVelocity().y) + (target.getY() - (target.getY() - target.getVelocity().y)) * getTickDelta() - cam.getY() + prevSinAnim * target.getHeight();
-        double z = (target.getZ() - target.getVelocity().z) + (target.getZ() - (target.getZ() - target.getVelocity().z)) * getTickDelta() - cam.getZ();
-        double nextY = (target.getY() - target.getVelocity().y) + (target.getY() - (target.getY() - target.getVelocity().y)) * getTickDelta() - cam.getY() + sinAnim * target.getHeight();
+        Vec3d cam = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos();
+        double x = (target.getX() - target.getVelocity().x) + (target.getX() - (target.getX() - target.getVelocity().x)) * getTickDelta() - cam.x;
+        double y = (target.getY() - target.getVelocity().y) + (target.getY() - (target.getY() - target.getVelocity().y)) * getTickDelta() - cam.y + prevSinAnim * target.getHeight();
+        double z = (target.getZ() - target.getVelocity().z) + (target.getZ() - (target.getZ() - target.getVelocity().z)) * getTickDelta() - cam.z;
+        double nextY = (target.getY() - target.getVelocity().y) + (target.getY() - (target.getY() - target.getVelocity().y)) * getTickDelta() - cam.y + sinAnim * target.getHeight();
         stack.push();
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
@@ -651,7 +651,7 @@ public class Render3DEngine {
     // Kalry не пасть
     // anti yg protection
     public static void renderGhosts(int espLength, int factor, float shaking, float amplitude, Entity target) {
-        Camera camera = mc.gameRenderer.getCamera();
+        Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
 
         double tPosX = Render2DEngine.interpolate((target.getX() - target.getVelocity().x), target.getX(), Render3DEngine.getTickDelta(false)) - camera.getCameraPos().x;
         double tPosY = Render2DEngine.interpolate((target.getY() - target.getVelocity().y), target.getY(), Render3DEngine.getTickDelta(false)) - camera.getCameraPos().y;
@@ -695,10 +695,10 @@ public class Render3DEngine {
     }
 
     public static Vec3d interpolatePos(float prevposX, float prevposY, float prevposZ, float posX, float posY, float posZ) {
-        Vec3d cam = gameRenderer.getCamera().getCameraPos();
-        double x = prevposX + ((posX - prevposX) * getTickDelta()) - cam.getX();
-        double y = prevposY + ((posY - prevposY) * getTickDelta()) - cam.getY();
-        double z = prevposZ + ((posZ - prevposZ) * getTickDelta()) - cam.getZ();
+        Vec3d cam = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos();
+        double x = prevposX + ((posX - prevposX) * getTickDelta()) - cam.x;
+        double y = prevposY + ((posY - prevposY) * getTickDelta()) - cam.y;
+        double z = prevposZ + ((posZ - prevposZ) * getTickDelta()) - cam.z;
         return new Vec3d(x, y, z);
     }
 

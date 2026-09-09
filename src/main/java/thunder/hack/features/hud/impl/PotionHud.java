@@ -109,7 +109,7 @@ public class PotionHud extends HudElement {
             float px = getPosX() + (max_width - pointerX - 10);
 
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate(getPosX() + 2, getPosY() + 16 + y_offset);
+            context.getMatrices().translate((float) (getPosX() + 2), (float) (getPosY() + 16 + y_offset));
             // TODO 1.21.11: StatusEffectSpriteManager removed; icon omitted
             context.getMatrices().popMatrix();
 

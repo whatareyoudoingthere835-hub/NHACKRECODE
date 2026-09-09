@@ -76,11 +76,12 @@ public final class ItemChecks {
     public static double protectionPoints(ItemStack stack) {
         if (stack == null || stack.isEmpty()) return 0;
         double[] out = new double[2];
-        stack.applyAttributeModifiers(AttributeModifierSlot.ARMOR, (attribute, modifier) -> {
-            if (attribute == null || modifier == null) return;
-            if (attribute.matches(ARMOR)) out[0] += modifier.value();
-            else if (attribute.matches(TOUGHNESS)) out[1] += modifier.value();
-        });
+        var amc = stack.get(net.minecraft.component.DataComponentTypes.ATTRIBUTE_MODIFIERS);
+        if (amc != null) for (var entry : amc.modifiers()) {
+            var attr = entry.modifier().attribute();
+            if (attr.equals(ARMOR)) out[0] += entry.modifier().value();
+            else if (attr.equals(TOUGHNESS)) out[1] += entry.modifier().value();
+        }
         return out[0] + out[1];
     }
 
@@ -88,13 +89,14 @@ public final class ItemChecks {
     public static double attackDamage(ItemStack stack) {
         if (stack == null || stack.isEmpty()) return -1;
         double[] out = new double[]{-1};
-        stack.applyAttributeModifiers(AttributeModifierSlot.MAINHAND, (attribute, modifier) -> {
-            if (attribute == null || modifier == null) return;
-            if (attribute.getValue() != null && "attack_damage".equals(attribute.getValue().getPath())) {
+        var amc = stack.get(net.minecraft.component.DataComponentTypes.ATTRIBUTE_MODIFIERS);
+        if (amc != null) for (var entry : amc.modifiers()) {
+            var attr = entry.modifier().attribute();
+            if (attr.equals(net.minecraft.entity.attribute.EntityAttributes.ATTACK_DAMAGE)) {
                 if (out[0] < 0) out[0] = 0;
-                out[0] += modifier.value();
+                out[0] += entry.modifier().value();
             }
-        });
+        }
         return out[0];
     }
 }

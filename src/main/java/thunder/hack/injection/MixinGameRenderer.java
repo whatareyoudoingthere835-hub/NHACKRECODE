@@ -49,8 +49,8 @@ public abstract class MixinGameRenderer {
     void render3dHook(RenderTickCounter tickCounter, CallbackInfo ci) {
         if (Module.fullNullCheck()) return;
 
-        Camera camera = mc.gameRenderer.getCamera();
-        float tickDelta = tickCounter.getTickDelta(false);
+        Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
+        float tickDelta = mc.getRenderTickCounter().getTickDelta(false);
 
         Matrix4f rotations = new Matrix4f()
                 .rotateX(camera.getPitch() * MathHelper.RADIANS_PER_DEGREE)

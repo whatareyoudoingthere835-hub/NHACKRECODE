@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+
 import net.minecraft.util.math.Vec3d;
 import thunder.hack.utility.player.ItemChecks;
 import com.google.common.collect.Lists;

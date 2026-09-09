@@ -17,7 +17,7 @@ public class NoBob extends Module {
         if (!(mc.getCameraEntity() instanceof PlayerEntity))
             return;
 
-        float g = -((Math.hypot(mc.player.getVelocity().x, mc.player.getVelocity().z)) + ((Math.hypot(mc.player.getVelocity().x, mc.player.getVelocity().z)) - mc.Math.hypot(player.getVelocity().x, player.getVelocity().z)) * tickDelta);
+        float g = (float) -((Math.hypot(mc.player.getVelocity().x, mc.player.getVelocity().z)) + ((Math.hypot(mc.player.getVelocity().x, mc.player.getVelocity().z)) - mc.Math.hypot(player.getVelocity().x, player.getVelocity().z)) * tickDelta);
         float h = MathHelper.lerp(tickDelta, 0.0F, 0.0F);
         matrices.translate(0, -Math.abs(g * h * (mode.is(Mode.Sexy) ? 0.00035 : 0.)), 0);
     }

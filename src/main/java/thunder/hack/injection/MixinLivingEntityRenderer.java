@@ -61,7 +61,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
 
             livingEntity.changeLookDirection(0, (Managers.PLAYER.lastPitch) - livingEntity.getPitch());
             livingEntity.setHeadYaw(Managers.PLAYER.lastYaw);
-            livingEntity.setBodyYaw(Render2DEngine.interpolateFloat(Managers.PLAYER.prevBodyYaw, Managers.PLAYER.bodyYaw, Render3DEngine.getTickDelta(false)));
+            livingEntity.setBodyYaw(Render2DEngine.interpolateFloat(Managers.PLAYER.prevBodyYaw, Managers.PLAYER.getBodyYaw(), Render3DEngine.getTickDelta(false)));
         }
     }
 
@@ -98,7 +98,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
         if (mc.player != null && livingEntity == mc.player && mc.player.getControllingVehicle() == null && ClientSettings.renderRotations.getValue() && !ThunderHack.isFuturePresent()) {
             livingEntity.changeLookDirection(0, (originalHeadPitch) - livingEntity.getPitch());
             livingEntity.setHeadYaw(originalHeadYaw);
-            livingEntity.setBodyYaw(Managers.PLAYER.bodyYaw);
+            livingEntity.setBodyYaw(Managers.PLAYER.getBodyYaw());
         }
     }
 
