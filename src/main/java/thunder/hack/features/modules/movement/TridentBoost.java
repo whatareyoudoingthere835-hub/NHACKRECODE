@@ -51,7 +51,7 @@ public class TridentBoost extends Module {
                     speedZ *= n / plannedSpeed;
 
                     mc.player.addVelocity(speedX, speedY, speedZ);
-                    mc.player.tryUseRiptide();
+                    mc.player.useRiptide(20, 8f, mc.player.getActiveItem());
 
                     if (mc.player.isOnGround())
                         mc.player.move(MovementType.SELF, new Vec3d(0.0, 1.1999999284744263, 0.0));

@@ -232,7 +232,7 @@ public class HitParticles extends Module {
     private static void drawSprite3D(MatrixStack matrices, net.minecraft.util.Identifier texture, float scale, Color c) {
         org.joml.Matrix4f matrix = matrices.peek().getPositionMatrix();
         Render2DEngine.setupRender();
-        com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, texture);
+        thunder.hack.utility.render.Render2DEngine.bindTexture(texture);
         net.minecraft.client.render.BufferBuilder bufferBuilder = net.minecraft.client.render.Tessellator.getInstance().begin(com.mojang.blaze3d.vertex.VertexFormat.DrawMode.QUADS, net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR);
         bufferBuilder.vertex(matrix, 0f, 0f, 0f).texture(0f, 0f).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
         bufferBuilder.vertex(matrix, 0f, scale, 0f).texture(0f, 1f).color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());

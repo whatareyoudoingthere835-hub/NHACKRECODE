@@ -46,14 +46,14 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
 
     @Shadow
     @Final
-    protected List<FeatureRenderer<T, M>> features;
+    protected List<FeatureRenderer<?, ?>> features;
 
     @Inject(method = "updateRenderState(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;F)V", at = @At("HEAD"), require = 0)
     public void onUpdatePre(T livingEntity, LivingEntityRenderState state, float tickDelta, CallbackInfo ci) {
         lastEntity = livingEntity;
         lastTickDelta = tickDelta;
         if (Module.fullNullCheck()) return;
-        if (mc.player != null && livingEntity == mc.player && mc.player.getControllingVehicle() == null && ClientSettings.renderRotations.getValue() && !ThunderHack.isFuturePresent()) {
+        if (mc.player != null && livingEntity == mc.player && mc.player.getVehicle() == null && ClientSettings.renderRotations.getValue() && !ThunderHack.isFuturePresent()) {
             originalHeadYaw = livingEntity.getHeadYaw();
             originalPrevHeadYaw = livingEntity.getHeadYaw();
             originalPrevHeadPitch = livingEntity.getPitch();
@@ -61,7 +61,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
 
             livingEntity.changeLookDirection(0, (Managers.PLAYER.lastPitch) - livingEntity.getPitch());
             livingEntity.setHeadYaw(Managers.PLAYER.lastYaw);
-            livingEntity.setBodyYaw(Render2DEngine.interpolateFloat(Managers.PLAYER.prevBodyYaw, Managers.PLAYER.getBodyYaw(), Render3DEngine.getTickDelta(false)));
+            livingEntity.setBodyYaw(Render2DEngine.interpolateFloat(Managers.PLAYER.prevBodyYaw, Managers.PLAYER.bodyYaw, Render3DEngine.getTickDelta(false)));
         }
     }
 
@@ -83,7 +83,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
             ModuleManager.chams.renderPlayer(pe, lastTickDelta, state, matrixStack, 15728880, model, ci, () -> {});
             if (!pe.isSpectator()) {
                 matrixStack.push();
-                for (FeatureRenderer<T, M> featureRenderer : features) {
+                for (FeatureRenderer<?, ?> featureRenderer : features) {
                     //noinspection unchecked,rawtypes
                     ((FeatureRenderer) featureRenderer).render(matrixStack, renderQueue, 15728880, state, 0f, 0f);
                 }
@@ -95,14 +95,14 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     @Unique
     public void postRender(T livingEntity) {
         if (Module.fullNullCheck()) return;
-        if (mc.player != null && livingEntity == mc.player && mc.player.getControllingVehicle() == null && ClientSettings.renderRotations.getValue() && !ThunderHack.isFuturePresent()) {
+        if (mc.player != null && livingEntity == mc.player && mc.player.getVehicle() == null && ClientSettings.renderRotations.getValue() && !ThunderHack.isFuturePresent()) {
             livingEntity.changeLookDirection(0, (originalHeadPitch) - livingEntity.getPitch());
             livingEntity.setHeadYaw(originalHeadYaw);
-            livingEntity.setBodyYaw(Managers.PLAYER.getBodyYaw());
+            livingEntity.setBodyYaw(Managers.PLAYER.bodyYaw);
         }
     }
 
-    @ModifyArgs(method = "render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V", require = 0), require = 0)
+    @ModifyArgs(method = "render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;III)V"), require = 0)
     private void renderHook(Args args) {
         if (Module.fullNullCheck() || !(lastEntity instanceof PlayerEntity pl)) return;
 

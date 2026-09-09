@@ -388,7 +388,7 @@ public class Animations extends Module {
         if (stack.isEmpty()) {
             return;
         }
-        ((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$heldItemRenderer().renderItem(entity, renderMode, stack, matrices, vertexConsumers, light);
+        ((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$heldItemRenderer().renderItem(entity, stack, renderMode, matrices, vertexConsumers, light);
     }
 
     private void applyEatOrDrinkTransformationCustom(MatrixStack matrices, float tickDelta, Arm arm, @NotNull ItemStack stack) {

@@ -19,6 +19,7 @@ import thunder.hack.features.modules.movement.Timer;
 import thunder.hack.features.modules.movement.*;
 import thunder.hack.features.modules.player.*;
 import thunder.hack.features.modules.render.Particles;
+import thunder.hack.features.modules.misc.PVETools;
 import thunder.hack.features.modules.render.*;
 
 import java.lang.reflect.Field;

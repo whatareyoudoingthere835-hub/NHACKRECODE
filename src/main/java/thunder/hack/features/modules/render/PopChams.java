@@ -111,7 +111,7 @@ public final class PopChams extends Module {
 
         PlayerEntityRenderState state = new PlayerEntityRenderState();
         state.age = entity.age + Render3DEngine.getTickDelta(false);
-        state.setBodyYaw(entity.getBodyYaw());
+        state.bodyYaw = entity.getBodyYaw();
         state.relativeHeadYaw = entity.getHeadYaw() - entity.getBodyYaw();
         state.pitch = entity.getPitch();
         state.limbSwingAnimationProgress = 0f; // 1.21.11: not readable
@@ -153,7 +153,7 @@ public final class PopChams extends Module {
         public Person(PlayerEntity player, Identifier texture) {
             this.player = player;
             modelPlayer = new PlayerEntityModel(
-                    PlayerEntityModel.getTexturedModelData(Dilation.NONE, false), false);
+                    mc.getLoadedEntityModels().getModelPart(net.minecraft.client.render.entity.model.EntityModelLayers.PLAYER), false);
             modelPlayer.getHead().scale(new Vector3f(-0.3f, -0.3f, -0.3f));
             alpha = color.getValue().getAlpha();
             this.texture = texture;

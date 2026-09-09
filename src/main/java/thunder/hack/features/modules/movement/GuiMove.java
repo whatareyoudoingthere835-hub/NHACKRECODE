@@ -6,7 +6,6 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
-import thunder.hack.injection.accesors.IClickSlotC2SPacket;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -78,7 +77,7 @@ public class GuiMove extends Module {
         if (e.getPacket() instanceof ClickSlotC2SPacket click) {
             switch (clickBypass.getValue()) {
                 case GrimSwap -> {
-                    if (((IClickSlotC2SPacket) click).th$actionType() != SlotActionType.PICKUP && ((IClickSlotC2SPacket) click).th$actionType() != SlotActionType.PICKUP_ALL)
+                    if (click.actionType() != SlotActionType.PICKUP && click.actionType() != SlotActionType.PICKUP_ALL)
                         sendPacket(new CloseHandledScreenC2SPacket(0));
                 }
 
@@ -102,7 +101,6 @@ public class GuiMove extends Module {
                     sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
                     mc.options.forwardKey.setPressed(false);
                     thunder.hack.utility.player.InputUtility.setForward(false);
-                    (thunder.hack.utility.player.InputUtility.forward() > 0) = false;
                 }
 
                 case Delay -> {

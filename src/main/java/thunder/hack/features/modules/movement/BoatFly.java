@@ -85,10 +85,10 @@ public class BoatFly extends Module {
         if (mc.player == null) return;
 
         if ((phase.getValue()) && mode.getValue() == Mode.Motion) {
-            if (mc.player.getControllingVehicle() != null) mc.player.getControllingVehicle().noClip = false;
+            if (mc.player.getVehicle() != null) mc.player.getVehicle().noClip = false;
             mc.player.noClip = false;
         }
-        if (mc.player.getControllingVehicle() != null) mc.player.getControllingVehicle().setNoGravity(false);
+        if (mc.player.getVehicle() != null) mc.player.getVehicle().setNoGravity(false);
         mc.player.setNoGravity(false);
     }
 
@@ -108,7 +108,7 @@ public class BoatFly extends Module {
         for (int i = 0; i < 255; ++i) {
             if (!mc.world.getBlockState(blockPos).isReplaceable() || mc.world.getBlockState(blockPos).getBlock() == Blocks.WATER) {
                 boat.setPosition(boat.getX(), blockPos.getY() + 1, boat.getZ());
-                sendMovePacket(new VehicleMoveC2SPacket(boat.getX(), boat.getY(), boat.getZ(), boat.getYaw(), boat.getPitch()));
+                sendMovePacket(new VehicleMoveC2SPacket(boat));
                 boat.setPosition(boat.getX(), boat.getY(), boat.getZ());
                 break;
             }
@@ -130,20 +130,20 @@ public class BoatFly extends Module {
         if (fullNullCheck()) return;
 
 
-        if (mc.player.getControllingVehicle() == null) {
+        if (mc.player.getVehicle() == null) {
             if (automount.getValue())
                 mountToBoat();
             return;
         }
 
         if (phase.getValue() && mode.getValue() == Mode.Motion) {
-            mc.player.getControllingVehicle().noClip = true;
-            mc.player.getControllingVehicle().setNoGravity(true);
+            mc.player.getVehicle().noClip = true;
+            mc.player.getVehicle().setNoGravity(true);
             mc.player.noClip = true;
         }
 
         if (!returnGravity) {
-            mc.player.getControllingVehicle().setNoGravity(!gravity.getValue());
+            mc.player.getVehicle().setNoGravity(!gravity.getValue());
             mc.player.setNoGravity(!gravity.getValue());
         }
 
@@ -162,7 +162,7 @@ public class BoatFly extends Module {
             if (enableDelay <= 0) waitedCooldown = false;
         }
 
-        Entity entity = mc.player.getControllingVehicle();
+        Entity entity = mc.player.getVehicle();
 
 
         if ((!mc.world.isChunkLoaded((int) new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getX() >> 4, (int) new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getZ() >> 4) || new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getY() < -60) && stopunloaded.getValue()) {
@@ -207,7 +207,7 @@ public class BoatFly extends Module {
 
         if (mode.getValue() == Mode.Packet) {
             entity.setPosition(predictedX, predictedY, predictedZ);
-            sendMovePacket(new VehicleMoveC2SPacket(entity.getX(), entity.getY(), entity.getZ(), entity.getYaw(), entity.getPitch()));
+            sendMovePacket(new VehicleMoveC2SPacket(entity));
         }
 
         if (slotClick.getValue())
@@ -215,11 +215,11 @@ public class BoatFly extends Module {
 
         if (spoofpackets.getValue()) {
             Vec3d vec3d = new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(0.0, randomizeYOffset(), 0.0);
-            BoatEntity entityBoat = new BoatEntity(net.minecraft.entity.EntityType.OAK_BOAT, mc.world);
+            BoatEntity entityBoat = new BoatEntity(net.minecraft.entity.EntityType.OAK_BOAT, mc.world, () -> net.minecraft.item.Items.OAK_BOAT);
             entityBoat.setPosition(vec3d.x, vec3d.y, vec3d.z);
             entityBoat.changeLookDirection((entity.getYaw()) - entityBoat.getYaw(), 0);
             entityBoat.changeLookDirection(0, (entity.getPitch()) - entityBoat.getPitch());
-            sendMovePacket(new VehicleMoveC2SPacket(entityBoat.getX(), entityBoat.getY(), entityBoat.getZ(), entityBoat.getYaw(), entityBoat.getPitch()));
+            sendMovePacket(new VehicleMoveC2SPacket(entityBoat));
         }
 
         ev.cancel();
@@ -255,10 +255,10 @@ public class BoatFly extends Module {
             event.cancel();
         }
 
-        if (mc.player.getControllingVehicle() == null || returnGravity || waitedCooldown)
+        if (mc.player.getVehicle() == null || returnGravity || waitedCooldown)
             return;
 
-        Vec3d boatPos = mc.player.getControllingVehicle().getPos();
+        Vec3d boatPos = new Vec3d(mc.player.getVehicle().getX(), mc.player.getVehicle().getY(), mc.player.getVehicle().getZ());
         if ((!mc.world.isChunkLoaded((int) boatPos.getX() >> 4, (int) boatPos.getZ() >> 4) || boatPos.getY() < -60) && stopunloaded.getValue())
             return;
 

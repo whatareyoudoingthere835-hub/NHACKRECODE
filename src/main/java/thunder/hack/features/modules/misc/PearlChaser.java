@@ -60,7 +60,7 @@ public class PearlChaser extends Module {
     public void onEntitySpawn(EventEntitySpawn e) {
         if (e.getEntity() instanceof EnderPearlEntity)
             mc.world.getPlayers().stream()
-                    .min(Comparator.comparingDouble((p) -> p.squaredDistanceTo(e.getEntity().getPos())))
+                    .min(Comparator.comparingDouble((p) -> p.squaredDistanceTo(new net.minecraft.util.math.Vec3d(e.getEntity().getX(), e.getEntity().getY(), e.getEntity().getZ()))))
                     .ifPresent((player) -> {
                         if (player.equals(mc.player))
                             lastOurPearlId = e.getEntity().getId();

@@ -43,7 +43,7 @@ public class EntitySpeed extends Module {
         if (!ev.isPre()) return;
         if (fullNullCheck()) return;
 
-        Entity entity = mc.player.getControllingVehicle();
+        Entity entity = mc.player.getVehicle();
 
         if (entity == null) return;
         if ((!mc.world.isChunkLoaded((int) new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getX() >> 4, (int) new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getZ() >> 4) || new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getY() < -60) && stopunloaded.getValue())

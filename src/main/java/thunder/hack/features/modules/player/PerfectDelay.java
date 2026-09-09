@@ -45,11 +45,11 @@ public class PerfectDelay extends Module {
                 mc.interactionManager.stopUsingItem(mc.player);
         }
 
-        if (mc.player.getControllingVehicle() != null && mc.player.getControllingVehicle() instanceof HorseEntity && horse.is(HorseJump.Rage)) {
+        if (mc.player.getVehicle() != null && mc.player.getVehicle() instanceof HorseEntity && horse.is(HorseJump.Rage)) {
             ((IClientPlayerEntity) mc.player).setMountJumpStrength(1f);
         }
 
-        if (mc.player.getControllingVehicle() != null && mc.player.getControllingVehicle() instanceof HorseEntity && horse.is(HorseJump.Legit) && mc.player.getMountJumpStrength() >= 1) {
+        if (mc.player.getVehicle() != null && mc.player.getVehicle() instanceof HorseEntity && horse.is(HorseJump.Legit) && mc.player.getMountJumpStrength() >= 1) {
             mc.options.jumpKey.setPressed(false);
         }
     }

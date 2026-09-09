@@ -273,7 +273,7 @@ public final class AutoAnchor extends Module {
 
     public void calcRotations() {
         if (rotate.getValue() && !shouldPause() && (bestPosition != null || bestAnchor != null) && mc.player != null) {
-            Vec3d vec = bestPosition == null ? new Vec3d(bestAnchor.getX(), bestAnchor.getY(), bestAnchor.getZ()) : bestPosition.bhr().getPos();
+            Vec3d vec = bestPosition == null ? new Vec3d(bestAnchor.getBlockPos().getX(), bestAnchor.getBlockPos().getY(), bestAnchor.getBlockPos().getZ()) : bestPosition.bhr().getPos();
 
             float yawDelta = wrapDegrees((float) wrapDegrees(Math.toDegrees(Math.atan2(vec.z - mc.player.getZ(), (vec.x - mc.player.getX()))) - 90) - rotationYaw);
             float pitchDelta = ((float) (-Math.toDegrees(Math.atan2(vec.y - (mc.player.getY() + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((vec.x - mc.player.getX()), 2) + Math.pow(vec.z - mc.player.getZ(), 2))))) - rotationPitch);

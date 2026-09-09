@@ -265,7 +265,7 @@ public final class SpeedMine extends Module {
                 if (!(stack.getMaxDamage() - stack.getDamage() > 10))
                     continue;
 
-                final float digSpeed = (int) EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), stack);
+                final float digSpeed = (int) EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.EFFICIENCY), stack);
                 final float destroySpeed = stack.getMiningSpeedMultiplier(mc.world.getBlockState(pos));
 
                 if (digSpeed + destroySpeed > currentFastest) {

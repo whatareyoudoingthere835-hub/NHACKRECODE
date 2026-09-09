@@ -115,19 +115,19 @@ public class Velocity extends Module {
         if (e.getPacket() instanceof ExplosionS2CPacket explosion && explosions.getValue()) {
             switch (mode.getValue()) {
                 case Cancel -> {
-                    ((IExplosionS2CPacket) explosion).setMotionX(0);
-                    ((IExplosionS2CPacket) explosion).setMotionY(0);
-                    ((IExplosionS2CPacket) explosion).setMotionZ(0);
+                    ((IExplosionS2CPacket) (Object) explosion).setMotionX(0);
+                    ((IExplosionS2CPacket) (Object) explosion).setMotionY(0);
+                    ((IExplosionS2CPacket) (Object) explosion).setMotionZ(0);
                 }
                 case Custom -> {
-                    ((IExplosionS2CPacket) explosion).setMotionX(((IExplosionS2CPacket) explosion).getMotionX() * horizontal.getValue() / 100f);
-                    ((IExplosionS2CPacket) explosion).setMotionZ(((IExplosionS2CPacket) explosion).getMotionZ() * horizontal.getValue() / 100f);
-                    ((IExplosionS2CPacket) explosion).setMotionY(((IExplosionS2CPacket) explosion).getMotionY() * vertical.getValue() / 100f);
+                    ((IExplosionS2CPacket) (Object) explosion).setMotionX(((IExplosionS2CPacket) (Object) explosion).getMotionX() * horizontal.getValue() / 100f);
+                    ((IExplosionS2CPacket) (Object) explosion).setMotionZ(((IExplosionS2CPacket) (Object) explosion).getMotionZ() * horizontal.getValue() / 100f);
+                    ((IExplosionS2CPacket) (Object) explosion).setMotionY(((IExplosionS2CPacket) (Object) explosion).getMotionY() * vertical.getValue() / 100f);
                 }
                 case GrimNew -> {
-                    ((IExplosionS2CPacket) explosion).setMotionX(0);
-                    ((IExplosionS2CPacket) explosion).setMotionY(0);
-                    ((IExplosionS2CPacket) explosion).setMotionZ(0);
+                    ((IExplosionS2CPacket) (Object) explosion).setMotionX(0);
+                    ((IExplosionS2CPacket) (Object) explosion).setMotionY(0);
+                    ((IExplosionS2CPacket) (Object) explosion).setMotionZ(0);
                     flag = true;
                 }
             }

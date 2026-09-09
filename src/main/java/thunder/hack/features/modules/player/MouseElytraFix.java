@@ -2,6 +2,8 @@ package thunder.hack.features.modules.player;
 
 import thunder.hack.utility.player.ItemChecks;
 import net.minecraft.item.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.screen.slot.SlotActionType;
 import thunder.hack.features.modules.Module;
 import thunder.hack.utility.Timer;

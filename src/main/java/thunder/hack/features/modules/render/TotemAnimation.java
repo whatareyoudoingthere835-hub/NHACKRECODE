@@ -98,7 +98,7 @@ public class TotemAnimation extends Module {
             }
         }
 
-        context.drawItem(m, floatingItem, -8, -8, 0);
+        context.drawItem(floatingItem, -8, -8);
         m.popMatrix();
     }
 

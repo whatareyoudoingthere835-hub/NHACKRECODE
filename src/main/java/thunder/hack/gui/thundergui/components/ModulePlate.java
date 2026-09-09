@@ -82,11 +82,11 @@ public class ModulePlate {
             stack.pushMatrix();
             stack.translate((float) ((posX + 91f)), (float) ((posY + 15f)));
             stack.rotate((mc.player.age * 4) * MathHelper.RADIANS_PER_DEGREE);
-            stack.translate(-(posX + 91f), -(posY + 15f), 0.0F);
+            stack.translate(-(posX + 91f), -(posY + 15f));
             FontRenderers.big_icons.drawString(stack, "H", (posX + 78f), (posY + 5f), Render2DEngine.applyOpacity(new Color(0xFF646464, true).getRGB(), getFadeFactor()));
-            stack.translate((posX + 91f), (posY + 15f), 0.0F);
+            stack.translate((posX + 91f), (posY + 15f));
             stack.rotate((-mc.player.age * 4) * MathHelper.RADIANS_PER_DEGREE);
-            stack.translate(-(posX + 91f), -(posY + 15f), 0.0F);
+            stack.translate(-(posX + 91f), -(posY + 15f));
             stack.popMatrix();
         }
 

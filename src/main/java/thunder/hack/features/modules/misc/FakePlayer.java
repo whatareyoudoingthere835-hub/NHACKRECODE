@@ -107,7 +107,7 @@ public class FakePlayer extends Module {
                 fakePlayer.setHeadYaw(p.yaw);
 
                 fakePlayer.setPosition(p.x, p.y, p.z);
-                fakePlayer.setPosition(p.x, p.y, p.z, p.yaw, p.pitch); fakePlayer.changeLookDirection((p.yaw) - fakePlayer.getYaw(), 0); fakePlayer.changeLookDirection(0, (p.pitch) - fakePlayer.getPitch());
+                fakePlayer.setPosition(new net.minecraft.util.math.Vec3d(p.x, p.y, p.z));
             } else movementTick = 0;
 
             if (autoTotem.getValue() && fakePlayer.getOffHandStack().getItem() != Items.TOTEM_OF_UNDYING)

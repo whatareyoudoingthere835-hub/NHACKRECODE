@@ -152,7 +152,7 @@ public class AutoArmor extends Module {
                 if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.BLAST_PROTECTION)))
                     prot += enchants.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.BLAST_PROTECTION)) * blastMultiplier;
 
-                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BINDING_CURSE).get()) && ignoreCurse.getValue())
+                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.BINDING_CURSE)) && ignoreCurse.getValue())
                     prot = -999;
             }
 

@@ -130,7 +130,7 @@ public class HoleSnap extends Module {
         if (mc.player == null || mode.getValue() != Mode.Yaw || hole == null)
             return;
 
-        thunder.hack.utility.player.InputUtility.forward() = 1;
+        thunder.hack.utility.player.InputUtility.setForward(true);
     }
 
     private @Nullable BlockPos findHole() {

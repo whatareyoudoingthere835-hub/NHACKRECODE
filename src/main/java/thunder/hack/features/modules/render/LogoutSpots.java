@@ -114,7 +114,7 @@ public class LogoutSpots extends Module {
                     Render3DEngine.drawBoxOutline(data.getBoundingBox(), color.getValue().getColorObject(), 2);
                 } else {
                     PlayerEntityModel modelPlayer = new PlayerEntityModel(
-                            PlayerEntityModel.getTexturedModelData(Dilation.NONE, false), false);
+                            mc.getLoadedEntityModels().getModelPart(net.minecraft.client.render.entity.model.EntityModelLayers.PLAYER), false);
                     modelPlayer.getHead().scale(new Vector3f(-0.3f, -0.3f, -0.3f));
 
                     renderEntity(s, data, modelPlayer, thunder.hack.utility.SkinUtility.skin(data), color.getValue().getAlpha());
@@ -172,7 +172,7 @@ public class LogoutSpots extends Module {
         prepareScale(matrices);
         PlayerEntityRenderState state = new PlayerEntityRenderState();
         state.age = entity.age + Render3DEngine.getTickDelta(false);
-        state.setBodyYaw(entity.getBodyYaw());
+        state.bodyYaw = entity.getBodyYaw();
         state.relativeHeadYaw = entity.getHeadYaw() - entity.getBodyYaw();
         state.pitch = entity.getPitch();
         state.limbSwingAnimationProgress = 0f; // 1.21.11: not readable
@@ -190,7 +190,7 @@ public class LogoutSpots extends Module {
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         }
 
-        modelBase.render(state, matrices, buffer, 10, 0);
+        modelBase.render(matrices, buffer, 10, 0);
         Render2DEngine.endBuilding(buffer);
 
         matrices.pop();

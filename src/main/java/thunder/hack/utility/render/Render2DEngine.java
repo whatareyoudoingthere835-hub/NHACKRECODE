@@ -684,17 +684,23 @@ public class Render2DEngine {
         renderGradientTexture(matrices, 0, 0, scale, scale, 0, 0, 128, 128, 128, 128, c, c, c, c);
     }
 
-    public static void drawBubble(Matrix3x2fStack matrices, float angle, float factor) {
+    public static void drawBubble(net.minecraft.client.util.math.MatrixStack matrices, float angle, float factor) {
         bindTexture(TextureStorage.bubble);
-        matrices.pushMatrix();
-        matrices.rotate((float) Math.toRadians(angle));
+        setupRender();
+        matrices.push();
+        matrices.multiply(net.minecraft.util.math.RotationAxis.POSITIVE_Z.rotation((float) Math.toRadians(angle)));
         float scale = factor * 2f;
-        renderGradientTexture(matrices, -scale / 2, -scale / 2, scale, scale, 0, 0, 128, 128, 128, 128,
-                applyOpacity(HudEditor.getColor(270), 1f - factor),
-                applyOpacity(HudEditor.getColor(0), 1f - factor),
-                applyOpacity(HudEditor.getColor(180), 1f - factor),
-                applyOpacity(HudEditor.getColor(90), 1f - factor));
-        matrices.popMatrix();
+        float h = scale / 2f;
+        org.joml.Matrix4f matrix = matrices.peek().getPositionMatrix();
+        Color c = HudEditor.getColor(0);
+        int a = (int) (255f * Math.max(0f, Math.min(1f, 1f - factor)));
+        net.minecraft.client.render.BufferBuilder buffer = net.minecraft.client.render.Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+        buffer.vertex(matrix, -h, -h, 0f).texture(0f, 0f).color(c.getRed(), c.getGreen(), c.getBlue(), a);
+        buffer.vertex(matrix, -h, h, 0f).texture(0f, 1f).color(c.getRed(), c.getGreen(), c.getBlue(), a);
+        buffer.vertex(matrix, h, h, 0f).texture(1f, 1f).color(c.getRed(), c.getGreen(), c.getBlue(), a);
+        buffer.vertex(matrix, h, -h, 0f).texture(1f, 0f).color(c.getRed(), c.getGreen(), c.getBlue(), a);
+        endBuilding(buffer);
+        matrices.pop();
     }
 
     public static void drawLine(float x, float y, float x1, float y1, int color) {

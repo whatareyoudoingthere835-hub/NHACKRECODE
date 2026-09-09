@@ -213,9 +213,9 @@ public class NameTags extends Module {
                         if (enchantss.getValue()) {
                             if (!onlyHands.getValue() || (armorComponent == ent.getOffHandStack() || armorComponent == ent.getMainHandStack())) {
                                 for (RegistryKey<Enchantment> enchantment : encMap.keySet()) {
-                                    if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment).get())) {
+                                    if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(net.minecraft.registry.RegistryKeys.ENCHANTMENT).getOrThrow(enchantment))) {
                                         String id = encMap.get(enchantment);
-                                        int level = enchants.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment).get());
+                                        int level = enchants.getLevel(mc.world.getRegistryManager().getOrThrow(net.minecraft.registry.RegistryKeys.ENCHANTMENT).getOrThrow(enchantment));
                                         String encName = id + level;
 
                                         if (font.getValue() == Font.Fancy) {
@@ -455,10 +455,10 @@ public class NameTags extends Module {
         if ((mc.getNetworkHandler() != null && mc.getNetworkHandler().getServerInfo() != null && mc.getNetworkHandler().getServerInfo().address.contains("funtime") || funtimeHp.getValue())) {
             ScoreboardObjective scoreBoard = null;
             String resolvedHp = "";
-            if ((ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME) != null) {
-                scoreBoard = (ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME);
+            if ((ent.getEntityWorld().getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME) != null) {
+                scoreBoard = (ent.getEntityWorld().getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME);
                 if (scoreBoard != null) {
-                    ReadableScoreboardScore readableScoreboardScore = ent.getScoreboard().getScore(ent, scoreBoard);
+                    ReadableScoreboardScore readableScoreboardScore = ent.getEntityWorld().getScoreboard().getScore(ent, scoreBoard);
                     MutableText text2 = ReadableScoreboardScore.getFormattedScore(readableScoreboardScore, scoreBoard.getNumberFormatOr(StyledNumberFormat.EMPTY));
                     resolvedHp = text2.getString();
                 }
@@ -519,7 +519,7 @@ public class NameTags extends Module {
                     Render2DEngine.drawRect(context.getMatrices(), x, 0, 7, 3, getHealthColor2(player.getHealth() + player.getAbsorptionAmount()));
                 }
             }
-        } else context.drawGuiTexture(type.getTexture(half), x, 0, 9, 9);
+        } else context.drawGuiTexture(net.minecraft.client.gl.RenderPipelines.GUI_TEXTURED, type.getTexture(half), x, 0, 9, 9);
     }
 
     private enum HeartType {
@@ -667,7 +667,6 @@ public class NameTags extends Module {
         String key = stack.getItem().getTranslationKey();
         int dot = key.lastIndexOf('.');
         String name = (dot > 0 ? key.substring(dot + 1) : key).replace("_shulker_box", "");
-        DyeColor dc = DyeColor.byName(name, DyeColor.WHITE);
-        return new Color(dc.getTooltipColor(), false);
+        return new Color(0xA59586, false); // 1.21.11: DyeColor.getTooltipColor removed
     }
 }
