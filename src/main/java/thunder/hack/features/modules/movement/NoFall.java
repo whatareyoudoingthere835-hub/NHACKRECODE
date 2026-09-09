@@ -44,7 +44,7 @@ public class NoFall extends Module {
         if (isFalling()) {
             switch (mode.getValue()) {
                 case MatrixOffGround, Vanilla -> cancelGround = true;
-                case Rubberband -> sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+                case Rubberband -> sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true, false));
                 case Items -> {
                     BlockPos playerPos = BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()));
 
@@ -55,19 +55,19 @@ public class NoFall extends Module {
                     SearchInvResult waterResult = InventoryUtility.findItemInHotBar(Items.WATER_BUCKET);
 
                     if (waterResult.found() && waterBucket.getValue()) {
-                        mc.player.setPitch(90);
+                        mc.player.changeLookDirection(0, (90) - mc.player.getPitch());
                         doWaterDrop(waterResult, playerPos);
                     } else if (pearlResult.found() && enderPearl.getValue()) {
-                        mc.player.setPitch(90);
+                        mc.player.changeLookDirection(0, (90) - mc.player.getPitch());
                         doPearlDrop(pearlResult);
                     } else if (webResult.found() && cobweb.getValue()) {
-                        mc.player.setPitch(90);
+                        mc.player.changeLookDirection(0, (90) - mc.player.getPitch());
                         doWebDrop(webResult, playerPos);
                     } else if (vinesResult.found() && twistingVines.getValue()) {
-                        mc.player.setPitch(90);
+                        mc.player.changeLookDirection(0, (90) - mc.player.getPitch());
                         doVinesDrop(vinesResult, playerPos);
                     } else if (snowResult.found() && powderSnowBucket.getValue()) {
-                        mc.player.setPitch(90);
+                        mc.player.changeLookDirection(0, (90) - mc.player.getPitch());
                         doSnowDrop(snowResult, playerPos);
                     }
                 }
@@ -76,7 +76,7 @@ public class NoFall extends Module {
             InventoryUtility.saveSlot();
             SearchInvResult waterResult = InventoryUtility.findItemInHotBar(Items.BUCKET);
             waterResult.switchTo();
-            mc.player.setPitch(90);
+            mc.player.changeLookDirection(0, (90) - mc.player.getPitch());
             mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
             mc.player.swingHand(Hand.MAIN_HAND);
             InventoryUtility.returnSlot();

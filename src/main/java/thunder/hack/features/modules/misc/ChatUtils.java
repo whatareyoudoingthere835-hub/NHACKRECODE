@@ -132,8 +132,8 @@ public class ChatUtils extends Module {
     public void onUpdate() {
         if (timer.passedMs(15000)) {
             for (PlayerListEntry b : mc.player.networkHandler.getPlayerList()) {
-                if (!nameMap.containsKey(b.getProfile().getId())) {
-                    nameMap.put(b.getProfile().getId(), b.getProfile().getName());
+                if (!nameMap.containsKey(b.getProfile().id())) {
+                    nameMap.put(b.getProfile().id(), b.getProfile().name());
                 }
             }
             timer.reset();

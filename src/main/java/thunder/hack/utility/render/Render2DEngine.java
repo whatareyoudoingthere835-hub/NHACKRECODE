@@ -221,7 +221,7 @@ public class Render2DEngine {
 
         int identifier = (int) (width * height + width * blurRadius);
         if (shadowCache.containsKey(identifier)) {
-            Batch b = Draw2D.of(matrices, VertexFormat.DrawMode.QUADS, shadowCache.get(identifier).id.getId());
+            Batch b = Draw2D.of(matrices, VertexFormat.DrawMode.QUADS, shadowCache.get(identifier).id);
             b.vertex(x, y + height, 0f, 1f, color1.getRGB());
             b.vertex(x + width, y + height, 1f, 1f, color2.getRGB());
             b.vertex(x + width, y, 1f, 0f, color3.getRGB());
@@ -247,7 +247,7 @@ public class Render2DEngine {
 
         int identifier = (int) (width * height + width * blurRadius);
         if (shadowCache1.containsKey(identifier)) {
-            Batch b = Draw2D.of(matrices, VertexFormat.DrawMode.QUADS, shadowCache1.get(identifier).id.getId());
+            Batch b = Draw2D.of(matrices, VertexFormat.DrawMode.QUADS, shadowCache1.get(identifier).id);
             b.vertex(x, y + height, 0f, 1f, color1.getRGB());
             b.vertex(x + width, y + height, 1f, 1f, color2.getRGB());
             b.vertex(x + width, y, 1f, 0f, color3.getRGB());
@@ -765,20 +765,32 @@ public class Render2DEngine {
         return Tessellator.getInstance().begin(mode, (com.mojang.blaze3d.vertex.VertexFormat) format);
     }
 
+    public static void registerBufferedImageTexture(net.minecraft.util.Identifier id, java.awt.image.BufferedImage image) {
+        try {
+            java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+            javax.imageio.ImageIO.write(image, "PNG", out);
+            net.minecraft.client.texture.NativeImage nativeImage =
+                    net.minecraft.client.texture.NativeImage.read(new java.io.ByteArrayInputStream(out.toByteArray()));
+            MinecraftClient.getInstance().getTextureManager()
+                    .registerTexture(id, new NativeImageBackedTexture(id::toString, nativeImage));
+        } catch (Exception ignored) {
+        }
+    }
+
     public static class BlurredShadow {
-        Texture id;
+        net.minecraft.util.Identifier id;
 
         public BlurredShadow(BufferedImage bufferedImage) {
-            this.id = new Texture("texture/remote/" + RandomStringUtils.randomAlphanumeric(16));
+            this.id = net.minecraft.util.Identifier.of("thunderhack", "texture/remote/" + RandomStringUtils.randomAlphanumeric(16));
             registerBufferedImageTexture(id, bufferedImage);
         }
 
         public void bind() {
-            bindTexture(id.getId());
+            bindTexture(id);
         }
 
         public void bind(Matrix3x2fStack matrices, float x, float y, float width, float height, Color color) {
-            Batch b = Draw2D.of(matrices, VertexFormat.DrawMode.QUADS, id.getId());
+            Batch b = Draw2D.of(matrices, VertexFormat.DrawMode.QUADS, id);
             int rgb = color.getRGB();
             b.vertex(x, y + height, 0f, 1f, rgb);
             b.vertex(x + width, y + height, 1f, 1f, rgb);

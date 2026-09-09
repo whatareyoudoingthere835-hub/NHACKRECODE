@@ -1,5 +1,7 @@
 package thunder.hack.features.hud.impl;
 
+import net.minecraft.util.math.MathHelper;
+
 import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.DrawContext;

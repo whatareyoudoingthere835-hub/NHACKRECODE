@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.render;
 
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -81,9 +81,9 @@ public class Shaders extends Module {
         };
     }
 
-    public void onRender3D(MatrixStack matrices) {
+    public void onRender3D(PoseStack matrices) {
         if (hands.getValue())
-            Managers.SHADER.renderShader(() -> ((IGameRenderer) mc.gameRenderer).irenderHand(mc.gameRenderer.getCamera(), Render3DEngine.getTickDelta(), matrices.peek().getPositionMatrix()), handsMode.getValue());
+            Managers.SHADER.renderShader(() -> ((IGameRenderer) mc.gameRenderer).irenderHand(mc.gameRenderer.getCamera(), Render3DEngine.getTickDelta(false), matrices.peek().getPositionMatrix()), handsMode.getValue());
     }
 
     @Override

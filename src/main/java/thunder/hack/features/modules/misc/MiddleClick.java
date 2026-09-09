@@ -284,7 +284,7 @@ public class MiddleClick extends Module {
         Xp((EventSync e) -> {
             if (ModuleManager.middleClick.feetExp.getValue())
                 if (!ModuleManager.middleClick.antiWaste.getValue().isEnabled() || needXp())
-                    mc.player.setPitch(90);
+                    mc.player.changeLookDirection(0, (90) - mc.player.getPitch());
 
             e.addPostAction(() -> {
                 if (ModuleManager.middleClick.antiWaste.getValue().isEnabled() && !needXp()) return;

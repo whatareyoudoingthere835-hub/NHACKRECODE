@@ -1,5 +1,7 @@
 package thunder.hack.gui.thundergui.components;
 
+import net.minecraft.client.render.RenderPipelines;
+
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -51,7 +53,9 @@ public class FriendComponent {
         net.minecraft.util.Util.getMainWorkerExecutor().execute(() -> {
             try {
                 NativeImageBackedTexture nIBT = getHeadFromURL("https://minotar.net/helm/" + name + "/22.png");
-                head = MinecraftClient.getInstance().getTextureManager().registerDynamicTexture("th-heads-" + name, nIBT);
+                Identifier th$id = Identifier.of("thunderhack", "th-heads-" + name);
+                MinecraftClient.getInstance().getTextureManager().registerTexture(th$id, nIBT);
+                head = th$id;
                 Core.HEADS.put(name, head);
             } catch (Exception e) {
                 head = null;
@@ -76,7 +80,7 @@ public class FriendComponent {
             e.printStackTrace();
         }
         if (Head != null) {
-            NativeImageBackedTexture nIBT = new NativeImageBackedTexture(parseHead(Head));
+            NativeImageBackedTexture nIBT = new NativeImageBackedTexture(() -> "thunderhack:friend-head", parseHead(Head));
             return nIBT;
         }
         return null;
@@ -93,9 +97,10 @@ public class FriendComponent {
         }
 
         NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
+        java.awt.image.BufferedImage bi = th$toBufferedImage(image);
         for (int x = 0; x < imageSrcWidth; x++) {
             for (int y = 0; y < srcHeight; y++) {
-                imgNew.setColor(x, y, image.getColor(x, y));
+                imgNew.writePixel(x, y, bi == null ? 0 : th$swap(bi, x, y));
             }
         }
         image.close();
@@ -140,7 +145,7 @@ public class FriendComponent {
 
         FontRenderers.modules.drawString(context.getMatrices(), name, posX + 37, posY + 6, Render2DEngine.applyOpacity(-1, getFadeFactor()));
 
-        boolean online = mc.player.networkHandler.getPlayerList().stream().map(p -> p.getProfile().getName()).toList().contains(name);
+        boolean online = mc.player.networkHandler.getPlayerList().stream().map(p -> p.getProfile().name()).toList().contains(name);
 
         FontRenderers.settings.drawString(context.getMatrices(), online ? "online" : "offline", posX + 37, posY + 17, online ? Render2DEngine.applyOpacity(new Color(0xFF0B7A00, true).getRGB(), getFadeFactor()) : Render2DEngine.applyOpacity(new Color(0xFFBDBDBD, true).getRGB(), getFadeFactor()));
     }
@@ -193,4 +198,18 @@ public class FriendComponent {
         prevPosY = posY;
         this.scrollPosY += deltaY;
     }
+
+    private static int th$swap(java.awt.image.BufferedImage bi, int x, int y) {
+        int p = bi.getRGB(x, y);
+        return (p & 0xFF000000) | ((p & 0xFF) << 16) | (p & 0x00FF00) | ((p >> 16) & 0xFF);
+    }
+
+    private static java.awt.image.BufferedImage th$toBufferedImage(net.minecraft.client.texture.NativeImage image) {
+        try {
+            return javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(image.toByteArray()));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

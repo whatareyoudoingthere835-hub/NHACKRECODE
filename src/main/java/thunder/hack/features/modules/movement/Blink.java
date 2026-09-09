@@ -2,7 +2,7 @@ package thunder.hack.features.modules.movement;
 
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CommonPongC2SPacket;
 import net.minecraft.network.packet.c2s.common.KeepAliveC2SPacket;
@@ -72,7 +72,7 @@ public class Blink extends Module {
         prevVelocity = mc.player.getVelocity();
         prevYaw = mc.player.getYaw();
         prevSprinting = mc.player.isSprinting();
-        mc.world.spawnEntity(new ClientPlayerEntity(mc, mc.world, mc.getNetworkHandler(), mc.player.getStatHandler(), mc.player.getRecipeBook(), mc.player.lastSprinting, mc.player.isSneaking()));
+        mc.world.spawnEntity(new ClientPlayerEntity(mc, mc.world, mc.getNetworkHandler(), mc.player.getStatHandler(), mc.player.getRecipeBook(), new net.minecraft.util.PlayerInput(false, false, false, false, false, mc.player.isSneaking(), mc.player.isSprinting()), mc.player.isSneaking()));
         sending.set(false);
         storedPackets.clear();
     }
@@ -132,9 +132,9 @@ public class Blink extends Module {
             storedPackets.clear();
             mc.player.setPos(lastPos.getX(), lastPos.getY(), lastPos.getZ());
             mc.player.setVelocity(prevVelocity);
-            mc.player.setYaw(prevYaw);
-            mc.player.setSprinting(prevSprinting);
-            mc.player.setSneaking(false);
+            mc.player.changeLookDirection((prevYaw) - mc.player.getYaw(), 0);
+            mc.player.input.playerInput = player.input.playerInput.withSprint(prevSprinting);
+            mc.player.input.playerInput = player.input.playerInput.withSneak(false);
             mc.options.sneakKey.setPressed(false);
             sending.set(true);
             while (!storedTransactions.isEmpty())
@@ -179,7 +179,7 @@ public class Blink extends Module {
         storedPackets.clear();
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (mc.player == null || mc.world == null) return;
         if (render.getValue() && lastPos != null) {
             if (renderMode.getValue() == RenderMode.Circle || renderMode.getValue() == RenderMode.Both) {

@@ -130,7 +130,7 @@ public class HoleSnap extends Module {
         if (mc.player == null || mode.getValue() != Mode.Yaw || hole == null)
             return;
 
-        mc.player.input.movementForward = 1;
+        thunder.hack.utility.player.InputUtility.forward() = 1;
     }
 
     private @Nullable BlockPos findHole() {
@@ -183,9 +183,9 @@ public class HoleSnap extends Module {
 
         if (isPreEvent) {
             prevClientYaw = mc.player.getYaw();
-            mc.player.setYaw(InteractionUtility.calculateAngle(hole.toCenterPos())[0]);
+            mc.player.changeLookDirection((InteractionUtility.calculateAngle(hole.toCenterPos())[0]) - mc.player.getYaw(), 0);
         } else
-            mc.player.setYaw(prevClientYaw);
+            mc.player.changeLookDirection((prevClientYaw) - mc.player.getYaw(), 0);
     }
 
     private enum Mode {

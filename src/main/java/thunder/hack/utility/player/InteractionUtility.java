@@ -111,7 +111,7 @@ public final class InteractionUtility {
         if (sprint)
             mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
         if (sneak)
-            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SNEAKING));
 
         float[] angle = calculateAngle(result.getPos());
 
@@ -135,7 +135,7 @@ public final class InteractionUtility {
             mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround(), mc.player.horizontalCollision));
 
         if (sneak)
-            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
 
         if (sprint)
             mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SPRINTING));
@@ -459,8 +459,8 @@ public final class InteractionUtility {
     public static void lookAt(BlockPos bp) {
         if (bp != null) {
             float[] angle = calculateAngle(bp.toCenterPos());
-            mc.player.setYaw(angle[0]);
-            mc.player.setPitch(angle[1]);
+            mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
         }
     }
 

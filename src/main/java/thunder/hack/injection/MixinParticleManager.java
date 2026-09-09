@@ -17,7 +17,7 @@ public class MixinParticleManager {
         if(!nR.isEnabled())
             return;
         
-        if (nR.elderGuardian.getValue() && p instanceof ElderGuardianAppearanceParticle)
+        if (nR.elderGuardian.getValue() && p.getClass().getSimpleName().contains("ElderGuardian"))
             e.cancel();
 
         if (nR.explosions.getValue() && p instanceof ExplosionLargeParticle)

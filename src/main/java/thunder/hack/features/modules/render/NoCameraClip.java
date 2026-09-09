@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.render;
 
 import net.minecraft.client.option.Perspective;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.render.animation.AnimationUtility;
@@ -15,7 +15,7 @@ public class NoCameraClip extends Module {
     public Setting<Float> distance = new Setting<>("Distance", 3f, 1f, 20f);
     private float animation;
 
-    public void onRender3D(MatrixStack matrix) {
+    public void onRender3D(PoseStack matrix) {
         if (mc.options.getPerspective() == Perspective.FIRST_PERSON) animation = AnimationUtility.fast(animation, 0f, 10);
         else animation = AnimationUtility.fast(animation, 1f, 10);
 

@@ -59,8 +59,8 @@ public class AntiAFK extends Module {
             float sin = (float) Math.clamp(Math.sin(angleToRad), -1, 1);
             float cos = (float) Math.clamp(Math.cos(angleToRad), -1, 1);
 
-            mc.player.input.movementForward = Math.round(sin);
-            mc.player.input.movementSideways = Math.round(cos);
+            var th$pi = mc.player.input.playerInput;
+            mc.player.input.playerInput = new net.minecraft.util.PlayerInput(sin > 0, sin < 0, cos < 0, cos > 0, th$pi.jump(), th$pi.sneak(), th$pi.sprint());
         }
     }
 
@@ -73,12 +73,12 @@ public class AntiAFK extends Module {
             if(!isAfk()) return;
 
             if(move.getValue())
-                mc.player.setSprinting(false);
+                mc.player.input.playerInput = player.input.playerInput.withSprint(false);
 
             if (spin.getValue()) {
                 double gcdFix = (Math.pow(mc.options.getMouseSensitivity().getValue() * 0.6 + 0.2, 3.0)) * 1.2;
                 float newYaw = mc.player.getYaw() + rotateSpeed.getValue();
-                mc.player.setYaw((float) (newYaw - (newYaw - mc.player.getYaw()) % gcdFix));
+                mc.player.changeLookDirection(((float) (newYaw - (newYaw - mc.player.getYaw()) % gcdFix)) - mc.player.getYaw(), 0);
             }
 
             if (jump.getValue() && mc.player.isOnGround())

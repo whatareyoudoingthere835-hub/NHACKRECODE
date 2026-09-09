@@ -3,7 +3,7 @@ package thunder.hack.core.manager.client;
 import net.minecraft.client.gui.DrawContext;
 import thunder.hack.features.modules.movement.PacketTeleport;
 import thunder.hack.features.modules.player.SpinBot;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.manager.IManager;
@@ -351,7 +351,7 @@ public class ModuleManager implements IManager {
         ThunderHack.core.onRender2D(context);
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         modules.stream().filter(Module::isEnabled).forEach(module -> module.onRender3D(stack));
     }
 

@@ -12,7 +12,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.model.Dilation;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
@@ -98,11 +98,11 @@ public class LogoutSpots extends Module {
     public void onUpdate() {
         for (PlayerEntity player : mc.world.getPlayers()) {
             if (player == null || player.equals(mc.player)) continue;
-            playerCache.put(player.getGameProfile().getId(), player);
+            playerCache.put(player.getGameProfile().id(), player);
         }
     }
 
-    public void onRender3D(MatrixStack s) {
+    public void onRender3D(PoseStack s) {
 
 
 
@@ -113,11 +113,11 @@ public class LogoutSpots extends Module {
                 if (renderMode.is(RenderMode.Box)) {
                     Render3DEngine.drawBoxOutline(data.getBoundingBox(), color.getValue().getColorObject(), 2);
                 } else {
-                    PlayerEntityModel<PlayerEntityRenderState> modelPlayer = new PlayerEntityModel<>(
+                    PlayerEntityModel modelPlayer = new PlayerEntityModel(
                             PlayerEntityModel.getTexturedModelData(Dilation.NONE, false), false);
                     modelPlayer.getHead().scale(new Vector3f(-0.3f, -0.3f, -0.3f));
 
-                    renderEntity(s, data, modelPlayer, ((OtherClientPlayerEntity)data).getSkinTextures().texture(), color.getValue().getAlpha());
+                    renderEntity(s, data, modelPlayer, thunder.hack.utility.SkinUtility.skin(data), color.getValue().getAlpha());
                 }
             }
         }
@@ -154,7 +154,7 @@ public class LogoutSpots extends Module {
         }
     }
 
-    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel<PlayerEntityRenderState> modelBase, Identifier texture, int alpha) {
+    private void renderEntity(@NotNull PoseStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
         modelBase.leftPants.visible = true;
         modelBase.rightPants.visible = true;
         modelBase.leftSleeve.visible = true;
@@ -171,11 +171,11 @@ public class LogoutSpots extends Module {
         matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw)));
         prepareScale(matrices);
         PlayerEntityRenderState state = new PlayerEntityRenderState();
-        state.age = entity.age + Render3DEngine.getTickDelta();
+        state.age = entity.age + Render3DEngine.getTickDelta(false);
         state.bodyYaw = entity.bodyYaw;
         state.relativeHeadYaw = entity.headYaw - entity.bodyYaw;
         state.pitch = entity.getPitch();
-        state.limbSwingAnimationProgress = entity.limbAnimator.getAnimationProgress(Render3DEngine.getTickDelta());
+        state.limbSwingAnimationProgress = 0f; // 1.21.11: not readable
         state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(), 1f);
         modelBase.resetTransforms();
         modelBase.setAngles(state);
@@ -196,7 +196,7 @@ public class LogoutSpots extends Module {
         matrices.pop();
     }
 
-    private static void prepareScale(@NotNull MatrixStack matrixStack) {
+    private static void prepareScale(@NotNull PoseStack matrixStack) {
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
         matrixStack.scale(1.6f, 1.8f, 1.6f);
         matrixStack.translate(0.0F, -1.501F, 0.0F);

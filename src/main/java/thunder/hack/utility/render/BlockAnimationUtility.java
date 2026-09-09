@@ -1,6 +1,6 @@
 package thunder.hack.utility.render;
 
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 
@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class BlockAnimationUtility {
     private static final Map<BlockRenderData, Long> blocks = new ConcurrentHashMap<>();
 
-    public static void onRender(MatrixStack matrixStack) {
+    public static void onRender(PoseStack matrixStack) {
         blocks.forEach((animation, time) -> {
             if (System.currentTimeMillis() - time > 300f) {
                 blocks.remove(animation);
@@ -33,7 +33,7 @@ public final class BlockAnimationUtility {
 
     private record BlockRenderData(BlockPos pos, Color lineColor, int lineWidth, Color fillColor,
                                    BlockAnimationMode animationMode, BlockRenderMode renderMode) {
-        void renderWithTime(Long time, MatrixStack stack) {
+        void renderWithTime(Long time, PoseStack stack) {
             switch (animationMode) {
                 case Static -> {
                     if (renderMode == BlockRenderMode.All || renderMode == BlockRenderMode.Line) {
@@ -143,7 +143,7 @@ public final class BlockAnimationUtility {
             }
         }
 
-        private static void renderBox(Long time, MatrixStack stack, Box box, BlockRenderMode renderMode, Color lineColor, int lineWidth, Color fillColor) {
+        private static void renderBox(Long time, PoseStack stack, Box box, BlockRenderMode renderMode, Color lineColor, int lineWidth, Color fillColor) {
             if (renderMode == BlockRenderMode.All || renderMode == BlockRenderMode.Line)
                 Render3DEngine.drawBoxOutline(box, Render2DEngine.injectAlpha(lineColor, (int) (fillColor.getAlpha() * (1f - (time / 300f)))), lineWidth);
 

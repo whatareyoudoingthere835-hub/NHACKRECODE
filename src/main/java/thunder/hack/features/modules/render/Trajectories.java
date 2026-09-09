@@ -1,7 +1,9 @@
 package thunder.hack.features.modules.render;
 
+import net.minecraft.registry.RegistryKeys;
+
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -54,7 +56,7 @@ public class Trajectories extends Module {
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (mc.options.hudHidden) return;
         if (mc.player == null || mc.world == null || !mc.options.getPerspective().isFirstPerson())
             return;
@@ -72,8 +74,8 @@ public class Trajectories extends Module {
         boolean prev_bob = mc.options.getBobView().getValue();
         mc.options.getBobView().setValue(false);
 
-        if ((offHand.getItem() instanceof CrossbowItem && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.MULTISHOT.getRegistryRef()).getEntry(Enchantments.MULTISHOT).get(), offHand) != 0) ||
-                (mainHand.getItem() instanceof CrossbowItem && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.MULTISHOT.getRegistryRef()).getEntry(Enchantments.MULTISHOT).get(), mainHand) != 0)) {
+        if ((offHand.getItem() instanceof CrossbowItem && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.MULTISHOT), offHand) != 0) ||
+                (mainHand.getItem() instanceof CrossbowItem && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.MULTISHOT), mainHand) != 0)) {
 
             calcTrajectory(hand == Hand.OFF_HAND ? offHand.getItem() : mainHand.getItem(), mc.player.getYaw() - 10);
             calcTrajectory(hand == Hand.OFF_HAND ? offHand.getItem() : mainHand.getItem(), mc.player.getYaw());
@@ -84,9 +86,9 @@ public class Trajectories extends Module {
     }
 
     private void calcTrajectory(Item item, float yaw) {
-        double x = Render2DEngine.interpolate((mc.player.getX() - mc.player.getDeltaMovement().x), mc.player.getX(), Render3DEngine.getTickDelta());
-        double y = Render2DEngine.interpolate((mc.player.getY() - mc.player.getDeltaMovement().y), mc.player.getY(), Render3DEngine.getTickDelta());
-        double z = Render2DEngine.interpolate((mc.player.getZ() - mc.player.getDeltaMovement().z), mc.player.getZ(), Render3DEngine.getTickDelta());
+        double x = Render2DEngine.interpolate((mc.player.getX() - mc.player.getVelocity().x), mc.player.getX(), Render3DEngine.getTickDelta(false));
+        double y = Render2DEngine.interpolate((mc.player.getY() - mc.player.getVelocity().y), mc.player.getY(), Render3DEngine.getTickDelta(false));
+        double z = Render2DEngine.interpolate((mc.player.getZ() - mc.player.getVelocity().z), mc.player.getZ(), Render3DEngine.getTickDelta(false));
 
         y = y + mc.player.getEyeHeight(mc.player.getPose()) - 0.1000000014901161;
 

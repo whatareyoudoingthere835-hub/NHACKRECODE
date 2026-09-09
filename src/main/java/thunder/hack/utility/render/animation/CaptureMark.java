@@ -3,7 +3,7 @@ package thunder.hack.utility.render.animation;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
@@ -22,11 +22,11 @@ public class CaptureMark {
     public static void render(Entity target) {
         Camera camera = mc.gameRenderer.getCamera();
 
-        double tPosX = Render2DEngine.interpolate((target.getX() - target.getDeltaMovement().x), target.getX(), Render3DEngine.getTickDelta()) - camera.getCameraPos().x;
-        double tPosY = Render2DEngine.interpolate((target.getY() - target.getDeltaMovement().y), target.getY(), Render3DEngine.getTickDelta()) - camera.getCameraPos().y;
-        double tPosZ = Render2DEngine.interpolate((target.getZ() - target.getDeltaMovement().z), target.getZ(), Render3DEngine.getTickDelta()) - camera.getCameraPos().z;
+        double tPosX = Render2DEngine.interpolate((target.getX() - target.getVelocity().x), target.getX(), Render3DEngine.getTickDelta(false)) - camera.getCameraPos().x;
+        double tPosY = Render2DEngine.interpolate((target.getY() - target.getVelocity().y), target.getY(), Render3DEngine.getTickDelta(false)) - camera.getCameraPos().y;
+        double tPosZ = Render2DEngine.interpolate((target.getZ() - target.getVelocity().z), target.getZ(), Render3DEngine.getTickDelta(false)) - camera.getCameraPos().z;
 
-        MatrixStack matrices = new MatrixStack();
+        PoseStack matrices = new PoseStack();
 
 
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
@@ -34,7 +34,7 @@ public class CaptureMark {
         matrices.translate(tPosX, (tPosY + target.getEyeHeight(target.getPose()) / 2f), tPosZ);
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(Render2DEngine.interpolateFloat(prevEspValue, espValue, Render3DEngine.getTickDelta())));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(Render2DEngine.interpolateFloat(prevEspValue, espValue, Render3DEngine.getTickDelta(false))));
         Render2DEngine.bindTexture(TextureStorage.capture);
 
 

@@ -41,8 +41,8 @@ public final class ThunderUtility {
     public static String solveName(String notSolved) {
         AtomicReference<String> mb = new AtomicReference<>("FATAL ERROR");
         Objects.requireNonNull(mc.getNetworkHandler()).getListedPlayerListEntries().forEach(player -> {
-            if (notSolved.contains(player.getProfile().getName())) {
-                mb.set(player.getProfile().getName());
+            if (notSolved.contains(player.getProfile().name())) {
+                mb.set(player.getProfile().name());
             }
         });
 

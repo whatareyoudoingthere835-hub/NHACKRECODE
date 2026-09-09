@@ -136,8 +136,8 @@ public class PearlChaser extends Module {
             mc.options.backKey.setPressed(false);
             mc.options.leftKey.setPressed(false);
             mc.options.rightKey.setPressed(false);
-            mc.player.input.movementForward = 0;
-            mc.player.input.movementSideways = 0;
+            thunder.hack.utility.player.InputUtility.setForward(false);
+            thunder.hack.utility.player.InputUtility.setStrafe(false);
             return;
         }
 
@@ -145,8 +145,8 @@ public class PearlChaser extends Module {
                 ("Догоняем перл! Позиция X:" + tracedBP.getX() + " Y:" + tracedBP.getY() + " Z:" + tracedBP.getZ() + " Углы Y:" + rotationYaw + " P:" + rotationPitch) :
                 ("Chasing pearl on X:" + tracedBP.getX() + " Y:" + tracedBP.getY() + " Z:" + tracedBP.getZ() + " Angle Y:" + rotationYaw + " P:" + rotationPitch));
 
-        mc.player.setYaw(rotationYaw);
-        mc.player.setPitch(MathUtility.clamp(rotationPitch, -89, 89));
+        mc.player.changeLookDirection((rotationYaw) - mc.player.getYaw(), 0);
+        mc.player.changeLookDirection(0, (MathUtility.clamp(rotationPitch, -89, 89)) - mc.player.getPitch());
 
         float yaw = mc.player.getYaw();
         float pitch = mc.player.getPitch();

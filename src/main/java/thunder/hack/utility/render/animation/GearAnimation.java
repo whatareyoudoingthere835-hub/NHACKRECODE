@@ -10,7 +10,7 @@ public class GearAnimation {
     private boolean flipSpeed;
 
     public float getValue() {
-        return Render2DEngine.interpolateFloat(prevEspValue, espValue, Render3DEngine.getTickDelta());
+        return Render2DEngine.interpolateFloat(prevEspValue, espValue, Render3DEngine.getTickDelta(false));
     }
 
     public void tick() {

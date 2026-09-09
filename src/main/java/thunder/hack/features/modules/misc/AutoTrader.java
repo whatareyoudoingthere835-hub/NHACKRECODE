@@ -61,7 +61,7 @@ public class AutoTrader extends Module {
 
         if (mc.currentScreen instanceof MerchantScreen merch) {
             MerchantScreenHandler msh = merch.getScreenHandler();
-            TradeOfferList offers = msh.getRecipes();
+            TradeOfferList offers = msh.getOffers();
 
             for (int i = 0; i < offers.size(); i++) {
                 TradeOffer offer = offers.get(i);
@@ -94,8 +94,8 @@ public class AutoTrader extends Module {
 
             if (ent != null) {
                 float[] angles = InteractionUtility.calculateAngle(ent.getEyePos().add(Math.random() * 0.2, 0, Math.random() * 0.2));
-                mc.player.setYaw(angles[0]);
-                mc.player.setPitch(angles[1]);
+                mc.player.changeLookDirection((angles[0]) - mc.player.getYaw(), 0);
+                mc.player.changeLookDirection(0, (angles[1]) - mc.player.getPitch());
                 mc.interactionManager.interactEntity(mc.player, ent, Hand.MAIN_HAND);
                 lastVillager = ent.getId();
                 interactTicks = 12;

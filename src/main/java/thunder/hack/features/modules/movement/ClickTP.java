@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.movement;
 
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -31,7 +31,7 @@ public class ClickTP extends Module {
             delay--;
 
         if (mc.options.pickItemKey.isPressed() && delay < 0) {
-            HitResult ray = mc.player.raycast(256, Render3DEngine.getTickDelta(), false);
+            HitResult ray = mc.player.raycast(256, Render3DEngine.getTickDelta(false), false);
             if (ray instanceof BlockHitResult bhr && !mc.world.isAir(bhr.getBlockPos())) {
                 Vec3d pos = bhr.getBlockPos().toCenterPos();
                 for (int i = 0; i < spoofs.getValue(); ++i)
@@ -43,8 +43,8 @@ public class ClickTP extends Module {
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
-        HitResult ray = mc.player.raycast(256, Render3DEngine.getTickDelta(), false);
+    public void onRender3D(PoseStack stack) {
+        HitResult ray = mc.player.raycast(256, Render3DEngine.getTickDelta(false), false);
         if (ray instanceof BlockHitResult bhr && !mc.world.isAir(bhr.getBlockPos())) {
             BlockPos pos = bhr.getBlockPos();
             Render3DEngine.OUTLINE_QUEUE.add(new Render3DEngine.OutlineAction(new Box(pos), HudEditor.getColor(1), 1));

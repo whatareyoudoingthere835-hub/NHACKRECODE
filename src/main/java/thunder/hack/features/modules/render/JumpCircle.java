@@ -3,7 +3,7 @@ package thunder.hack.features.modules.render;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
@@ -72,7 +72,7 @@ public class JumpCircle extends Module {
         circles.removeIf(c -> c.timer.passedMs(easeOut.getValue() ? 5000 : 6000));
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         Collections.reverse(circles);
 
 

@@ -4,7 +4,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
@@ -56,14 +56,14 @@ public class Animations extends Module {
     @Override
     public void onUpdate() {
         if (fullNullCheck()) return;
-        if (oldAnimationsM.getValue() && ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).getEquippedProgressMainHand() <= 1f) {
-            ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).setEquippedProgressMainHand(1f);
-            ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).setItemStackMainHand(mc.player.getMainHandStack());
+        if (oldAnimationsM.getValue() && ((IHeldItemRenderer) ((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$heldItemRenderer()).getEquippedProgressMainHand() <= 1f) {
+            ((IHeldItemRenderer) ((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$heldItemRenderer()).setEquippedProgressMainHand(1f);
+            ((IHeldItemRenderer) ((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$heldItemRenderer()).setItemStackMainHand(mc.player.getMainHandStack());
         }
 
-        if (oldAnimationsOff.getValue() && ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).getEquippedProgressOffHand() <= 1f) {
-            ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).setEquippedProgressOffHand(1f);
-            ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).setItemStackOffHand(mc.player.getOffHandStack());
+        if (oldAnimationsOff.getValue() && ((IHeldItemRenderer) ((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$heldItemRenderer()).getEquippedProgressOffHand() <= 1f) {
+            ((IHeldItemRenderer) ((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$heldItemRenderer()).setEquippedProgressOffHand(1f);
+            ((IHeldItemRenderer) ((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$heldItemRenderer()).setItemStackOffHand(mc.player.getOffHandStack());
         }
     }
 
@@ -73,7 +73,7 @@ public class Animations extends Module {
             flip = !flip;
     }
 
-    private void renderSwordAnimation(MatrixStack matrices, float f, float swingProgress, float equipProgress, Arm arm) {
+    private void renderSwordAnimation(PoseStack matrices, float f, float swingProgress, float equipProgress, Arm arm) {
         if (arm == Arm.LEFT && (mode.getValue() == Mode.Eleven || mode.getValue() == Mode.Ten || mode.getValue() == Mode.Nine || mode.getValue() == Mode.Three || mode.getValue() == Mode.Thirteen || mode.getValue() == Mode.Fourteen)) {
             applyEquipOffset(matrices, arm, equipProgress);
             matrices.translate(-ModuleManager.viewModel.positionMainX.getValue(), ModuleManager.viewModel.positionMainY.getValue(), ModuleManager.viewModel.positionMainZ.getValue());
@@ -221,7 +221,7 @@ public class Animations extends Module {
     }
 
 
-    public void renderFirstPersonItemCustom(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices, OrderedRenderCommandQueue vertexConsumers, int light) {
+    public void renderFirstPersonItemCustom(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, PoseStack matrices, OrderedRenderCommandQueue vertexConsumers, int light) {
         if (!player.isUsingSpyglass()) {
             boolean bl = hand == Hand.MAIN_HAND;
             Arm arm = bl ? player.getMainArm() : player.getMainArm().getOpposite();
@@ -348,7 +348,7 @@ public class Animations extends Module {
         }
     }
 
-    private void applyBrushTransformation(MatrixStack matrices, float tickDelta, Arm arm, @NotNull ItemStack stack, float equipProgress) {
+    private void applyBrushTransformation(PoseStack matrices, float tickDelta, Arm arm, @NotNull ItemStack stack, float equipProgress) {
         applyEquipOffset(matrices, arm, equipProgress);
         float f = (float) mc.player.getItemUseTimeLeft() - tickDelta + 1.0F;
         float g = 1.0F - f / (float) stack.getMaxUseTime(mc.player);
@@ -369,12 +369,12 @@ public class Animations extends Module {
         }
     }
 
-    private void applyEquipOffset(@NotNull MatrixStack matrices, Arm arm, float equipProgress) {
+    private void applyEquipOffset(@NotNull PoseStack matrices, Arm arm, float equipProgress) {
         int i = arm == Arm.RIGHT ? 1 : -1;
         matrices.translate((float) i * 0.56F, -0.52F + equipProgress * -0.6F, -0.72F);
     }
 
-    private void applySwingOffset(@NotNull MatrixStack matrices, Arm arm, float swingProgress) {
+    private void applySwingOffset(@NotNull PoseStack matrices, Arm arm, float swingProgress) {
         int i = arm == Arm.RIGHT ? 1 : -1;
         float f = MathHelper.sin(swingProgress * swingProgress * 3.1415927F);
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * (45.0F + f * -20.0F)));
@@ -384,14 +384,14 @@ public class Animations extends Module {
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * -45.0F));
     }
 
-    public void renderItem(LivingEntity entity, ItemStack stack, ItemDisplayContext renderMode, boolean leftHanded, MatrixStack matrices, OrderedRenderCommandQueue vertexConsumers, int light) {
+    public void renderItem(LivingEntity entity, ItemStack stack, ItemDisplayContext renderMode, boolean leftHanded, PoseStack matrices, OrderedRenderCommandQueue vertexConsumers, int light) {
         if (stack.isEmpty()) {
             return;
         }
-        mc.gameRenderer.getHeldItemRenderer().renderItem(entity, renderMode, stack, matrices, vertexConsumers, light);
+        ((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$heldItemRenderer().renderItem(entity, renderMode, stack, matrices, vertexConsumers, light);
     }
 
-    private void applyEatOrDrinkTransformationCustom(MatrixStack matrices, float tickDelta, Arm arm, @NotNull ItemStack stack) {
+    private void applyEatOrDrinkTransformationCustom(PoseStack matrices, float tickDelta, Arm arm, @NotNull ItemStack stack) {
         float f = (float) mc.player.getItemUseTimeLeft() - tickDelta + 1.0F;
         float g = f / (float) stack.getMaxUseTime(mc.player);
         float h;
@@ -408,22 +408,22 @@ public class Animations extends Module {
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * h * 30.0F));
     }
 
-    private void translateToViewModel(MatrixStack matrices) {
+    private void translateToViewModel(PoseStack matrices) {
         if (ModuleManager.viewModel.isEnabled())
             matrices.translate(ModuleManager.viewModel.positionMainX.getValue(), ModuleManager.viewModel.positionMainY.getValue(), ModuleManager.viewModel.positionMainZ.getValue());
     }
 
-    private void translateToViewModelOff(MatrixStack matrices) {
+    private void translateToViewModelOff(PoseStack matrices) {
         if (ModuleManager.viewModel.isEnabled())
             matrices.translate(-ModuleManager.viewModel.positionMainX.getValue(), ModuleManager.viewModel.positionMainY.getValue(), ModuleManager.viewModel.positionMainZ.getValue());
     }
 
-    private void translateBack(MatrixStack matrices) {
+    private void translateBack(PoseStack matrices) {
         if (ModuleManager.viewModel.isEnabled())
             matrices.translate(-ModuleManager.viewModel.positionMainX.getValue(), -ModuleManager.viewModel.positionMainY.getValue(), -ModuleManager.viewModel.positionMainZ.getValue());
     }
 
-    private void translateBacklOff(MatrixStack matrices) {
+    private void translateBacklOff(PoseStack matrices) {
         if (ModuleManager.viewModel.isEnabled())
             matrices.translate(ModuleManager.viewModel.positionMainX.getValue(), -ModuleManager.viewModel.positionMainY.getValue(), -ModuleManager.viewModel.positionMainZ.getValue());
     }

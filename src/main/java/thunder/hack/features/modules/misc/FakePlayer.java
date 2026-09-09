@@ -102,12 +102,12 @@ public class FakePlayer extends Module {
                     return;
                 }
                 PlayerState p = positions.get(movementTick);
-                fakePlayer.setYaw(p.yaw);
-                fakePlayer.setPitch(p.pitch);
+                fakePlayer.changeLookDirection((p.yaw) - fakePlayer.getYaw(), 0);
+                fakePlayer.changeLookDirection(0, (p.pitch) - fakePlayer.getPitch());
                 fakePlayer.setHeadYaw(p.yaw);
 
                 fakePlayer.setPosition(p.x, p.y, p.z);
-                fakePlayer.setPosition(p.x, p.y, p.z, p.yaw, p.pitch); fakePlayer.setYaw(p.yaw); fakePlayer.setPitch(p.pitch);
+                fakePlayer.setPosition(p.x, p.y, p.z, p.yaw, p.pitch); fakePlayer.changeLookDirection((p.yaw) - fakePlayer.getYaw(), 0); fakePlayer.changeLookDirection(0, (p.pitch) - fakePlayer.getPitch());
             } else movementTick = 0;
 
             if (autoTotem.getValue() && fakePlayer.getOffHandStack().getItem() != Items.TOTEM_OF_UNDYING)

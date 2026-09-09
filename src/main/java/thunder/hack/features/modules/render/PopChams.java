@@ -12,7 +12,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.model.Dilation;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -56,7 +56,7 @@ public final class PopChams extends Module {
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
 
 
 
@@ -77,17 +77,16 @@ public final class PopChams extends Module {
         };
 
         entity.copyPositionAndRotation(e.getEntity());
-        entity.bodyYaw = e.getEntity().bodyYaw;
-        entity.headYaw = e.getEntity().headYaw;
+        entity.setBodyYaw(e.getEntity().getBodyYaw());
+        entity.setHeadYaw(e.getEntity().getHeadYaw());
         entity.handSwingProgress = e.getEntity().handSwingProgress;
         entity.handSwingTicks = e.getEntity().handSwingTicks;
-        entity.setSneaking(e.getEntity().isSneaking());
-        entity.limbAnimator.setSpeed(e.getEntity().limbAnimator.getSpeed());
-        entity.limbAnimator.getAnimationProgress() = e.getEntity().limbAnimator.getAnimationProgress();
-        popList.add(new Person(entity, ((AbstractClientPlayerEntity) e.getEntity()).getSkinTextures().texture()));
+        entity.input.playerInput = entity.input.playerInput.withSneak(e.getEntity().isSneaking());
+        // limb animation transfer unsupported on 1.21.11 LimbAnimator
+        popList.add(new Person(entity, ((AbstractClientPlayerEntity) thunder.hack.utility.SkinUtility.skin(e.getEntity()))));
     }
 
-    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel<PlayerEntityRenderState> modelBase, Identifier texture, int alpha) {
+    private void renderEntity(@NotNull PoseStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
         modelBase.leftPants.visible = secondLayer.getValue();
         modelBase.rightPants.visible = secondLayer.getValue();
         modelBase.leftSleeve.visible = secondLayer.getValue();
@@ -104,17 +103,17 @@ public final class PopChams extends Module {
         matrices.translate((float) x, (float) y, (float) z);
 
         float yRotYaw = ((alpha / 255f) * 360f * rotSpeed.getValue());
-        yRotYaw = yRotYaw == 0 ? 0 : Render2DEngine.interpolateFloat(yRotYaw, yRotYaw - (((aSpeed.getValue() / 255f) * 360f * rotSpeed.getValue())), Render3DEngine.getTickDelta());
+        yRotYaw = yRotYaw == 0 ? 0 : Render2DEngine.interpolateFloat(yRotYaw, yRotYaw - (((aSpeed.getValue() / 255f) * 360f * rotSpeed.getValue())), Render3DEngine.getTickDelta(false));
 
         matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw + yRotYaw)));
         prepareScale(matrices);
 
         PlayerEntityRenderState state = new PlayerEntityRenderState();
-        state.age = entity.age + Render3DEngine.getTickDelta();
+        state.age = entity.age + Render3DEngine.getTickDelta(false);
         state.bodyYaw = entity.bodyYaw;
         state.relativeHeadYaw = entity.headYaw - entity.bodyYaw;
         state.pitch = entity.getPitch();
-        state.limbSwingAnimationProgress = entity.limbAnimator.getAnimationProgress(Render3DEngine.getTickDelta());
+        state.limbSwingAnimationProgress = 0f; // 1.21.11: not readable
         state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(), 1f);
         modelBase.resetTransforms();
         modelBase.setAngles(state);
@@ -138,7 +137,7 @@ public final class PopChams extends Module {
         matrices.pop();
     }
 
-    private static void prepareScale(@NotNull MatrixStack matrixStack) {
+    private static void prepareScale(@NotNull PoseStack matrixStack) {
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
         matrixStack.scale(1.6f, 1.8f, 1.6f);
         matrixStack.translate(0.0F, -1.501F, 0.0F);
@@ -146,13 +145,13 @@ public final class PopChams extends Module {
 
     private class Person {
         private final PlayerEntity player;
-        private final PlayerEntityModel<PlayerEntityRenderState> modelPlayer;
+        private final PlayerEntityModel modelPlayer;
         private Identifier texture;
         private int alpha;
 
         public Person(PlayerEntity player, Identifier texture) {
             this.player = player;
-            modelPlayer = new PlayerEntityModel<>(
+            modelPlayer = new PlayerEntityModel(
                     PlayerEntityModel.getTexturedModelData(Dilation.NONE, false), false);
             modelPlayer.getHead().scale(new Vector3f(-0.3f, -0.3f, -0.3f));
             alpha = color.getValue().getAlpha();

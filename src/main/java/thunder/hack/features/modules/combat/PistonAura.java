@@ -2,7 +2,7 @@ package thunder.hack.features.modules.combat;
 
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.*;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
@@ -204,8 +204,8 @@ public final class PistonAura extends Module {
         if (extra) {
             sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround(), mc.player.horizontalCollision));
         } else {
-            mc.player.setYaw(angle[0]);
-            mc.player.setPitch(angle[1]);
+            mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
         }
 
         postAction = () -> {
@@ -241,8 +241,8 @@ public final class PistonAura extends Module {
         if (extra) {
             sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0] + MathUtility.random(-0.2f, 0.2f), angle[1], mc.player.isOnGround(), mc.player.horizontalCollision));
         } else {
-            mc.player.setYaw(angle[0] + MathUtility.random(-0.2f, 0.2f));
-            mc.player.setPitch(angle[1]);
+            mc.player.changeLookDirection((angle[0] + MathUtility.random(-0.2f, 0.2f)) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
         }
 
         postAction = () -> {
@@ -287,8 +287,8 @@ public final class PistonAura extends Module {
         if (extra) {
             sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround(), mc.player.horizontalCollision));
         } else {
-            mc.player.setYaw(angle[0]);
-            mc.player.setPitch(angle[1]);
+            mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
         }
         postAction = () -> {
             InteractionUtility.placeBlock(firePos, InteractionUtility.Rotate.None, interact.getValue(), placeMode.getValue(), InventoryUtility.findItemInHotBar(Items.FLINT_AND_STEEL).slot(), false, false);
@@ -354,8 +354,8 @@ public final class PistonAura extends Module {
         if (extra) {
             sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround(), mc.player.horizontalCollision));
         } else {
-            mc.player.setYaw(angle[0]);
-            mc.player.setPitch(angle[1]);
+            mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
         }
 
 
@@ -377,14 +377,14 @@ public final class PistonAura extends Module {
 
             sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle2, 0, mc.player.isOnGround(), mc.player.horizontalCollision));
             float prevYaw = mc.player.getYaw();
-            mc.player.setYaw(angle2);
-            mc.player.getYaw() = angle2;
+            mc.player.changeLookDirection((angle2) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection((angle2) - mc.player.getYaw(), 0);
             ((IClientPlayerEntity) mc.player).setLastYaw(angle2);
             int prevSlot = mc.player.getInventory().getSelectedSlot();
             InteractionUtility.placeBlock(pistonPos, InteractionUtility.Rotate.None, interact.getValue(), placeMode.getValue(), piston_slot, false, false);
             sendPacket(new UpdateSelectedSlotC2SPacket(prevSlot));
             mc.player.getInventory().setSelectedSlot(prevSlot);
-            mc.player.setYaw(prevYaw);
+            mc.player.changeLookDirection((prevYaw) - mc.player.getYaw(), 0);
 
             stage = isFire ? Stage.Fire : Stage.Crystal;
         };
@@ -521,8 +521,8 @@ public final class PistonAura extends Module {
             if (!(ent instanceof EndCrystalEntity) || target.squaredDistanceTo(new Vec3d(ent.getX(), ent.getY(), ent.getZ())) > 16 || ent.age < 2)
                 continue;
             float[] angle = InteractionUtility.calculateAngle(new Vec3d(ent.getX(), ent.getY(), ent.getZ()));
-            mc.player.setYaw(angle[0] + MathUtility.random(-3f, 3f));
-            mc.player.setPitch(angle[1]);
+            mc.player.changeLookDirection((angle[0] + MathUtility.random(-3f, 3f)) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
             if (attackTimer.passedMs(200)) {
                 mc.interactionManager.attackEntity(mc.player, ent);
                 mc.player.swingHand(Hand.MAIN_HAND);
@@ -568,7 +568,7 @@ public final class PistonAura extends Module {
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (pistonPos == null || crystalPos == null || redStonePos == null) {
             return;
         }

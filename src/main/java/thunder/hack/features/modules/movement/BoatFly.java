@@ -172,7 +172,7 @@ public class BoatFly extends Module {
 
         if (timer.getValue() != 1.0f) ThunderHack.TICK_TIMER = (timer.getValue());
 
-        entity.setYaw(mc.player.getYaw());
+        entity.changeLookDirection((mc.player.getYaw()) - entity.getYaw(), 0);
 
         double[] boatMotion = MovementUtility.forward(speed.getValue());
         double predictedX = entity.getX() + boatMotion[0];
@@ -217,8 +217,8 @@ public class BoatFly extends Module {
             Vec3d vec3d = new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(0.0, randomizeYOffset(), 0.0);
             BoatEntity entityBoat = new BoatEntity(net.minecraft.entity.EntityType.OAK_BOAT, mc.world);
             entityBoat.setPosition(vec3d.x, vec3d.y, vec3d.z);
-            entityBoat.setYaw(entity.getYaw());
-            entityBoat.setPitch(entity.getPitch());
+            entityBoat.changeLookDirection((entity.getYaw()) - entityBoat.getYaw(), 0);
+            entityBoat.changeLookDirection(0, (entity.getPitch()) - entityBoat.getPitch());
             sendMovePacket(new VehicleMoveC2SPacket(entityBoat.getX(), entityBoat.getY(), entityBoat.getZ(), entityBoat.getYaw(), entityBoat.getPitch()));
         }
 

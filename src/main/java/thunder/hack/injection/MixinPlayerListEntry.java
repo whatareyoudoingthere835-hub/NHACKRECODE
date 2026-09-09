@@ -58,7 +58,7 @@ public class MixinPlayerListEntry {
                     String colune = inputLine.trim();
                     String name = colune.split(":")[0];
                     String cape = colune.split(":")[1];
-                    if (Objects.equals(profile.getName(), name)) {
+                    if (Objects.equals(profile.name(), name)) {
                         customCapeTexture = Identifier.of("thunderhack", "textures/capes/" + cape + ".png");
                         return;
                     }
@@ -67,7 +67,7 @@ public class MixinPlayerListEntry {
             }
 
             for (String str : ThunderUtility.starGazer) {
-                if (profile.getName().toLowerCase().equals(str.toLowerCase()))
+                if (profile.name().toLowerCase().equals(str.toLowerCase()))
                     customCapeTexture = Identifier.of("thunderhack", "textures/capes/starcape.png");
             }
 

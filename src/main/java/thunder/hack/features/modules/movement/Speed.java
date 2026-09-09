@@ -333,7 +333,7 @@ public class Speed extends Module {
 
         if (MovementUtility.isMoving()) {
             ThunderHack.TICK_TIMER = useTimer.getValue() ? 1.088f : 1f;
-            float currentSpeed = mode.getValue() == Mode.NCP && mc.player.input.movementForward <= 0 && prevForward > 0 ? Managers.PLAYER.currentPlayerSpeed * 0.66f : Managers.PLAYER.currentPlayerSpeed;
+            float currentSpeed = mode.getValue() == Mode.NCP && thunder.hack.utility.player.InputUtility.forward() <= 0 && prevForward > 0 ? Managers.PLAYER.currentPlayerSpeed * 0.66f : Managers.PLAYER.currentPlayerSpeed;
             boolean canJump = !mc.player.horizontalCollision || ModuleManager.step.isDisabled();
 
             if (stage == 1 && mc.player.isOnGround() && canJump) {
@@ -352,8 +352,8 @@ public class Speed extends Module {
 
             baseSpeed = Math.max(baseSpeed, MovementUtility.getBaseMoveSpeed());
 
-            double ncpSpeed = mode.getValue() == Mode.StrictStrafe || mc.player.input.movementForward < 1 ? 0.465 : 0.576;
-            double ncpBypassSpeed = mode.getValue() == Mode.StrictStrafe || mc.player.input.movementForward < 1 ? 0.44 : 0.57;
+            double ncpSpeed = mode.getValue() == Mode.StrictStrafe || thunder.hack.utility.player.InputUtility.forward() < 1 ? 0.465 : 0.576;
+            double ncpBypassSpeed = mode.getValue() == Mode.StrictStrafe || thunder.hack.utility.player.InputUtility.forward() < 1 ? 0.44 : 0.57;
 
             if (mc.player.hasStatusEffect(StatusEffects.SPEED)) {
                 double amplifier = mc.player.getStatusEffect(StatusEffects.SPEED).getAmplifier();
@@ -373,7 +373,7 @@ public class Speed extends Module {
                 ticks = 0;
 
             MovementUtility.modifyEventSpeed(event, baseSpeed);
-            prevForward = mc.player.input.movementForward;
+            prevForward = thunder.hack.utility.player.InputUtility.forward();
         } else {
             ThunderHack.TICK_TIMER = 1f;
             event.setX(0);

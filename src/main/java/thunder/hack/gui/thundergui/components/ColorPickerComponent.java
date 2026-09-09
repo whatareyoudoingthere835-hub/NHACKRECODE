@@ -1,7 +1,7 @@
 package thunder.hack.gui.thundergui.components;
 
 import org.joml.Matrix3x2fStack;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import thunder.hack.ThunderHack;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.thundergui.ThunderGui;
@@ -60,7 +60,7 @@ public class ColorPickerComponent extends SettingElement {
         super.onTick();
     }
 
-    private void renderPicker(MatrixStack stack, int mouseX, int mouseY, Color color) {
+    private void renderPicker(org.joml.Matrix3x2fStack stack, int mouseX, int mouseY, Color color) {
         double cx = x + 6;
         float cy = y + 20;
         double cw = width - 38;

@@ -208,7 +208,7 @@ public class LegitHelper extends Module {
             if (changePitch.getValue()) {
                 float pitch = InteractionUtility.calculateAngle(new Vec3d(cr.getX(), cr.getY(), cr.getZ()).add(0, 0.15, 0))[1];
                 double gcdFix = (Math.pow(mc.options.getMouseSensitivity().getValue() * 0.6 + 0.2, 3.0)) * 1.2;
-                mc.player.setPitch((float) (pitch - (pitch - mc.player.getPitch()) % gcdFix));
+                mc.player.changeLookDirection(0, ((float) (pitch - (pitch - mc.player.getPitch()) % gcdFix)) - mc.player.getPitch());
             }
             mc.interactionManager.attackEntity(mc.player, e.getEntity());
             mc.player.swingHand(Hand.MAIN_HAND);
@@ -263,15 +263,15 @@ public class LegitHelper extends Module {
     public void onSync(EventSync e) {
         if (rotationVec != null) {
             float[] angle = InteractionUtility.calculateAngle(rotationVec);
-            mc.player.setYaw(angle[0]);
-            mc.player.setPitch(angle[1]);
+            mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
             rotationVec = null;
         }
 
         if (isKeyPressed(windBoostBind) && mc.player.isOnGround()) {
             SearchInvResult result = InventoryUtility.findItemInHotBar(Items.WIND_CHARGE);
             if (result.found()) {
-                mc.player.setPitch(90);
+                mc.player.changeLookDirection(0, (90) - mc.player.getPitch());
                 mc.player.jump();
                 InventoryUtility.saveAndSwitchTo(result.slot());
                 mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
@@ -281,9 +281,9 @@ public class LegitHelper extends Module {
     }
 
     private BlockPos calcTrajectory(float yaw) {
-        double x = Render2DEngine.interpolate((mc.player.getX() - mc.player.getDeltaMovement().x), mc.player.getX(), Render3DEngine.getTickDelta());
-        double y = Render2DEngine.interpolate((mc.player.getY() - mc.player.getDeltaMovement().y), mc.player.getY(), Render3DEngine.getTickDelta());
-        double z = Render2DEngine.interpolate((mc.player.getZ() - mc.player.getDeltaMovement().z), mc.player.getZ(), Render3DEngine.getTickDelta());
+        double x = Render2DEngine.interpolate((mc.player.getX() - mc.player.getVelocity().x), mc.player.getX(), Render3DEngine.getTickDelta(false));
+        double y = Render2DEngine.interpolate((mc.player.getY() - mc.player.getVelocity().y), mc.player.getY(), Render3DEngine.getTickDelta(false));
+        double z = Render2DEngine.interpolate((mc.player.getZ() - mc.player.getVelocity().z), mc.player.getZ(), Render3DEngine.getTickDelta(false));
 
         y = y + mc.player.getEyeHeight(mc.player.getPose()) - 0.1000000014901161;
 

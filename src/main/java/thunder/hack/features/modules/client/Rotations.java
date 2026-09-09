@@ -33,8 +33,8 @@ public class Rotations extends Module {
 
         if (e.isPre()) {
             prevYaw = mc.player.getYaw();
-            mc.player.setYaw(fixRotation);
-        } else mc.player.setYaw(prevYaw);
+            mc.player.changeLookDirection((fixRotation) - mc.player.getYaw(), 0);
+        } else mc.player.changeLookDirection((prevYaw) - mc.player.getYaw(), 0);
     }
 
     public void onPlayerMove(EventFixVelocity event) {
@@ -52,11 +52,11 @@ public class Rotations extends Module {
                 prevYaw = mc.player.getYaw();
                 prevPitch = mc.player.getPitch();
 
-                mc.player.setYaw(fixRotation);
-                mc.player.setPitch(ModuleManager.aura.rotationPitch);
+                mc.player.changeLookDirection((fixRotation) - mc.player.getYaw(), 0);
+                mc.player.changeLookDirection(0, (ModuleManager.aura.rotationPitch) - mc.player.getPitch());
             } else {
-                mc.player.setYaw(prevYaw);
-                mc.player.setPitch(prevPitch);
+                mc.player.changeLookDirection((prevYaw) - mc.player.getYaw(), 0);
+                mc.player.changeLookDirection(0, (prevPitch) - mc.player.getPitch());
             }
             return;
         }
@@ -64,9 +64,9 @@ public class Rotations extends Module {
         if (moveFix.getValue() == MoveFix.Focused && !Float.isNaN(fixRotation) && !mc.player.isRiding()) {
             if (e.isPre()) {
                 prevYaw = mc.player.getYaw();
-                mc.player.setYaw(fixRotation);
+                mc.player.changeLookDirection((fixRotation) - mc.player.getYaw(), 0);
             } else {
-                mc.player.setYaw(prevYaw);
+                mc.player.changeLookDirection((prevYaw) - mc.player.getYaw(), 0);
             }
         }
     }
@@ -76,13 +76,15 @@ public class Rotations extends Module {
             if (Float.isNaN(fixRotation) || mc.player.isRiding())
                 return;
 
-            float mF = mc.player.input.movementForward;
-            float mS = mc.player.input.movementSideways;
+            float mF = thunder.hack.utility.player.InputUtility.forward();
+            float mS = thunder.hack.utility.player.InputUtility.strafe();
             float delta = (mc.player.getYaw() - fixRotation) * MathHelper.RADIANS_PER_DEGREE;
             float cos = MathHelper.cos(delta);
             float sin = MathHelper.sin(delta);
-            mc.player.input.movementSideways = Math.round(mS * cos - mF * sin);
-            mc.player.input.movementForward = Math.round(mF * cos + mS * sin);
+            int th$f = Math.round(mF * cos + mS * sin);
+            int th$s = Math.round(mS * cos - mF * sin);
+            var th$pi = mc.player.input.playerInput;
+            mc.player.input.playerInput = new net.minecraft.util.PlayerInput(th$f > 0, th$f < 0, th$s < 0, th$s > 0, th$pi.jump(), th$pi.sneak(), th$pi.sprint());
         }
     }
 

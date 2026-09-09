@@ -145,7 +145,7 @@ public final class AutoTotem extends Module {
         } else if (invResult.found()) {
             int slot = invResult.slot() >= 36 ? invResult.slot() - 36 : invResult.slot();
             if (!hotbarFallBack.getValue()) swapTo(slot);
-            else mc.interactionManager.pickFromInventory(slot);
+            else mc.player.getInventory().setSelectedSlot(slot); ((thunder.hack.injection.accesors.IInteractionManager) mc.interactionManager).syncSlot();
             delay = 20;
         }
     }
@@ -205,7 +205,7 @@ public final class AutoTotem extends Module {
                         mc.player.getInventory().setSelectedSlot(slot);
                         sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
                         int prevSlot = mc.player.getInventory().getSelectedSlot();
-                        Managers.ASYNC.run(() -> mc.player.getInventory().setSelectedSlot(prevSlot, 300));
+                        Managers.ASYNC.run(() -> mc.player.getInventory().setSelectedSlot(prevSlot));
                     }
                     case NewVersion -> {
                         debug(slot + " swap");

@@ -68,7 +68,7 @@ public class Step extends Module {
     @EventHandler
     public void onStep(EventSync event) {
         if (mode.getValue() == Mode.NCP) {
-            double stepHeight = mc.player.getY() - (mc.player.getY() - mc.player.getDeltaMovement().y);
+            double stepHeight = mc.player.getY() - (mc.player.getY() - mc.player.getVelocity().y);
 
             if (stepHeight <= 0.75 || stepHeight > height.getValue() || (strict.getValue() && stepHeight > 1)) return;
 
@@ -79,9 +79,9 @@ public class Step extends Module {
                     timer = true;
                 }
                 for (double offset : offsets)
-                    sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround((mc.player.getX() - mc.player.getDeltaMovement().x), (mc.player.getY() - mc.player.getDeltaMovement().y) + offset, (mc.player.getZ() - mc.player.getDeltaMovement().z), false, mc.player.horizontalCollision));
+                    sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround((mc.player.getX() - mc.player.getVelocity().x), (mc.player.getY() - mc.player.getVelocity().y) + offset, (mc.player.getZ() - mc.player.getVelocity().z), false, mc.player.horizontalCollision));
                 if (strict.getValue())
-                    sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround((mc.player.getX() - mc.player.getDeltaMovement().x), (mc.player.getY() - mc.player.getDeltaMovement().y) + stepHeight, (mc.player.getZ() - mc.player.getDeltaMovement().z), false, mc.player.horizontalCollision));
+                    sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround((mc.player.getX() - mc.player.getVelocity().x), (mc.player.getY() - mc.player.getVelocity().y) + stepHeight, (mc.player.getZ() - mc.player.getVelocity().z), false, mc.player.horizontalCollision));
             }
             stepTimer.reset();
         }

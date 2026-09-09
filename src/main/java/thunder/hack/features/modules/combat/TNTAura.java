@@ -3,7 +3,7 @@ package thunder.hack.features.modules.combat;
 import com.google.common.collect.Lists;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.TntBlock;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
@@ -57,7 +57,7 @@ public class TNTAura extends Module {
 
     private int delay;
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         renderPoses.forEach((pos, time) -> {
             if (System.currentTimeMillis() - time > 500) {
                 renderPoses.remove(pos);

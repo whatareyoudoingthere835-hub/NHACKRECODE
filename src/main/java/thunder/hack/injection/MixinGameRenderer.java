@@ -5,7 +5,7 @@ import thunder.hack.core.Managers;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.hit.BlockHitResult;
@@ -50,17 +50,17 @@ public abstract class MixinGameRenderer {
         if (Module.fullNullCheck()) return;
 
         Camera camera = mc.gameRenderer.getCamera();
-        float tickDelta = tickCounter.getTickDelta();
+        float tickDelta = tickCounter.getTickDelta(false);
 
         Matrix4f rotations = new Matrix4f()
                 .rotateX(camera.getPitch() * MathHelper.RADIANS_PER_DEGREE)
                 .rotateY(camera.getYaw() * MathHelper.RADIANS_PER_DEGREE + (float) Math.PI);
 
-        Render3DEngine.lastProjMat.set(mc.gameRenderer.getProjectionMatrix(tickDelta));
+        Render3DEngine.lastProjMat.set(((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$projectionMatrix());
         Render3DEngine.lastModMat.set(rotations);
         Render3DEngine.lastWorldSpaceMatrix.set(rotations);
 
-        MatrixStack matrixStack = new MatrixStack();
+        PoseStack matrixStack = new PoseStack();
         Managers.MODULE.onRender3D(matrixStack);
         BlockAnimationUtility.onRender(matrixStack);
         Render3DEngine.onRender3D(matrixStack); // <- не двигать
@@ -123,7 +123,7 @@ public abstract class MixinGameRenderer {
     }
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
-    private void bobViewHook(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+    private void bobViewHook(PoseStack matrices, float tickDelta, CallbackInfo ci) {
         if (Module.fullNullCheck()) return;
         if (ModuleManager.noBob.isEnabled()) {
             ModuleManager.noBob.bobView(matrices, tickDelta);
@@ -157,7 +157,7 @@ public abstract class MixinGameRenderer {
     }
 
     @Inject(method = "tiltViewWhenHurt", at = @At("HEAD"), cancellable = true)
-    private void tiltViewWhenHurtHook(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+    private void tiltViewWhenHurtHook(PoseStack matrices, float tickDelta, CallbackInfo ci) {
         if (ModuleManager.noRender.isEnabled() && ModuleManager.noRender.hurtCam.getValue())
             ci.cancel();
     }

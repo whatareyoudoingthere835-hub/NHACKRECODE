@@ -38,7 +38,7 @@ public class NoSlow extends Module {
     public void onUpdate() {
         if (returnSneak) {
             mc.options.sneakKey.setPressed(false);
-            mc.player.setSprinting(true);
+            mc.player.input.playerInput = player.input.playerInput.withSprint(true);
             returnSneak = false;
         }
 
@@ -94,27 +94,27 @@ public class NoSlow extends Module {
     @EventHandler
     public void onKeyboardInput(EventKeyboardInput e) {
         if (mode.getValue() == Mode.Matrix3 && mc.player.isUsingItem() && !mc.player.isGliding()) {
-            mc.player.input.movementForward *= 5f;
-            mc.player.input.movementSideways *= 5f;
+            thunder.hack.utility.player.InputUtility.setForward(false);
+            thunder.hack.utility.player.InputUtility.setStrafe(false);
             float mult = 1f;
 
             if (mc.player.isOnGround()) {
-                if (mc.player.input.movementForward != 0 && mc.player.input.movementSideways != 0) {
-                    mc.player.input.movementForward *= 0.35f;
-                    mc.player.input.movementSideways *= 0.35f;
+                if (thunder.hack.utility.player.InputUtility.forward() != 0 && thunder.hack.utility.player.InputUtility.strafe() != 0) {
+                    thunder.hack.utility.player.InputUtility.setForward(false);
+                    thunder.hack.utility.player.InputUtility.setStrafe(false);
                 } else {
-                    mc.player.input.movementForward *= 0.5f;
-                    mc.player.input.movementSideways *= 0.5f;
+                    thunder.hack.utility.player.InputUtility.setForward(false);
+                    thunder.hack.utility.player.InputUtility.setStrafe(false);
                 }
             } else {
-                if (mc.player.input.movementForward != 0 && mc.player.input.movementSideways != 0) {
+                if (thunder.hack.utility.player.InputUtility.forward() != 0 && thunder.hack.utility.player.InputUtility.strafe() != 0) {
                     mult = 0.47f;
                 } else {
                     mult = 0.67f;
                 }
             }
-            mc.player.input.movementForward *= mult;
-            mc.player.input.movementSideways *= mult;
+            thunder.hack.utility.player.InputUtility.setForward(false);
+            thunder.hack.utility.player.InputUtility.setStrafe(false);
         }
     }
 

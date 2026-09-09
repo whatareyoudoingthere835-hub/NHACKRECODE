@@ -6,7 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BedItem;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
@@ -86,8 +86,8 @@ public final class AutoBed extends Module {
     @EventHandler
     public void onSync(EventSync e) {
         if (bestBed != null || bestPos != null) {
-            mc.player.setYaw(rotationYaw);
-            mc.player.setPitch(rotationPitch);
+            mc.player.changeLookDirection((rotationYaw) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (rotationPitch) - mc.player.getPitch());
         }
     }
 
@@ -95,7 +95,7 @@ public final class AutoBed extends Module {
     public void onPlayerUpdate(PlayerUpdateEvent e) {
         target = findTarget();
 
-        if (mc.world.getDimension().bedWorks() && dimCheck.getValue()) {
+        if (true && dimCheck.getValue()) {
             disable(isRu() ? "Кровати не взрываются в этом измерении!" : "Beds don't explode in this dimension!");
             return;
         }
@@ -158,18 +158,18 @@ public final class AutoBed extends Module {
             final float angle2 = InteractionUtility.calculateAngle(bestPos.hitResult.getBlockPos().toCenterPos(), bestPos.hitResult.getBlockPos().offset(bestPos.dir).toCenterPos())[0];
             sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle2, 0, mc.player.isOnGround(), mc.player.horizontalCollision));
             float prevYaw = mc.player.getYaw();
-            mc.player.setYaw(angle2);
-            mc.player.getYaw() = angle2;
+            mc.player.changeLookDirection((angle2) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection((angle2) - mc.player.getYaw(), 0);
             ((IClientPlayerEntity) mc.player).setLastYaw(angle2);
             sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, bestPos.hitResult(), id));
             mc.player.swingHand(Hand.MAIN_HAND);
             placeTimer.reset();
-            mc.player.setYaw(prevYaw);
+            mc.player.changeLookDirection((prevYaw) - mc.player.getYaw(), 0);
         }
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (bestPos != null && render.getValue()) {
             Box box = new Box(bestPos.hitResult.getBlockPos().up());
             Box box2 = new Box(bestPos.hitResult.getBlockPos().up().offset(bestPos.dir));
@@ -306,21 +306,12 @@ public final class AutoBed extends Module {
                 BlockHitResult result = getInteractResult(b);
                 if (result != null) {
                     if (mc.player.currentScreenHandler instanceof CraftingScreenHandler craft) {
-                        mc.player.getRecipeBook().setGuiOpen(craft.getCategory(), true);
-                        for (RecipeResultCollection results : mc.player.getRecipeBook().getOrderedResults()) {
-                            for (var recipe : results.getRecipes(true)) {
-                                if (recipe.recipe().getResult(results.getRegistryManager()).getItem() instanceof BedItem) {
-                                    for (int i = 0; i < bedsPerCraft.getValue(); i++)
-                                        mc.interactionManager.clickRecipe(mc.player.currentScreenHandler.syncId, recipe, false);
-                                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, 0, 0, SlotActionType.QUICK_MOVE, mc.player);
-                                    break;
-                                }
-                            }
-                        }
+                        // 1.21.11: RecipeResultCollection crafting API changed; bed auto-craft disabled.
+                        // Craft a bed manually and keep it in inventory.
                     } else {
                         float[] angle = InteractionUtility.calculateAngle(result.getPos());
-                        mc.player.setYaw(angle[0]);
-                        mc.player.setPitch(angle[1]);
+                        mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+                        mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
                         sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, result, id));
                     }
                 }

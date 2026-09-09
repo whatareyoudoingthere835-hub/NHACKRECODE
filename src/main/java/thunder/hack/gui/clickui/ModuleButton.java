@@ -1,5 +1,7 @@
 package thunder.hack.gui.clickui;
 
+import net.minecraft.util.math.MathHelper;
+
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -125,7 +127,7 @@ public class ModuleButton extends AbstractButton {
                         Render2DEngine.injectAlpha(HudEditor.getColor(90).darker(), 110));
 
                 context.getMatrices().translate((float) (px), (float) (py));
-                context.getMatrices().rotate(((float) Render2DEngine.interpolate(mc.player.age - 1, mc.player.age, Render3DEngine.getTickDelta()) * -4f) * MathHelper.RADIANS_PER_DEGREE);
+                context.getMatrices().rotate(((float) Render2DEngine.interpolate(mc.player.age - 1, mc.player.age, Render3DEngine.getTickDelta(false)) * -4f) * MathHelper.RADIANS_PER_DEGREE);
                 context.getMatrices().translate((float) (-px), (float) (-py));
                 context.getMatrices().popMatrix();
                 Render2DEngine.popWindow();

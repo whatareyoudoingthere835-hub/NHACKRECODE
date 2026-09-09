@@ -45,7 +45,7 @@ public class Spider extends Module {
         if (!mc.player.horizontalCollision) return;
         if (mc.player.age % 2 == 0 && mc.options.jumpKey.isPressed() && mode.getValue() == Mode.FunTime) {
             float pitch = mc.player.getPitch();
-            mc.player.setPitch(82);
+            mc.player.changeLookDirection(0, (82) - mc.player.getPitch());
             int slot = getAtHotBar();
             if (slot != -1) {
                 int originalSlot = mc.player.getInventory().getSelectedSlot();
@@ -59,7 +59,7 @@ public class Spider extends Module {
                 sendPacket(new UpdateSelectedSlotC2SPacket(originalSlot));
             }
 
-            mc.player.setPitch(pitch);
+            mc.player.changeLookDirection(0, (pitch) - mc.player.getPitch());
         }
 
 
@@ -67,7 +67,7 @@ public class Spider extends Module {
             mc.player.setVelocity(mc.player.getVelocity().getX(), 0.21, mc.player.getVelocity().getZ());
         } else if (mode.getValue() == Mode.Matrix) {
             mc.player.setOnGround(mc.player.age % delay.getValue() == 0);
-            (mc.player.getY() - mc.player.getDeltaMovement().y) -= 2.0E-232;
+            (mc.player.getY() - mc.player.getVelocity().y) -= 2.0E-232;
             if (mc.player.isOnGround())
                 mc.player.setVelocity(mc.player.getVelocity().getX(), 0.42, mc.player.getVelocity().getZ());
         }
@@ -93,12 +93,12 @@ public class Spider extends Module {
                 Direction opposite = side.getOpposite();
                 Vec3d hitVec = new Vec3d(neighbour.getX() + 0.5, neighbour.getY() + 0.5, neighbour.getZ() + 0.5).add(new Vec3d(opposite.getUnitVector()).multiply(0.5));
                 sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, new BlockHitResult(hitVec, opposite, neighbour, false), id));
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SNEAKING));
                 if (mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).add(0, 2, 0)).getBlock() != Blocks.AIR) {
                     sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, neighbour, opposite));
                     sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, neighbour, opposite));
                 }
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
             }
             mc.player.setOnGround(true);
             mc.player.jump();

@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.client;
 
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.network.packet.c2s.play.RequestCommandCompletionsC2SPacket;
 import net.minecraft.network.packet.s2c.play.CommandSuggestionsS2CPacket;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +24,7 @@ public final class FastLatency extends Module {
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (timer.passedMs(5000) && limitTimer.every(delay.getValue())) {
             sendPacket(new RequestCommandCompletionsC2SPacket(1337, "w "));
             ping = System.currentTimeMillis();

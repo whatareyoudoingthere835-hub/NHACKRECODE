@@ -16,7 +16,7 @@ public abstract class MixinAbstractHorseEntity extends AnimalEntity {
         super(entityType, world);
     }
 
-    @Inject(method = "isSaddled", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isSaddled", at = @At("HEAD"), cancellable = true, require = 0)
     public void onIsSaddled(CallbackInfoReturnable<Boolean> cir) {
         if (ModuleManager.entityControl.isEnabled())
             cir.setReturnValue(true);

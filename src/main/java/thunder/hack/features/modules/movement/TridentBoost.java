@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.registry.RegistryKeys;
+
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -32,7 +34,7 @@ public class TridentBoost extends Module {
     @EventHandler
     public void onUseTrident(UseTridentEvent e) {
         if (mc.player.getItemUseTime() >= cooldown.getValue()) {
-            float j = mc.world == null ? 0 : EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.RIPTIDE.getRegistryRef()).getEntry(Enchantments.RIPTIDE).get(), mc.player.getActiveItem());
+            float j = mc.world == null ? 0 : EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.RIPTIDE), mc.player.getActiveItem());
             if (anyWeather.getValue() || mc.player.isTouchingWaterOrRain()) {
                 if (j > 0) {
                     float f = mc.player.getYaw();

@@ -1,6 +1,6 @@
 package thunder.hack.features.modules.render;
 
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
@@ -24,7 +24,7 @@ public class BlockHighLight extends Module {
         Both, BothSide, Fill, FilledSide, Outline, OutlinedSide
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (mc.crosshairTarget == null) return;
         if (mc.crosshairTarget.getType() != HitResult.Type.BLOCK) return;
         if (!(mc.crosshairTarget instanceof BlockHitResult bhr)) return;

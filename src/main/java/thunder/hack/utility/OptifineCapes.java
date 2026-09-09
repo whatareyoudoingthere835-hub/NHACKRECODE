@@ -22,9 +22,11 @@ public final class OptifineCapes {
 
     public static void loadPlayerCape(GameProfile player, ReturnCapeTexture response) {
         try {
-            String uuid = player.getId().toString();
-            NativeImageBackedTexture nIBT = getCapeFromURL(String.format("http://s.optifine.net/capes/%s.png", player.getName()));
-            Identifier capeTexture = MinecraftClient.getInstance().getTextureManager().registerDynamicTexture("th-cape-" + uuid, nIBT);
+            String uuid = player.id().toString();
+            NativeImageBackedTexture nIBT = getCapeFromURL(String.format("http://s.optifine.net/capes/%s.png", player.name()));
+            Identifier th$id = Identifier.of("thunderhack", "th-cape-" + uuid);
+            MinecraftClient.getInstance().getTextureManager().registerTexture(th$id, nIBT);
+            Identifier capeTexture = th$id;
             response.response(capeTexture);
         } catch (Exception ignored) {
         }
@@ -47,7 +49,7 @@ public final class OptifineCapes {
             e.printStackTrace();
         }
         if (cape != null) {
-            return new NativeImageBackedTexture(parseCape(cape));
+            return new NativeImageBackedTexture(() -> "thunderhack:optifine-cape", parseCape(cape));
         }
         return null;
     }
@@ -63,12 +65,27 @@ public final class OptifineCapes {
         }
 
         NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
+        java.awt.image.BufferedImage bi = th$toBufferedImage(image);
         for (int x = 0; x < imageSrcWidth; x++) {
             for (int y = 0; y < srcHeight; y++) {
-                imgNew.setColor(x, y, image.getColor(x, y));
+                imgNew.writePixel(x, y, bi == null ? 0 : th$swap(bi, x, y));
             }
         }
         image.close();
         return imgNew;
     }
+
+    private static int th$swap(java.awt.image.BufferedImage bi, int x, int y) {
+        int p = bi.getRGB(x, y);
+        return (p & 0xFF000000) | ((p & 0xFF) << 16) | (p & 0x00FF00) | ((p >> 16) & 0xFF);
+    }
+
+    private static java.awt.image.BufferedImage th$toBufferedImage(net.minecraft.client.texture.NativeImage image) {
+        try {
+            return javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(image.toByteArray()));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

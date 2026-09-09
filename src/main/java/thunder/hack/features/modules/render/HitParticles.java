@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -81,7 +81,7 @@ public class HitParticles extends Module {
         }
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
 
         if (mc.player != null && mc.world != null) {
             for (Particle particle : particles) {
@@ -175,9 +175,9 @@ public class HitParticles extends Module {
             float size = starsScale.getValue();
             float scale = mode.is(Mode.Text) ? 0.025f * size : 0.07f;
 
-            final double posX = Render2DEngine.interpolate(px, x, Render3DEngine.getTickDelta()) - gameRenderer.getCamera().getCameraPos().getX();
-            final double posY = Render2DEngine.interpolate(py, y, Render3DEngine.getTickDelta()) + 0.1 - gameRenderer.getCamera().getCameraPos().getY();
-            final double posZ = Render2DEngine.interpolate(pz, z, Render3DEngine.getTickDelta()) - gameRenderer.getCamera().getCameraPos().getZ();
+            final double posX = Render2DEngine.interpolate(px, x, Render3DEngine.getTickDelta(false)) - gameRenderer.getCamera().getCameraPos().getX();
+            final double posY = Render2DEngine.interpolate(py, y, Render3DEngine.getTickDelta(false)) + 0.1 - gameRenderer.getCamera().getCameraPos().getY();
+            final double posZ = Render2DEngine.interpolate(pz, z, Render3DEngine.getTickDelta(false)) - gameRenderer.getCamera().getCameraPos().getZ();
 
             matrixStack.pushMatrix();
             matrixStack.translate(posX, posY);

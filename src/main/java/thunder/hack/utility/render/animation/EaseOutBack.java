@@ -26,7 +26,7 @@ public class EaseOutBack {
     }
 
     public double getAnimationd() {
-        return dropAnimation((prevTick + (tick - prevTick) * Render3DEngine.getTickDelta()) / maxTick);
+        return dropAnimation((prevTick + (tick - prevTick) * Render3DEngine.getTickDelta(false)) / maxTick);
     }
 
     public void reset() {

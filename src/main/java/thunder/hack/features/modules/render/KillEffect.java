@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.render;
 
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
@@ -41,7 +41,7 @@ public class KillEffect extends Module {
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (mc.world == null) return;
 
         switch (mode.getValue()) {

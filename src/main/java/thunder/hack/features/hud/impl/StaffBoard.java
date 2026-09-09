@@ -1,5 +1,7 @@
 package thunder.hack.features.hud.impl;
 
+import net.minecraft.client.render.RenderPipelines;
+
 import net.minecraft.client.gl.RenderPipelines;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.gui.DrawContext;
@@ -36,7 +38,7 @@ public class StaffBoard extends HudElement {
     public static List<String> getOnlinePlayer() {
         return mc.player.networkHandler.getPlayerList().stream()
                 .map(PlayerListEntry::getProfile)
-                .map(GameProfile::getName)
+                .map(GameProfile::name)
                 .filter(profileName -> validUserPattern.matcher(profileName).matches())
                 .collect(Collectors.toList());
     }
@@ -47,12 +49,12 @@ public class StaffBoard extends HudElement {
             if (mc.isInSingleplayer() || player.getScoreboardTeam() == null) break;
             String prefix = player.getScoreboardTeam().getPrefix().getString();
             if (check(Formatting.strip(prefix).toLowerCase())
-                    || StaffCommand.staffNames.toString().toLowerCase().contains(player.getProfile().getName().toLowerCase())
-                    || player.getProfile().getName().toLowerCase().contains("1danil_mansoru1")
-                    || player.getProfile().getName().toLowerCase().contains("barslan_")
-                    || player.getProfile().getName().toLowerCase().contains("timmings")
-                    || player.getProfile().getName().toLowerCase().contains("timings")
-                    || player.getProfile().getName().toLowerCase().contains("ruthless")
+                    || StaffCommand.staffNames.toString().toLowerCase().contains(player.getProfile().name().toLowerCase())
+                    || player.getProfile().name().toLowerCase().contains("1danil_mansoru1")
+                    || player.getProfile().name().toLowerCase().contains("barslan_")
+                    || player.getProfile().name().toLowerCase().contains("timmings")
+                    || player.getProfile().name().toLowerCase().contains("timings")
+                    || player.getProfile().name().toLowerCase().contains("ruthless")
                     || player.getScoreboardTeam().getPrefix().getString().contains("YT")
                     || (player.getScoreboardTeam().getPrefix().getString().contains("Y") && player.getScoreboardTeam().getPrefix().getString().contains("T"))) {
                 String name = Arrays.asList(player.getScoreboardTeam().getPlayerList().toArray()).toString().replace("[", "").replace("]", "");
@@ -185,8 +187,8 @@ public class StaffBoard extends HudElement {
             id = skinMap.get(n);
 
         for (PlayerListEntry ple : mc.getNetworkHandler().getPlayerList())
-            if (n.contains(ple.getProfile().getName())) {
-                id = ple.getSkinTextures().texture();
+            if (n.contains(ple.getProfile().name())) {
+                id = ple.getSkinTextures().body().id();
                 if (!skinMap.containsKey(n))
                     skinMap.put(n, id);
                 break;

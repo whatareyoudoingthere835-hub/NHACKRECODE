@@ -56,7 +56,7 @@ public class ConfigManager implements IManager {
     public void load(String name, String category) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
         if (!file.exists()) {
-            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!");
+            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!", false);
             return;
         }
 
@@ -71,7 +71,7 @@ public class ConfigManager implements IManager {
     public void loadBinds(String name) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
         if (!file.exists()) {
-            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!");
+            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!", false);
             return;
         }
 
@@ -103,7 +103,7 @@ public class ConfigManager implements IManager {
     public void load(String name) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
         if (!file.exists()) {
-            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!");
+            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!", false);
 
             return;
         }
@@ -117,24 +117,24 @@ public class ConfigManager implements IManager {
     }
 
     public void loadCloud(String name) {
-        Command.sendMessage(isRu() ? "Загружаю.." : "Downloading..");
+        Command.sendMessage(isRu() ? "Загружаю.." : "Downloading..", false);
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://raw.githubusercontent.com/Pan4ur/THRecodeUtil/main/configs/" + name + ".th").openStream());
              FileOutputStream fileOutputStream = new FileOutputStream(new File(CONFIGS_FOLDER, name + ".th"))) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1)
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
-            Command.sendMessage(isRu() ? "Загрузил!" : "Downloaded!");
+            Command.sendMessage(isRu() ? "Загрузил!" : "Downloaded!", false);
             load(name);
         } catch (Exception e) {
-            Command.sendMessage(isRu() ? "Произошла ошибка при загрузке! Может название неправильное?" : "There was an error downloading! Maybe the name is wrong?");
+            Command.sendMessage(isRu() ? "Произошла ошибка при загрузке! Может название неправильное?" : "There was an error downloading! Maybe the name is wrong?", false);
         }
     }
 
     public void loadModuleOnly(String name, Module module) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
         if (!file.exists()) {
-            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!");
+            Command.sendMessage(isRu() ? "Конфига " + name + " не существует!" : "Config " + name + " does not exist!", false);
             return;
         }
 
@@ -202,10 +202,10 @@ public class ConfigManager implements IManager {
     public void save(String name) {
         File file = new File(CONFIGS_FOLDER, name + ".th");
         if (file.exists()) {
-            Command.sendMessage(isRu() ? "Перезаписываем " + name + "..." : "Overwriting " + name + "...");
+            Command.sendMessage(isRu() ? "Перезаписываем " + name + "..." : "Overwriting " + name + "...", false);
             file.delete();
         } else {
-            Command.sendMessage(isRu() ? "Конфиг " + name + " успешно сохранен!" : "Config " + name + " successfully saved!");
+            Command.sendMessage(isRu() ? "Конфиг " + name + " успешно сохранен!" : "Config " + name + " successfully saved!", false);
         }
         save(file);
     }

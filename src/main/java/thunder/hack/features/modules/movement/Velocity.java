@@ -158,7 +158,7 @@ public class Velocity extends Module {
                     double var3 = mc.player.getYaw() * 0.017453292F;
                     double var5 = Math.sqrt(mc.player.getVelocity().x * mc.player.getVelocity().x + mc.player.getVelocity().z * mc.player.getVelocity().z);
                     mc.player.setVelocity(-Math.sin(var3) * var5, mc.player.getVelocity().y, Math.cos(var3) * var5);
-                    mc.player.setSprinting(mc.player.age % 2 != 0);
+                    mc.player.input.playerInput = player.input.playerInput.withSprint(mc.player.age % 2 != 0);
                 }
             }
             case Jump -> {

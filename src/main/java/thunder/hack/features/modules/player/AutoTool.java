@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.player;
 
+import net.minecraft.registry.RegistryKeys;
+
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.EnderChestBlock;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -66,12 +68,12 @@ public class AutoTool extends Module {
                 if (!(mc.player.getInventory().getStack(i).getMaxDamage() - mc.player.getInventory().getStack(i).getDamage() > 10) && saveItem.getValue())
                     continue;
 
-                final float digSpeed = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), stack);
+                final float digSpeed = (int) EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.EFFICIENCY), stack);
                 final float destroySpeed = stack.getMiningSpeedMultiplier(mc.world.getBlockState(pos));
 
                 if (mc.world.getBlockState(pos).getBlock() instanceof AirBlock) return -1;
                 if (mc.world.getBlockState(pos).getBlock() instanceof EnderChestBlock && echestSilk.getValue()) {
-                    if (EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SILK_TOUCH.getRegistryRef()).getEntry(Enchantments.SILK_TOUCH).get(), stack) > 0 && digSpeed + destroySpeed > CurrentFastest) {
+                    if (EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.SILK_TOUCH), stack) > 0 && digSpeed + destroySpeed > CurrentFastest) {
                         CurrentFastest = digSpeed + destroySpeed;
                         index = i;
                     }

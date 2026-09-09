@@ -105,10 +105,10 @@ public class FreeCam extends Module {
                 fakeY -= hspeed.getValue();
         }
 
-        mc.player.input.movementForward = 0;
-        mc.player.input.movementSideways = 0;
-        mc.player.input.jumping = false;
-        mc.player.input.sneaking = false;
+        thunder.hack.utility.player.InputUtility.setForward(false);
+        thunder.hack.utility.player.InputUtility.setStrafe(false);
+        thunder.hack.utility.player.InputUtility.setJump(false);
+        thunder.hack.utility.player.InputUtility.setSneak(false);
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -137,22 +137,22 @@ public class FreeCam extends Module {
     }
 
     public float getFakeYaw() {
-        return (float) Render2DEngine.interpolate(prevFakeYaw, fakeYaw, Render3DEngine.getTickDelta());
+        return (float) Render2DEngine.interpolate(prevFakeYaw, fakeYaw, Render3DEngine.getTickDelta(false));
     }
 
     public float getFakePitch() {
-        return (float) Render2DEngine.interpolate(prevFakePitch, fakePitch, Render3DEngine.getTickDelta());
+        return (float) Render2DEngine.interpolate(prevFakePitch, fakePitch, Render3DEngine.getTickDelta(false));
     }
 
     public double getFakeX() {
-        return Render2DEngine.interpolate(prevFakeX, fakeX, Render3DEngine.getTickDelta());
+        return Render2DEngine.interpolate(prevFakeX, fakeX, Render3DEngine.getTickDelta(false));
     }
 
     public double getFakeY() {
-        return Render2DEngine.interpolate(prevFakeY, fakeY, Render3DEngine.getTickDelta());
+        return Render2DEngine.interpolate(prevFakeY, fakeY, Render3DEngine.getTickDelta(false));
     }
 
     public double getFakeZ() {
-        return Render2DEngine.interpolate(prevFakeZ, fakeZ, Render3DEngine.getTickDelta());
+        return Render2DEngine.interpolate(prevFakeZ, fakeZ, Render3DEngine.getTickDelta(false));
     }
 }

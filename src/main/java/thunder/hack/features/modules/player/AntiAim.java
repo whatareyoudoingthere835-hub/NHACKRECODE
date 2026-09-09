@@ -34,12 +34,12 @@ public class AntiAim extends Module {
         if(allowInteract.getValue() && (mc.options.attackKey.isPressed() || mc.options.attackKey.isPressed())) return;
         double gcdFix = (Math.pow(mc.options.getMouseSensitivity().getValue() * 0.6 + 0.2, 3.0)) * 1.2;
         if (yawMode.getValue() != Mode.None) {
-            mc.player.setYaw((float) (rotationYaw - (rotationYaw - mc.player.getYaw()) % gcdFix));
+            mc.player.changeLookDirection(((float) (rotationYaw - (rotationYaw - mc.player.getYaw()) % gcdFix)) - mc.player.getYaw(), 0);
             if (bodySync.getValue())
                 mc.player.setBodyYaw(rotationYaw);
         }
         if (pitchMode.getValue() != Mode.None)
-            mc.player.setPitch((float) (rotationPitch - (rotationPitch - mc.player.getPitch()) % gcdFix));
+            mc.player.changeLookDirection(0, ((float) (rotationPitch - (rotationPitch - mc.player.getPitch()) % gcdFix)) - mc.player.getPitch());
     }
 
     @EventHandler(priority = EventPriority.HIGH)

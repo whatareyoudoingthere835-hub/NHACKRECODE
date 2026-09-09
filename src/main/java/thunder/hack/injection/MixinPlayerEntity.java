@@ -47,7 +47,7 @@ public class MixinPlayerEntity {
         if (ModuleManager.autoSprint.isEnabled() && AutoSprint.sprint.getValue()) {
             final float multiplier = 0.6f + 0.4f * AutoSprint.motion.getValue();
             mc.player.setVelocity(mc.player.getVelocity().x / 0.6 * multiplier, mc.player.getVelocity().y, mc.player.getVelocity().z / 0.6 * multiplier);
-            mc.player.setSprinting(true);
+            mc.player.input.playerInput = player.input.playerInput.withSprint(true);
         }
     }
 

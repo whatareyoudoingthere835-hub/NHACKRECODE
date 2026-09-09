@@ -1,12 +1,14 @@
 package thunder.hack.features.hud.impl;
 
+import net.minecraft.util.math.MathHelper;
+
 import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.Matrix3x2fStack;
+import org.joml.Matrix3x2fStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.RotationAxis;
@@ -43,13 +45,13 @@ public class RadarRewrite extends HudElement {
 
     public static float getRotations(Entity entity) {
         if (mc.player == null) return 0;
-        double x = interp(entity.getX(), (entity.getX() - entity.getDeltaMovement().x)) - interp(mc.player.getX(), (mc.player.getX() - mc.player.getDeltaMovement().x));
-        double z = interp(entity.getZ(), (entity.getZ() - entity.getDeltaMovement().z)) - interp(mc.player.getZ(), (mc.player.getZ() - mc.player.getDeltaMovement().z));
+        double x = interp(entity.getX(), (entity.getX() - entity.getVelocity().x)) - interp(mc.player.getX(), (mc.player.getX() - mc.player.getVelocity().x));
+        double z = interp(entity.getZ(), (entity.getZ() - entity.getVelocity().z)) - interp(mc.player.getZ(), (mc.player.getZ() - mc.player.getVelocity().z));
         return (float) -(Math.atan2(x, z) * (180 / Math.PI));
     }
 
     public static double interp(double d, double d2) {
-        return d2 + (d - d2) * (double) Render3DEngine.getTickDelta();
+        return d2 + (d - d2) * (double) Render3DEngine.getTickDelta(false);
     }
 
     public void onRender2D(DrawContext context) {

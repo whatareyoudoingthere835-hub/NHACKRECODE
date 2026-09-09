@@ -1,5 +1,7 @@
 package thunder.hack.utility.render;
 
+import net.minecraft.client.render.RenderPipelines;
+
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.gl.RenderPipelines;
@@ -158,7 +160,7 @@ public final class Draw2D {
         @Nullable
         @Override
         public ScreenRect bounds() {
-            if (size == 0) return ScreenRect.EMPTY;
+            if (size == 0) return new ScreenRect(0, 0, 0, 0);
             return new ScreenRect(Math.round(minX), Math.round(minY), Math.round(maxX - minX), Math.round(maxY - minY));
         }
 

@@ -9,7 +9,7 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.item.Item;
@@ -152,28 +152,28 @@ public class ElytraPlus extends Module {
         if (mode.getValue() == Mode.Pitch40Infinite) {
             if (e.isPre()) {
                 prevClientPitch = mc.player.getPitch();
-                mc.player.setPitch(lastInfinitePitch);
-            } else mc.player.setPitch(prevClientPitch);
+                mc.player.changeLookDirection(0, (lastInfinitePitch) - mc.player.getPitch());
+            } else mc.player.changeLookDirection(0, (prevClientPitch) - mc.player.getPitch());
         }
         if (mode.is(Mode.FireWork)) {
             if (Managers.PLAYER.ticksElytraFlying < 4) {
                 if (e.isPre()) {
                     prevClientPitch = mc.player.getPitch();
-                    mc.player.setPitch(-45f);
-                } else mc.player.setPitch(prevClientPitch);
+                    mc.player.changeLookDirection(0, (-45f) - mc.player.getPitch());
+                } else mc.player.changeLookDirection(0, (prevClientPitch) - mc.player.getPitch());
             }
         }
         if (mode.getValue() == Mode.SunriseNew) {
             if (mc.options.jumpKey.isPressed()) {
                 if (e.isPre()) {
                     prevClientPitch = mc.player.getPitch();
-                    mc.player.setPitch(-45f);
-                } else mc.player.setPitch(prevClientPitch);
+                    mc.player.changeLookDirection(0, (-45f) - mc.player.getPitch());
+                } else mc.player.changeLookDirection(0, (prevClientPitch) - mc.player.getPitch());
             } else if (mc.options.sneakKey.isPressed()) {
                 if (e.isPre()) {
                     prevClientPitch = mc.player.getPitch();
-                    mc.player.setPitch(45f);
-                } else mc.player.setPitch(prevClientPitch);
+                    mc.player.changeLookDirection(0, (45f) - mc.player.getPitch());
+                } else mc.player.changeLookDirection(0, (prevClientPitch) - mc.player.getPitch());
             }
         }
     }
@@ -203,7 +203,7 @@ public class ElytraPlus extends Module {
     private void doPitch40Infinite() {
         ItemStack is = mc.player.getEquippedStack(EquipmentSlot.CHEST);
         if (is.isOf(Items.ELYTRA)) {
-            mc.player.setPitch(lastInfinitePitch);
+            mc.player.changeLookDirection(0, (lastInfinitePitch) - mc.player.getPitch());
             if (is.getDamage() > 380 && mc.player.age % 100 == 0) {
                 Managers.NOTIFICATION.publicity("Elytra+", isRu() ? "Элитра скоро сломается!" : "Elytra's about to break!", 2, Notification.Type.WARNING);
                 mc.world.playSound(mc.player, mc.player.getX(), mc.player.getY(), mc.player.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT, 10.0f, 1.0F, 0);
@@ -414,7 +414,7 @@ public class ElytraPlus extends Module {
         }
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (mode.is(Mode.FireWork) && grim.getValue().isEnabled() && fireWorkExtender.getValue() && flying && flightZonePos != null) {
             stack.push();
             Render3DEngine.setupRender();
@@ -494,7 +494,7 @@ public class ElytraPlus extends Module {
         if (mc.player.getInventory().getStack(38).getItem() != Items.ELYTRA || !mc.player.isGliding() || mc.player.isTouchingWater() || mc.player.isInLava() || !mc.player.isGliding())
             return;
 
-        float moveForward = mc.player.input.movementForward;
+        float moveForward = thunder.hack.utility.player.InputUtility.forward();
 
         if (cruiseControl.getValue()) {
             if (mc.options.jumpKey.isPressed()) height++;
@@ -503,18 +503,18 @@ public class ElytraPlus extends Module {
 
             if(twoBee.getValue()) {
                 if (Managers.PLAYER.currentPlayerSpeed >= minUpSpeed.getValue())
-                    mc.player.setPitch((float) MathHelper.clamp(MathHelper.wrapDegrees(Math.toDegrees(Math.atan2((height - mc.player.getY()) * -1.0, 10))), -50, 50));
+                    mc.player.changeLookDirection(0, ((float) MathHelper.clamp(MathHelper.wrapDegrees(Math.toDegrees(Math.atan2((height - mc.player.getY()) * -1.0, 10))), -50, 50)) - mc.player.getPitch());
                 else
-                    mc.player.setPitch(0.25F);
+                    mc.player.changeLookDirection(0, (0.25F) - mc.player.getPitch());
             } else {
                 double heightPct = 1 - Math.sqrt(MathHelper.clamp(Managers.PLAYER.currentPlayerSpeed / 1.7, 0.0, 1.0));
                 if (Managers.PLAYER.currentPlayerSpeed >= minUpSpeed.getValue() && startTimer.passedMs((long) (2000 * redeployInterval.getValue()))) {
                     double pitch = -(44.4 * heightPct + 0.6);
                     double diff = (height + 1 - mc.player.getY()) * 2;
                     double pDist = -Math.toDegrees(Math.atan2(Math.abs(diff), Managers.PLAYER.currentPlayerSpeed * 30.0)) * Math.signum(diff);
-                    mc.player.setPitch((float) (pitch + (pDist - pitch) * MathHelper.clamp(Math.abs(diff), 0.0, 1.0)));
+                    mc.player.changeLookDirection(0, ((float) (pitch + (pDist - pitch) * MathHelper.clamp(Math.abs(diff), 0.0, 1.0))) - mc.player.getPitch());
                 } else {
-                    mc.player.setPitch(0.25F);
+                    mc.player.changeLookDirection(0, (0.25F) - mc.player.getPitch());
                     moveForward = 1;
                 }
             }
@@ -527,7 +527,7 @@ public class ElytraPlus extends Module {
                 e.setZ(e.getZ() + m[1]);
             }
         } else {
-            Vec3d rotationVec = mc.player.getRotationVec(Render3DEngine.getTickDelta());
+            Vec3d rotationVec = mc.player.getRotationVec(Render3DEngine.getTickDelta(false));
 
             double d6 = Math.hypot(rotationVec.x, rotationVec.z);
             double currentSpeed = Math.hypot(e.getX(), e.getZ());
@@ -823,19 +823,19 @@ public class ElytraPlus extends Module {
     public void fireworkOnSync() {
         if (grim.getValue().isEnabled() && rotate.getValue()) {
             if (mc.options.jumpKey.isPressed() && mc.player.isGliding() && flying)
-                mc.player.setPitch(-45f);
+                mc.player.changeLookDirection(0, (-45f) - mc.player.getPitch());
 
             if (mc.options.sneakKey.isPressed() && mc.player.isGliding() && flying)
-                mc.player.setPitch(45f);
+                mc.player.changeLookDirection(0, (45f) - mc.player.getPitch());
 
-            mc.player.setYaw(MovementUtility.getMoveDirection());
+            mc.player.changeLookDirection((MovementUtility.getMoveDirection()) - mc.player.getYaw(), 0);
         }
 
         if (!MovementUtility.isMoving() && mc.options.jumpKey.isPressed() && mc.player.isGliding() && flying)
-            mc.player.setPitch(-90f);
+            mc.player.changeLookDirection(0, (-90f) - mc.player.getPitch());
 
         if (Managers.PLAYER.ticksElytraFlying < 5 && !mc.player.isOnGround())
-            mc.player.setPitch(-45f);
+            mc.player.changeLookDirection(0, (-45f) - mc.player.getPitch());
     }
 
     public void fireworkOnMove(EventMove e) {
@@ -868,10 +868,10 @@ public class ElytraPlus extends Module {
             if (!MovementUtility.isMoving())
                 acceleration = 0;
 
-            if (mc.player.input.movementSideways > 0) {
-                mc.player.input.movementSideways = 1;
-            } else if (mc.player.input.movementSideways < 0) {
-                mc.player.input.movementSideways = -1;
+            if (thunder.hack.utility.player.InputUtility.strafe() > 0) {
+                thunder.hack.utility.player.InputUtility.setStrafe(true);
+            } else if (thunder.hack.utility.player.InputUtility.strafe() < 0) {
+                thunder.hack.utility.player.InputUtility.setStrafe(false);
             }
 
             MovementUtility.modifyEventSpeed(e, xzSpeed.getValue() * Math.min((acceleration += 9) / 100.0f, 1.0f));

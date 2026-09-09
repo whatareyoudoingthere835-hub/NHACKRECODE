@@ -3,7 +3,7 @@ package thunder.hack.events.impl;
 import thunder.hack.events.Event;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
@@ -11,9 +11,9 @@ public class EventHeldItemRenderer extends Event {
     private final Hand hand;
     private final ItemStack item;
     private float ep;
-    private final MatrixStack stack;
+    private final PoseStack stack;
 
-    public EventHeldItemRenderer(Hand hand, ItemStack item, float equipProgress, MatrixStack stack) {
+    public EventHeldItemRenderer(Hand hand, ItemStack item, float equipProgress, PoseStack stack) {
         this.hand = hand;
         this.item = item;
         this.ep = equipProgress;
@@ -32,7 +32,7 @@ public class EventHeldItemRenderer extends Event {
         return ep;
     }
 
-    public MatrixStack getStack() {
+    public PoseStack getStack() {
         return stack;
     }
 }

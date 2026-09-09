@@ -39,7 +39,7 @@ public class WorldTweaks extends Module {
     @EventHandler
     private void onPacketReceive(PacketEvent.Receive event) {
         if (event.getPacket() instanceof WorldTimeUpdateS2CPacket && ctime.getValue()) {
-            oldTime = ((WorldTimeUpdateS2CPacket) event.getPacket()).getTime();
+            oldTime = ((WorldTimeUpdateS2CPacket) event.getPacket()).time();
             event.cancel();
         }
     }

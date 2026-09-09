@@ -47,7 +47,7 @@ public class GapplesHud extends HudElement {
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate((float) (xPos), (float) (yPos));
-        context.getMatrices().rotate(-((float) Math.toRadians(-Render2DEngine.interpolateFloat(prevAngle, angle, Render3DEngine.getTickDelta()))));
+        context.getMatrices().rotate(-((float) Math.toRadians(-Render2DEngine.interpolateFloat(prevAngle, angle, Render3DEngine.getTickDelta(false)))));
         context.getMatrices().translate((float) (-xPos), (float) (-yPos));
 
 

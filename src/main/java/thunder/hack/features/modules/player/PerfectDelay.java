@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.player;
 
+import net.minecraft.registry.RegistryKeys;
+
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.passive.HorseEntity;
@@ -23,7 +25,7 @@ public class PerfectDelay extends Module {
     private final Setting<Boolean> trident = new Setting<>("Trident", true);
 
     private float getEnchantLevel(ItemStack stack) {
-        return EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.QUICK_CHARGE.getRegistryRef()).getEntry(Enchantments.QUICK_CHARGE).get(), stack);
+        return EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.QUICK_CHARGE), stack);
     }
 
     @Override

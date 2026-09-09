@@ -8,7 +8,7 @@ import meteordevelopment.orbit.EventPriority;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
@@ -267,9 +267,9 @@ public class AutoCrystal extends Module {
             boolean placeVisible = bestPosition == null || PlayerUtility.canSee(bestPosition.getPos());
 
             if (mc.player.age % 5 == 0 && rayTraceBypass.getValue() && (!hitVisible || !placeVisible))
-                mc.player.setPitch(-90);
-            else mc.player.setPitch(rotationPitch);
-            mc.player.setYaw(rotationYaw);
+                mc.player.changeLookDirection(0, (-90) - mc.player.getPitch());
+            else mc.player.changeLookDirection(0, (rotationPitch) - mc.player.getPitch());
+            mc.player.changeLookDirection((rotationYaw) - mc.player.getYaw(), 0);
         }
     }
 
@@ -357,8 +357,8 @@ public class AutoCrystal extends Module {
 
     @EventHandler
     public void onBlockBreakClient(EventBreakBlock e) {
-        if (target != null && target.squaredDistanceTo(new Vec3d(e.getX(), e.getY(), e.getZ()).toCenterPos()) <= 4)
-            calcPosition(2f, new Vec3d(e.getX(), e.getY(), e.getZ()).toCenterPos());
+        if (target != null && target.squaredDistanceTo(e.getPos().toCenterPos()) <= 4)
+            calcPosition(2f, e.getPos().toCenterPos());
     }
 
     private void handleSpawn(EndCrystalEntity crystal) {
@@ -426,7 +426,7 @@ public class AutoCrystal extends Module {
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         crystalManager.update();
 
         if (target != null) switch (targetEsp.getValue()) {

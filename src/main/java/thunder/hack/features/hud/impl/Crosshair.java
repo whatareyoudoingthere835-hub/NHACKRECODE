@@ -77,7 +77,7 @@ public class Crosshair extends Module {
                 Color c2 = colorMode.getValue() == ColorMode.Sync ? HudEditor.acolor.getValue().getColorObject() : color.getValue().getColorObject();
 
                 Render2DEngine.drawArc(context.getMatrices(), xAnim - 25, yAnim - 25, 50, 50, 0.05f, 0.12f, 0,
-                        Render2DEngine.interpolateFloat(prevProgress, progress, Render3DEngine.getTickDelta()), c1, c2);
+                        Render2DEngine.interpolateFloat(prevProgress, progress, Render3DEngine.getTickDelta(false)), c1, c2);
                 prevProgress = progress;
             }
             case WiseTree -> {
@@ -105,7 +105,7 @@ public class Crosshair extends Module {
         Render2DEngine.bindTexture(TextureStorage.firefly);
 
                 Color color1 = colorMode.getValue() == ColorMode.Sync ? HudEditor.getColor(1) : color.getValue().getColorObject();
-                Matrix4f posMatrix = new Matrix4f().set(context.getMatrices().last());
+                Matrix4f posMatrix = new Matrix4f().set(context.getMatrices());
                 bufferBuilder.vertex(posMatrix, 0, -8f, 0).texture(0f, 1f).color(color1.getRGB());
                 bufferBuilder.vertex(posMatrix, -8f, -8f, 0).texture(1f, 1f).color(color1.getRGB());
                 bufferBuilder.vertex(posMatrix, -8f, 0, 0).texture(1f, 0).color(color1.getRGB());
@@ -118,7 +118,7 @@ public class Crosshair extends Module {
             case Default -> {
                 Color color = this.color.getValue().getColorObject();
 
-                float offset = animated.getValue() ? -3f + (Render2DEngine.interpolateFloat(prevProgress, progress, Render3DEngine.getTickDelta()) / 100f) : 0;
+                float offset = animated.getValue() ? -3f + (Render2DEngine.interpolateFloat(prevProgress, progress, Render3DEngine.getTickDelta(false)) / 100f) : 0;
                 prevProgress = progress;
 
                 if (!t.getValue()) {

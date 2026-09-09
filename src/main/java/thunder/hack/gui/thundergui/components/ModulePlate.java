@@ -3,7 +3,7 @@ package thunder.hack.gui.thundergui.components;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.util.math.RotationAxis;
 import thunder.hack.features.cmd.Command;
 import thunder.hack.features.modules.Module;

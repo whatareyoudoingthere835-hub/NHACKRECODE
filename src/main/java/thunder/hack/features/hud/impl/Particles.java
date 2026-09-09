@@ -1,7 +1,7 @@
 package thunder.hack.features.hud.impl;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.util.Identifier;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.TextureStorage;
@@ -20,11 +20,11 @@ public class Particles {
         return new Color(redPart, greenPart, bluePart);
     }
 
-    public void render2D(MatrixStack matrixStack) {
+    public void render2D(org.joml.Matrix3x2fStack matrixStack) {
         drawStar(matrixStack, (float) x, (float) y, color);
     }
 
-    public void drawStar(MatrixStack matrices, float x, float y, Color c) {
+    public void drawStar(org.joml.Matrix3x2fStack matrices, float x, float y, Color c) {
         Render2DEngine.bindTexture(TextureStorage.star);
 
 

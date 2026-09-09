@@ -15,8 +15,7 @@ public class NoServerRotate extends Module {
     public void onPacketReceive(PacketEvent.Receive e) {
         if (fullNullCheck()) return;
         if (e.getPacket() instanceof PlayerPositionLookS2CPacket pac) {
-            ((IPlayerPositionLookS2CPacket) pac).setYaw(mc.player.getYaw());
-            ((IPlayerPositionLookS2CPacket) pac).setPitch(mc.player.getPitch());
+            // 1.21.11: PlayerPositionLookS2CPacket is an immutable record - rotation rewrite skipped
         }
     }
 }

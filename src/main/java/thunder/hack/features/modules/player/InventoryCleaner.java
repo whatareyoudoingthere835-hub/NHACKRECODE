@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.player;
 
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -27,7 +27,7 @@ public class InventoryCleaner extends Module {
     private final Timer delayTimer = new Timer();
     private boolean dirty;
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         boolean inInv = mc.currentScreen instanceof InventoryScreen;
 
         if (mc.player.currentScreenHandler instanceof GenericContainerScreenHandler chest && cleanChests.getValue())

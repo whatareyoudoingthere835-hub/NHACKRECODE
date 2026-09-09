@@ -133,7 +133,7 @@ public class ServerHelper extends Module {
         if (inviteTimer.passedS(clanInviteDelay.getValue()) && clanInvite.getValue()) {
             ArrayList<String> playersNames = new ArrayList<>();
             for (PlayerListEntry player : mc.player.networkHandler.getPlayerList()) {
-                playersNames.add(player.getProfile().getName());
+                playersNames.add(player.getProfile().name());
             }
             if (playersNames.size() > 1) {
                 int randomName = (int) Math.floor(Math.random() * playersNames.size());

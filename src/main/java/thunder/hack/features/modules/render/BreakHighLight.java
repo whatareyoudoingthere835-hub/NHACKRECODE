@@ -1,6 +1,6 @@
 package thunder.hack.features.modules.render;
 
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -33,15 +33,15 @@ public class BreakHighLight extends Module {
 
     private float prevProgress;
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (mc.interactionManager.isBreakingBlock() && mc.crosshairTarget != null && mc.crosshairTarget instanceof BlockHitResult bhr && !mc.world.isAir(bhr.getBlockPos())) {
             Box shrunkMineBox = new Box(bhr.getBlockPos().getX(), bhr.getBlockPos().getY(), bhr.getBlockPos().getZ(), bhr.getBlockPos().getX(), bhr.getBlockPos().getY(), bhr.getBlockPos().getZ());
 
             float noom; //ам ням ебался
 
             switch (mode.getValue()) {
-                case Grow -> noom = Render2DEngine.interpolateFloat(prevProgress, MathUtility.clamp(mc.interactionManager.currentBreakingProgress, 0f, 1f), Render3DEngine.getTickDelta());
-                case Shrink -> noom = 1f - Render2DEngine.interpolateFloat(prevProgress, mc.interactionManager.currentBreakingProgress, Render3DEngine.getTickDelta());
+                case Grow -> noom = Render2DEngine.interpolateFloat(prevProgress, MathUtility.clamp(mc.interactionManager.currentBreakingProgress, 0f, 1f), Render3DEngine.getTickDelta(false));
+                case Shrink -> noom = 1f - Render2DEngine.interpolateFloat(prevProgress, mc.interactionManager.currentBreakingProgress, Render3DEngine.getTickDelta(false));
                 default -> noom = 1;
             }
 

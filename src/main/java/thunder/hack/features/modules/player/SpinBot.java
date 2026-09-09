@@ -97,8 +97,8 @@ public class SpinBot extends Module {
         float finalPitch = (float) (rotationPitch - (rotationPitch - mc.player.getPitch()) % gcdFix);
 
         // Отправка клиенту (Silent от первого лица)
-        mc.player.setYaw(finalYaw);
-        mc.player.setPitch(finalPitch);
+        mc.player.changeLookDirection((finalYaw) - mc.player.getYaw(), 0);
+        mc.player.changeLookDirection(0, (finalPitch) - mc.player.getPitch());
 
         ModuleManager.rotations.fixRotation = finalYaw;
 

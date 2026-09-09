@@ -42,7 +42,7 @@ public final class THRenderLayers {
 
     /* ---------------- world layer cache ---------------- */
 
-    private static final Map<Object, RenderLayer> WORLD_CACHE = new HashMap<>();
+    private static final Map<String, RenderLayer> WORLD_CACHE = new HashMap<>();
 
     private THRenderLayers() {
     }

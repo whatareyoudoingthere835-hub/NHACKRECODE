@@ -1,5 +1,7 @@
 package thunder.hack.injection;
 
+import net.minecraft.registry.RegistryKeys;
+
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
@@ -25,7 +27,7 @@ public abstract class MixinTridentItem {
 
     @Inject(method = "onStoppedUsing", at = @At(value = "HEAD"), cancellable = true)
     public void onStoppedUsingHook(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo ci) {
-        if (user == mc.player && mc.world != null && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.RIPTIDE.getRegistryRef()).getEntry(Enchantments.RIPTIDE).get(), stack) > 0) {
+        if (user == mc.player && mc.world != null && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.RIPTIDE), stack) > 0) {
             UseTridentEvent e = new UseTridentEvent();
             ThunderHack.EVENT_BUS.post(e);
             if (e.isCancelled())

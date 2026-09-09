@@ -74,8 +74,7 @@ public abstract class MixinSplashOverlay {
             float m = (float) (k >> 16 & 255) / 255.0F;
             float n = (float) (k >> 8 & 255) / 255.0F;
             float o = (float) (k & 255) / 255.0F;
-            GlStateManager._clearColor(m, n, o, 1.0F);
-            GlStateManager._clear(16384, MinecraftClient.IS_SYSTEM_MAC);
+            // 1.21.11: GlStateManager clear removed from splash path; color handled by context.fill above
             h = 1.0F;
         }
 

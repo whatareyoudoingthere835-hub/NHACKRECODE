@@ -483,7 +483,7 @@ public class ThunderGui extends Screen {
             try {
                 net.minecraft.util.Util.getOperatingSystem().open(new File("ThunderHackRecode/configs/").toURI());
             } catch (Exception e) {
-                Command.sendMessage("Не удалось открыть проводник!");
+                Command.sendMessage("Не удалось открыть проводник!", false);
             }
         }
 

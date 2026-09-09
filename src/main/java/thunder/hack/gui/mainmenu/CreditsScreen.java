@@ -1,5 +1,7 @@
 package thunder.hack.gui.mainmenu;
 
+import net.minecraft.client.render.RenderPipelines;
+
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gl.RenderPipelines;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -112,7 +114,7 @@ public class CreditsScreen extends Screen {
         float globalOffset = (contributors.size() * 150) / 2f;
         int offset = 0;
         for (Contributor contributor : contributors) {
-            float cX = (float) (halfOfWidth + offset - globalOffset + Render2DEngine.interpolate(scroll, scroll + 1, Render3DEngine.getTickDelta()));
+            float cX = (float) (halfOfWidth + offset - globalOffset + Render2DEngine.interpolate(scroll, scroll + 1, Render3DEngine.getTickDelta(false)));
             float cY = halfOfHeight - 120;
             if (Render2DEngine.isHovered(mouseX, mouseY, cX, cY, 140, 240) && !Objects.equals(contributor.clickAction, "none"))
                 Util.getOperatingSystem().open(URI.create(contributor.clickAction));
@@ -133,7 +135,9 @@ public class CreditsScreen extends Screen {
             NativeImageBackedTexture nIBT = getAvatarFromURL("https://cdn.discordapp.com/avatars/" + name + ".png?size=96");
 
             if (nIBT != null) {
-                return MinecraftClient.getInstance().getTextureManager().registerDynamicTexture("th-contributors-" + (int) MathUtility.random(0, 1000000), nIBT);
+                Identifier th$id = Identifier.of("thunderhack", "th-contributors-" + (int) MathUtility.random(0, 1000000));
+                MinecraftClient.getInstance().getTextureManager().registerTexture(th$id, nIBT);
+                return th$id;
             } else {
                 return null;
             }
@@ -160,18 +164,20 @@ public class CreditsScreen extends Screen {
             e.printStackTrace();
         }
         if (pic != null) {
-            return new NativeImageBackedTexture(parseAvatar(pic));
+            return new NativeImageBackedTexture(() -> "thunderhack:contributor-avatar", parseAvatar(pic));
         }
         return null;
     }
 
     public static NativeImage parseAvatar(NativeImage image) {
         NativeImage imgNew = new NativeImage(96, 96, true);
+        java.awt.image.BufferedImage bi = th$toBufferedImage(image);
         for (int x = 0; x < 96; x++) {
             for (int y = 0; y < 96; y++) {
+                int src = bi == null ? 0 : th$swap(bi, x, y);
                 if (Math.hypot(x - 48, y - 48) > 45)
-                    imgNew.setColor(x, y, Render2DEngine.injectAlpha(new Color(image.getColor(x, y)), (int) ((float) (48 - Math.hypot(x - 48, y - 48)) / 3f * 255f)).getRGB());
-                else imgNew.setColor(x, y, image.getColor(x, y));
+                    imgNew.writePixel(x, y, Render2DEngine.injectAlpha(new Color(src), (int) ((float) (48 - Math.hypot(x - 48, y - 48)) / 3f * 255f)).getRGB());
+                else imgNew.writePixel(x, y, src);
             }
         }
         image.close();
@@ -192,4 +198,18 @@ public class CreditsScreen extends Screen {
         if (scroll <= -(contributors.size() * 150) + 100)
             scroll = 0;
     }
+
+    private static int th$swap(java.awt.image.BufferedImage bi, int x, int y) {
+        int p = bi.getRGB(x, y);
+        return (p & 0xFF000000) | ((p & 0xFF) << 16) | (p & 0x00FF00) | ((p >> 16) & 0xFF);
+    }
+
+    private static java.awt.image.BufferedImage th$toBufferedImage(net.minecraft.client.texture.NativeImage image) {
+        try {
+            return javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(image.toByteArray()));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

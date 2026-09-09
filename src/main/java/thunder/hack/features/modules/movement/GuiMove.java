@@ -101,8 +101,8 @@ public class GuiMove extends Module {
                 case MatrixNcp -> {
                     sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
                     mc.options.forwardKey.setPressed(false);
-                    mc.player.input.movementForward = 0;
-                    mc.player.input.pressingForward = false;
+                    thunder.hack.utility.player.InputUtility.setForward(false);
+                    (thunder.hack.utility.player.InputUtility.forward() > 0) = false;
                 }
 
                 case Delay -> {

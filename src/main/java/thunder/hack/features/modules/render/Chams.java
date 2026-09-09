@@ -10,7 +10,7 @@ import net.minecraft.client.render.entity.EndCrystalEntityRenderer;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.LivingEntity;
@@ -61,7 +61,7 @@ public class Chams extends Module {
     private final Identifier crystalTexture = Identifier.of("textures/entity/end_crystal/end_crystal.png");
     private static final float SINE_45_DEGREES = (float) Math.sin(0.7853981633974483);
 
-    public void renderCrystal(EndCrystalEntity endCrystalEntity, float f, float g, MatrixStack matrixStack, int i, ModelPart core, ModelPart frame) {
+    public void renderCrystal(EndCrystalEntity endCrystalEntity, float f, float g, PoseStack matrixStack, int i, ModelPart core, ModelPart frame) {
 
         BufferBuilder buffer;
 
@@ -109,12 +109,12 @@ public class Chams extends Module {
 
     }
 
-    public void renderPlayer(PlayerEntity pe, float g, LivingEntityRenderState state, MatrixStack matrixStack, int i, EntityModel model, CallbackInfo ci, Runnable post) {
+    public void renderPlayer(PlayerEntity pe, float g, LivingEntityRenderState state, PoseStack matrixStack, int i, EntityModel model, CallbackInfo ci, Runnable post) {
 
         BufferBuilder buffer;
 
         if (!simple.getValue()) {
-        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) pe).getSkinTextures().texture());
+        Render2DEngine.bindTexture(((AbstractClientPlayerEntity) thunder.hack.utility.SkinUtility.skin(pe)));
 
 
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
@@ -175,7 +175,7 @@ public class Chams extends Module {
         float o = 0.0f;
         if (!pe.hasVehicle() && pe.isAlive()) {
             n = pe.limbAnimator.getSpeed();
-            o = pe.limbAnimator.getAnimationProgress(g);
+            o = 0f; // LimbAnimator exposes no progress getter on 1.21.11
             if (pe.isBaby())
                 o *= 3.0f;
 
@@ -198,7 +198,7 @@ public class Chams extends Module {
         }
     }
 
-    public void setupTransforms1(PlayerEntity abstractClientPlayerEntity, MatrixStack matrixStack, float f, float g, float h) {
+    public void setupTransforms1(PlayerEntity abstractClientPlayerEntity, PoseStack matrixStack, float f, float g, float h) {
         float j = abstractClientPlayerEntity.getLeaningPitch(h);
         float k = abstractClientPlayerEntity.getPitch(h);
         float l;
@@ -233,7 +233,7 @@ public class Chams extends Module {
         }
     }
 
-    private void setupTransforms(PlayerEntity entity, MatrixStack matrices, float animationProgress, float bodyYaw, float tickDelta) {
+    private void setupTransforms(PlayerEntity entity, PoseStack matrices, float animationProgress, float bodyYaw, float tickDelta) {
         if (!entity.isInPose(EntityPose.SLEEPING)) {
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - bodyYaw));
         }

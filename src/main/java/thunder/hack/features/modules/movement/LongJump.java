@@ -104,7 +104,7 @@ public class LongJump extends Module {
     @EventHandler
     public void onEntitySync(EventSync eventSync) {
         if (MovementUtility.isMoving())
-            realSpeed = (float) Math.hypot(mc.player.getX() - (mc.player.getX() - mc.player.getDeltaMovement().x), mc.player.getZ() - (mc.player.getZ() - mc.player.getDeltaMovement().z));
+            realSpeed = (float) Math.hypot(mc.player.getX() - (mc.player.getX() - mc.player.getVelocity().x), mc.player.getZ() - (mc.player.getZ() - mc.player.getVelocity().z));
         else resetValues();
     }
 }

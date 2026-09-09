@@ -36,7 +36,7 @@ public class EaseOutCirc {
 
     public double getAnimationD() {
         double delta = dstValue - value;
-        double animation = createAnimation((prevStep + (step - prevStep) * Render3DEngine.getTickDelta()) / (double) maxTicks);
+        double animation = createAnimation((prevStep + (step - prevStep) * Render3DEngine.getTickDelta(false)) / (double) maxTicks);
         return value + delta * animation;
     }
 }

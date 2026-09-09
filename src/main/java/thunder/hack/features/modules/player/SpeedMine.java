@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.player;
 
+import net.minecraft.registry.RegistryKeys;
+
 import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
@@ -7,7 +9,7 @@ import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -116,13 +118,13 @@ public final class SpeedMine extends Module {
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (mode.is(Mode.Damage) || mc.world == null)
             return;
 
         actions.forEach(a -> {
             if (!mc.world.isAir(a.getPos())) {
-                float noom = (float) MathUtility.clamp(Render2DEngine.interpolate(a.getPrevProgress(), a.getProgress(), Render3DEngine.getTickDelta()), 0f, 1f);
+                float noom = (float) MathUtility.clamp(Render2DEngine.interpolate(a.getPrevProgress(), a.getProgress(), Render3DEngine.getTickDelta(false)), 0f, 1f);
                 Box renderBox =
 
                         switch (renderMode.getValue()) {
@@ -223,7 +225,7 @@ public final class SpeedMine extends Module {
             int slot = getTool(position);
             if (slot != -1) {
                 ItemStack itemstack = mc.player.getInventory().getStack(slot);
-                int efficiencyModifier = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemstack);
+                int efficiencyModifier = (int) EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.EFFICIENCY), itemstack);
                 if (efficiencyModifier > 0 && !itemstack.isEmpty()) {
                     digSpeed += (float) (StrictMath.pow(efficiencyModifier, 2) + 1);
                 }
@@ -239,7 +241,7 @@ public final class SpeedMine extends Module {
 
 
         if (mc.player.isSubmergedInWater())
-            digSpeed *= (float) mc.player.getAttributeInstance(EntityAttributes.PLAYER_SUBMERGED_MINING_SPEED).getValue();
+            digSpeed *= (float) mc.player.getAttributeInstance(EntityAttributes.SUBMERGED_MINING_SPEED).getValue();
 
         if (!mc.player.isOnGround() && ModuleManager.freeCam.isDisabled())
             digSpeed /= 5;
@@ -263,7 +265,7 @@ public final class SpeedMine extends Module {
                 if (!(stack.getMaxDamage() - stack.getDamage() > 10))
                     continue;
 
-                final float digSpeed = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), stack);
+                final float digSpeed = (int) EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), stack);
                 final float destroySpeed = stack.getMiningSpeedMultiplier(mc.world.getBlockState(pos));
 
                 if (digSpeed + destroySpeed > currentFastest) {
@@ -490,8 +492,8 @@ public final class SpeedMine extends Module {
         public void onSync() {
             if (rotate.getValue() && progress > 0.95) {
                 float[] angle = PlayerManager.calcAngle(mc.player.getEyePos(), pos.toCenterPos().add(0, -0.25f, 0));
-                mc.player.setYaw(angle[0]);
-                mc.player.setPitch(angle[1]);
+                mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+                mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
             }
         }
 

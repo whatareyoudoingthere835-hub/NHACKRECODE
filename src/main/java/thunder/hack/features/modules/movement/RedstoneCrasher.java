@@ -120,8 +120,8 @@ public class RedstoneCrasher extends Module {
         rotateToTarget();
 
         // Применяем ротацию к игроку
-        mc.player.setYaw(currentYaw);
-        mc.player.setPitch(currentPitch);
+        mc.player.changeLookDirection((currentYaw) - mc.player.getYaw(), 0);
+        mc.player.changeLookDirection(0, (currentPitch) - mc.player.getPitch());
 
         // Проверяем, достигли ли нужной ротации
         if (rotationTicks >= rotationDelay.getValue()) {
@@ -175,7 +175,7 @@ public class RedstoneCrasher extends Module {
         boolean sneak = InteractionUtility.needSneak(mc.world.getBlockState(floor).getBlock()) && !mc.player.isSneaking();
 
         if (sneak)
-            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SNEAKING));
 
         // Отправляем актуальную ротацию
         sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), currentYaw, currentPitch, mc.player.isOnGround(), mc.player.horizontalCollision));
@@ -185,7 +185,7 @@ public class RedstoneCrasher extends Module {
         mc.player.networkHandler.sendPacket(new HandSwingC2SPacket(prevItem == -2 ? Hand.OFF_HAND : Hand.MAIN_HAND));
 
         if (sneak)
-            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
 
         // Рендер
         if (render.getValue()) {

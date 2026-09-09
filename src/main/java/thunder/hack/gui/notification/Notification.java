@@ -1,7 +1,7 @@
 package thunder.hack.gui.notification;
 
 import org.joml.Matrix3x2fStack;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.util.Formatting;
 import thunder.hack.features.modules.client.HudEditor;
 import thunder.hack.gui.font.FontRenderers;
@@ -89,7 +89,7 @@ public class Notification {
         animation.update(direction);
     }
 
-    public void renderShaders(MatrixStack matrix, float getY) {
+    public void renderShaders(org.joml.Matrix3x2fStack matrix, float getY) {
         direction = isFinished();
         animationX = (float) (width * animation.getAnimationd());
         y = animate(y, getY);

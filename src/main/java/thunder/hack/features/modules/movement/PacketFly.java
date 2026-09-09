@@ -130,7 +130,7 @@ public class PacketFly extends Module {
                 event.cancel();
                 return;
             }
-            ((IPlayerPositionLookS2CPacket) pac).setChange(pac.change().withRotation(mc.player.getYaw(), mc.player.getPitch()));
+            // 1.21.11: PlayerPositionLookS2CPacket is an immutable record - rotation rewrite skipped
             teleportId = pac.teleportId();
         }
     }

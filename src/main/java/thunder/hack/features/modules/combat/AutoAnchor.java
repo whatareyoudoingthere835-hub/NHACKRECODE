@@ -11,7 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RespawnAnchorBlock;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -225,8 +225,8 @@ public final class AutoAnchor extends Module {
 
         // Rotate
         if (rotate.getValue() && mc.player != null && rotationYaw != mc.player.getYaw() && rotationPitch != mc.player.getPitch()) {
-            mc.player.setYaw(rotationYaw);
-            mc.player.setPitch(rotationPitch);
+            mc.player.changeLookDirection((rotationYaw) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (rotationPitch) - mc.player.getPitch());
         }
     }
 
@@ -263,8 +263,8 @@ public final class AutoAnchor extends Module {
         if (e.getPrevState() == null || e.getState() == null)
             return;
 
-        if (target != null && target.squaredDistanceTo(new Vec3d(e.getX(), e.getY(), e.getZ()).toCenterPos()) <= 4 && e.getState().getBlock() instanceof RespawnAnchorBlock && e.getPrevState().isReplaceable()) {
-            debug("Detected change of state " + new Vec3d(e.getX(), e.getY(), e.getZ()) + ", exploding...");
+        if (target != null && target.squaredDistanceTo(e.getPos().toCenterPos()) <= 4 && e.getState().getBlock() instanceof RespawnAnchorBlock && e.getPrevState().isReplaceable()) {
+            debug("Detected change of state " + e.getPos().toCenterPos() + ", exploding...");
             //explodeAnchor(getInteractResult(new Vec3d(e.getX(), e.getY(), e.getZ())));
         }
     }
@@ -308,7 +308,7 @@ public final class AutoAnchor extends Module {
     }
 
     @Override
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (render.getValue()) {
             final Object2ObjectMap<BlockPos, Long> cache = new Object2ObjectOpenHashMap<>(renderPositions);
 
@@ -449,7 +449,7 @@ public final class AutoAnchor extends Module {
 
         if (ak47.is(AK47.OFF)) {
             if (mc.player.isSneaking())
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
 
             if (mc.world.getBlockState(bhr.getBlockPos()).get(RespawnAnchorBlock.CHARGES) == 0) {
                 sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(offhand ? Hand.OFF_HAND : Hand.MAIN_HAND, bhr, id));
@@ -461,7 +461,7 @@ public final class AutoAnchor extends Module {
             }
         } else {
             if (mc.player.isSneaking())
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
             sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(offhand ? Hand.OFF_HAND : Hand.MAIN_HAND, bhr, id));
             mc.player.swingHand(offhand ? Hand.OFF_HAND : Hand.MAIN_HAND);
 

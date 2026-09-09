@@ -5,7 +5,7 @@ import thunder.hack.utility.player.ItemChecks;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static net.minecraft.util.UseAction.BLOCK;
+import static net.minecraft.item.consume.UseAction.BLOCK;
 import static net.minecraft.util.math.MathHelper.wrapDegrees;
 import static thunder.hack.features.modules.client.ClientSettings.isRu;
 import static thunder.hack.utility.math.MathUtility.random;
@@ -285,7 +285,7 @@ public class Aura extends Module {
     }
 
     private boolean @NotNull [] preAttack() {
-        boolean blocking = mc.player.isUsingItem() && mc.player.getActiveItem().getItem().getUseAction(mc.player.getActiveItem()) == BLOCK;
+        boolean blocking = mc.player.isUsingItem() && mc.player.getActiveItem().getUseAction() == BLOCK;
         if (blocking && unpressShield.getValue())
             sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, Direction.DOWN));
 
@@ -311,13 +311,13 @@ public class Aura extends Module {
     }
 
     private void disableSprint() {
-        mc.player.setSprinting(false);
+        mc.player.input.playerInput = player.input.playerInput.withSprint(false);
         mc.options.sprintKey.setPressed(false);
         sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
     }
 
     private void enableSprint() {
-        mc.player.setSprinting(true);
+        mc.player.input.playerInput = player.input.playerInput.withSprint(true);
         mc.options.sprintKey.setPressed(true);
         sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SPRINTING));
     }
@@ -401,8 +401,8 @@ public class Aura extends Module {
             return;
 
         if (target != null && rotationMode.getValue() != Mode.None && rotationMode.getValue() != Mode.Grim) {
-            mc.player.setYaw(rotationYaw);
-            mc.player.setPitch(rotationPitch);
+            mc.player.changeLookDirection((rotationYaw) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (rotationPitch) - mc.player.getPitch());
         } else {
             rotationYaw = mc.player.getYaw();
             rotationPitch = mc.player.getPitch();
@@ -736,7 +736,7 @@ public class Aura extends Module {
         return current + delta * factor;
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (!haveWeapon() || target == null)
             return;
 
@@ -751,8 +751,8 @@ public class Aura extends Module {
         }
 
         if (clientLook.getValue() && rotationMode.getValue() != Mode.None) {
-            mc.player.setYaw((float) Render2DEngine.interpolate(mc.player.getYaw(), rotationYaw, Render3DEngine.getTickDelta()));
-            mc.player.setPitch((float) Render2DEngine.interpolate(mc.player.getPitch(), rotationPitch, Render3DEngine.getTickDelta()));
+            mc.player.changeLookDirection(((float) Render2DEngine.interpolate(mc.player.getYaw(), rotationYaw, Render3DEngine.getTickDelta(false))) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, ((float) Render2DEngine.interpolate(mc.player.getPitch(), rotationPitch, Render3DEngine.getTickDelta(false))) - mc.player.getPitch());
         }
     }
 
@@ -966,7 +966,7 @@ public class Aura extends Module {
                 return true;
 
             if (onlyAngry.getValue())
-                return !he.isAngryAt(mc.player);
+                return !(he.getAttacker() == mc.player || he.getTarget() == mc.player);
         }
 
         if (entity instanceof PlayerEntity && !Players.getValue()) return true;

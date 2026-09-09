@@ -66,7 +66,7 @@ public class PlayerManager implements IManager {
 
     @EventHandler
     public void onTick(EventTick e) {
-        currentPlayerSpeed = (float) Math.hypot(mc.player.getX() - (mc.player.getX() - mc.player.getDeltaMovement().x), mc.player.getZ() - (mc.player.getZ() - mc.player.getDeltaMovement().z));
+        currentPlayerSpeed = (float) Math.hypot(mc.player.getX() - (mc.player.getX() - mc.player.getVelocity().x), mc.player.getZ() - (mc.player.getZ() - mc.player.getVelocity().z));
 
         if (speedResult.size() > 20)
             speedResult.poll();
@@ -88,8 +88,8 @@ public class PlayerManager implements IManager {
         bodyYaw = getBodyYaw();
 
         if (!ModuleManager.rotations.clientLook.getValue()) {
-            mc.player.setYaw(yaw);
-            mc.player.setPitch(pitch);
+            mc.player.changeLookDirection((yaw) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (pitch) - mc.player.getPitch());
         }
 
         ModuleManager.rotations.fixRotation = Float.NaN;
@@ -138,8 +138,8 @@ public class PlayerManager implements IManager {
     }
 
     private float getBodyYaw() {
-        double x = mc.player.getX() - (mc.player.getX() - mc.player.getDeltaMovement().x);
-        double z = mc.player.getZ() - (mc.player.getZ() - mc.player.getDeltaMovement().z);
+        double x = mc.player.getX() - (mc.player.getX() - mc.player.getVelocity().x);
+        double z = mc.player.getZ() - (mc.player.getZ() - mc.player.getVelocity().z);
         float offset = bodyYaw;
         if ((x * x + z * z) > 0.0025000002f) offset = (float) (MathHelper.atan2(z, x) * 57.295776f - 90.0f);
         if (mc.player.handSwingProgress > 0.0f)

@@ -1,7 +1,7 @@
 package thunder.hack.gui.thundergui.components;
 
 import org.joml.Matrix3x2fStack;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.ThunderHack;

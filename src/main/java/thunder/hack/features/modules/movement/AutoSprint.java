@@ -17,10 +17,10 @@ public class AutoSprint extends Module {
 
     @Override
     public void onUpdate() {
-        mc.player.setSprinting(
+        mc.player.input.playerInput = player.input.playerInput.withSprint(
                 mc.player.getHungerManager().getFoodLevel() > 6
                         && !mc.player.horizontalCollision
-                        && mc.player.input.movementForward > 0
+                        && thunder.hack.utility.player.InputUtility.forward() > 0
                         && (!mc.player.isSneaking() || (ModuleManager.noSlow.isEnabled() && ModuleManager.noSlow.sneak.getValue()))
                         && (!mc.player.isUsingItem() || !stopWhileUsing.getValue())
                         && (!ModuleManager.aura.isEnabled() || Aura.target == null || !pauseWhileAura.getValue())

@@ -5,7 +5,7 @@ import net.minecraft.client.render.entity.EndCrystalEntityRenderer;
 import net.minecraft.client.render.entity.model.EndCrystalEntityModel;
 import net.minecraft.client.render.entity.state.EndCrystalEntityRenderState;
 import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,8 +30,8 @@ public abstract class MixinEndCrystalEntityRenderer {
         lastTickDelta = tickDelta;
     }
 
-    @Inject(method = "render(Lnet/minecraft/client/render/entity/state/EndCrystalEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At("HEAD"), cancellable = true, require = 0)
-    public void render(EndCrystalEntityRenderState state, MatrixStack matrixStack, OrderedRenderCommandQueue renderQueue, CameraRenderState camera, CallbackInfo ci) {
+    @Inject(method = "render(Lnet/minecraft/client/render/entity/state/EndCrystalEntityRenderState;Lnet/minecraft/client/util/math/PoseStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At("HEAD"), cancellable = true, require = 0)
+    public void render(EndCrystalEntityRenderState state, PoseStack matrixStack, OrderedRenderCommandQueue renderQueue, CameraRenderState camera, CallbackInfo ci) {
         if (ModuleManager.chams.isEnabled() && ModuleManager.chams.crystals.getValue() && lastCrystal != null) {
             ci.cancel();
             ModuleManager.chams.renderCrystal(lastCrystal, 0.0f, lastTickDelta, matrixStack, 15728880, model.innerGlass, model.cube);

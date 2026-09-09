@@ -22,7 +22,7 @@ public class NotificationManager implements IManager {
 
     public void publicity(String title, String content, int second, Notification.Type type) {
         if (ModuleManager.notifications.mode.getValue() == Notifications.Mode.Text)
-            Command.sendMessage(Formatting.GRAY + "[" + Formatting.DARK_PURPLE + title + Formatting.GRAY + "] " + type.getColor() + content);
+            Command.sendMessage(Formatting.GRAY + "[" + Formatting.DARK_PURPLE + title + Formatting.GRAY + "] " + type.getColor() + content, false);
 
         if (!mc.isWindowFocused())
             nativeNotification(content, title);

@@ -5,7 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -99,7 +99,7 @@ public class Nuker extends Module {
 
     @EventHandler
     public void onBlockDestruct(EventSetBlockState e) {
-        if (blockData != null && new Vec3d(e.getX(), e.getY(), e.getZ()) == blockData.bp && e.getState().isAir()) {
+        if (blockData != null && e.getPos().equals(blockData.bp) && e.getState().isAir()) {
             blockData = null;
             new Thread(() -> {
                 if ((targetBlockType != null || blocks.getValue().equals(BlockSelection.All)) && !mc.options.attackKey.isPressed() && blockData == null) {
@@ -112,8 +112,8 @@ public class Nuker extends Module {
     @EventHandler
     public void onSync(EventSync e) {
         if(rotationYaw != -999) {
-            mc.player.setYaw(rotationYaw);
-            mc.player.setPitch(rotationPitch);
+            mc.player.changeLookDirection((rotationYaw) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (rotationPitch) - mc.player.getPitch());
             rotationYaw = -999;
         }
     }
@@ -182,7 +182,7 @@ public class Nuker extends Module {
         }
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         BlockPos renderBp = null;
 
         if (blockData != null && blockData.bp != null)

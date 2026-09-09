@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.util.math.Box;
@@ -101,7 +101,7 @@ public class ItemESP extends Module {
             if (!any)
                 return;
 
-            Matrix4f matrix = new Matrix4f().set(context.getMatrices().last());
+            Matrix4f matrix = new Matrix4f().set(context.getMatrices());
             Render2DEngine.setupRender();
 
 
@@ -138,7 +138,7 @@ public class ItemESP extends Module {
         }
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (espMode.getValue() == ESPMode.Circle)
             for (Entity ent : mc.world.getEntities())
                 if (ent instanceof ItemEntity)
@@ -166,9 +166,9 @@ public class ItemESP extends Module {
 
     @NotNull
     private static Box getBox(Entity ent) {
-        double x = (ent.getX() - ent.getDeltaMovement().x) + (ent.getX() - (ent.getX() - ent.getDeltaMovement().x)) * Render3DEngine.getTickDelta();
-        double y = (ent.getY() - ent.getDeltaMovement().y) + (ent.getY() - (ent.getY() - ent.getDeltaMovement().y)) * Render3DEngine.getTickDelta();
-        double z = (ent.getZ() - ent.getDeltaMovement().z) + (ent.getZ() - (ent.getZ() - ent.getDeltaMovement().z)) * Render3DEngine.getTickDelta();
+        double x = (ent.getX() - ent.getVelocity().x) + (ent.getX() - (ent.getX() - ent.getVelocity().x)) * Render3DEngine.getTickDelta(false);
+        double y = (ent.getY() - ent.getVelocity().y) + (ent.getY() - (ent.getY() - ent.getVelocity().y)) * Render3DEngine.getTickDelta(false);
+        double z = (ent.getZ() - ent.getVelocity().z) + (ent.getZ() - (ent.getZ() - ent.getVelocity().z)) * Render3DEngine.getTickDelta(false);
         Box axisAlignedBB2 = ent.getBoundingBox();
         Box axisAlignedBB = new Box(axisAlignedBB2.minX - ent.getX() + x - 0.05, axisAlignedBB2.minY - ent.getY() + y, axisAlignedBB2.minZ - ent.getZ() + z - 0.05, axisAlignedBB2.maxX - ent.getX() + x + 0.05, axisAlignedBB2.maxY - ent.getY() + y + 0.15, axisAlignedBB2.maxZ - ent.getZ() + z + 0.05);
         return axisAlignedBB;

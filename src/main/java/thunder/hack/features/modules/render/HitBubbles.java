@@ -3,7 +3,7 @@ package thunder.hack.features.modules.render;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import thunder.hack.core.Managers;
@@ -34,7 +34,7 @@ public class HitBubbles extends Module {
             bubbles.add(new HitBubble((float) point.x, (float) point.y, (float) point.z, -((IClientPlayerEntity) mc.player).getLastYaw(), ((IClientPlayerEntity) mc.player).getLastPitch(), new Timer()));
     }
 
-    public void onRender3D(MatrixStack matrixStack) {
+    public void onRender3D(PoseStack matrixStack) {
 
         ArrayList<HitBubble> bubblesCopy = Lists.newArrayList(bubbles);
         bubblesCopy.forEach(b -> {

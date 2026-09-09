@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.render;
 
+import net.minecraft.client.render.RenderPipelines;
+
 import net.minecraft.client.gl.RenderPipelines;
 import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Ordering;
@@ -108,9 +110,9 @@ public class NameTags extends Module {
             if (ent == mc.player && (mc.options.getPerspective().isFirstPerson() || !self.getValue())) continue;
             if (getEntityPing(ent) <= 0 && ignoreBots.getValue()) continue;
 
-            double x = (ent.getX() - ent.getDeltaMovement().x) + (ent.getX() - (ent.getX() - ent.getDeltaMovement().x)) * Render3DEngine.getTickDelta();
-            double y = (ent.getY() - ent.getDeltaMovement().y) + (ent.getY() - (ent.getY() - ent.getDeltaMovement().y)) * Render3DEngine.getTickDelta();
-            double z = (ent.getZ() - ent.getDeltaMovement().z) + (ent.getZ() - (ent.getZ() - ent.getDeltaMovement().z)) * Render3DEngine.getTickDelta();
+            double x = (ent.getX() - ent.getVelocity().x) + (ent.getX() - (ent.getX() - ent.getVelocity().x)) * Render3DEngine.getTickDelta(false);
+            double y = (ent.getY() - ent.getVelocity().y) + (ent.getY() - (ent.getY() - ent.getVelocity().y)) * Render3DEngine.getTickDelta(false);
+            double z = (ent.getZ() - ent.getVelocity().z) + (ent.getZ() - (ent.getZ() - ent.getVelocity().z)) * Render3DEngine.getTickDelta(false);
             float scale = resize.getValue() ? this.scale.getValue() / mc.player.distanceTo(ent) : this.scale.getValue();
             Vec3d vector = new Vec3d(x, y + height.getValue(), z);
 
@@ -245,7 +247,7 @@ public class NameTags extends Module {
                 else
                     Render2DEngine.drawRect(context.getMatrices(), tagX - 2, (float) (posY - 13f), textWidth + 4, 11, color);
 
-                if (Managers.TELEMETRY.getOnlinePlayers().contains(ent.getGameProfile().getName())) {
+                if (Managers.TELEMETRY.getOnlinePlayers().contains(ent.getGameProfile().name())) {
                     Render2DEngine.drawRect(context.getMatrices(), tagX - 14, (float) (posY - 13f), 12, 11, color.brighter().brighter());
 
 
@@ -374,15 +376,15 @@ public class NameTags extends Module {
             if (ent instanceof ProjectileEntity pe) {
                 if (pe.getOwner() != null) ownerName = pe.getOwner().getDisplayName().getString();
             } else if (ent instanceof HorseEntity he) {
-                if (he.getOwnerUuid() != null) ownerName = he.getOwnerUuid().toString();
+                if (he.getOwner() != null) ownerName = he.getOwner().getName().getString();
             } else if (ent instanceof TameableEntity te && te.isTamed() && te.getOwner() != null) {
                 ownerName = te.getOwner().getDisplayName().getString();
             } else continue;
 
             String final_string = "Owned by " + ownerName;
-            double x = (ent.getX() - ent.getDeltaMovement().x) + (ent.getX() - (ent.getX() - ent.getDeltaMovement().x)) * Render3DEngine.getTickDelta();
-            double y = (ent.getY() - ent.getDeltaMovement().y) + (ent.getY() - (ent.getY() - ent.getDeltaMovement().y)) * Render3DEngine.getTickDelta();
-            double z = (ent.getZ() - ent.getDeltaMovement().z) + (ent.getZ() - (ent.getZ() - ent.getDeltaMovement().z)) * Render3DEngine.getTickDelta();
+            double x = (ent.getX() - ent.getVelocity().x) + (ent.getX() - (ent.getX() - ent.getVelocity().x)) * Render3DEngine.getTickDelta(false);
+            double y = (ent.getY() - ent.getVelocity().y) + (ent.getY() - (ent.getY() - ent.getVelocity().y)) * Render3DEngine.getTickDelta(false);
+            double z = (ent.getZ() - ent.getVelocity().z) + (ent.getZ() - (ent.getZ() - ent.getVelocity().z)) * Render3DEngine.getTickDelta(false);
             Vec3d vector = new Vec3d(x, y + 2, z);
             Vector4d position = null;
             vector = Render3DEngine.worldSpaceToScreenSpace(new Vec3d(vector.x, vector.y, vector.z));
@@ -581,7 +583,7 @@ public class NameTags extends Module {
 
             context.getMatrices().pushMatrix();
             context.getMatrices().translate((float) (x), (float) (y));
-            context.drawSprite(0, 0, 0, 18, 18, mc.getStatusEffectSpriteManager().getSprite(statusEffectInstance.getEffectType()));
+            // 1.21.11: status effect sprite manager removed - icon skipped
             FontRenderers.sf_bold_mini.drawCenteredString(context.getMatrices(), PotionHud.getDuration(statusEffectInstance), 9, -8, -1);
             FontRenderers.categories.drawCenteredString(context.getMatrices(), power, 9, -16, -1);
             context.getMatrices().popMatrix();

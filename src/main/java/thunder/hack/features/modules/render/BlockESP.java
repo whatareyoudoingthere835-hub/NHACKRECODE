@@ -2,7 +2,7 @@ package thunder.hack.features.modules.render;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.*;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -65,7 +65,7 @@ public class BlockESP extends Module {
         int startX = (int) Math.floor(mc.player.getX() - range.getValue());
         int endX = (int) Math.ceil(mc.player.getX() + range.getValue());
         int startY = mc.world.getBottomY() + 1;
-        int endY = mc.world.getTopY();
+        int endY = mc.world.getHeight();
         int startZ = (int) Math.floor(mc.player.getZ() - range.getValue());
         int endZ = (int) Math.ceil(mc.player.getZ() + range.getValue());
 
@@ -88,7 +88,7 @@ public class BlockESP extends Module {
         canContinue = true;
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (fullNullCheck() || blocks.isEmpty()) return;
         int count = 0;
 
@@ -119,7 +119,7 @@ public class BlockESP extends Module {
                     Vec3d vec2 = new Vec3d(0, 0, 75)
                             .rotateX(-(float) Math.toRadians(mc.gameRenderer.getCamera().getPitch()))
                             .rotateY(-(float) Math.toRadians(mc.gameRenderer.getCamera().getYaw()))
-                            .add(mc.cameraEntity.getEyePos());
+                            .add(mc.getCameraEntity().getEyePos());
 
                     Render3DEngine.drawLineDebug(vec2, vec.getVector(), color.getValue().getColorObject());
                 }

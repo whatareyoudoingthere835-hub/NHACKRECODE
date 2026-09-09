@@ -53,18 +53,18 @@ public class Phase extends Module {
         BlockPos playerPos = BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()));
 
         if (!mode.is(Mode.CCClip) && !mode.is(Mode.Pearl) && !mode.is(Mode.ForceMine) && canNoClip() || afterPearlTime > 0) {
-            if (!new Vec3d(e.getX(), e.getY(), e.getZ()).equals(playerPos.down()) || mc.options.sneakKey.isPressed())
+            if (!e.getPos().equals(playerPos.down()) || mc.options.sneakKey.isPressed())
                 e.setState(Blocks.AIR.getDefaultState());
         }
 
         if (mode.is(Mode.ForceMine)) {
-            float xDelta = Math.abs(playerPos.getX() - new Vec3d(e.getX(), e.getY(), e.getZ()).getX());
-            float zDelta = Math.abs(playerPos.getZ() - new Vec3d(e.getX(), e.getY(), e.getZ()).getZ());
+            float xDelta = Math.abs(playerPos.getX() - e.getPos().getX());
+            float zDelta = Math.abs(playerPos.getZ() - e.getPos().getZ());
 
             if (xDelta != 0 && zDelta != 0 && strict.getValue())
                   return;
 
-            if (!new Vec3d(e.getX(), e.getY(), e.getZ()).equals(playerPos.down()) || mc.options.sneakKey.isPressed())
+            if (!e.getPos().equals(playerPos.down()) || mc.options.sneakKey.isPressed())
                 e.setState(Blocks.AIR.getDefaultState());
         }
     }
@@ -178,8 +178,8 @@ public class Phase extends Module {
                 if (epSlot != -1) {
                     ModuleManager.autoCrystal.pause();
                     ModuleManager.aura.pause();
-                    mc.player.setYaw(angle[0]);
-                    mc.player.setPitch(pitch.getValue());
+                    mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+                    mc.player.changeLookDirection(0, (pitch.getValue()) - mc.player.getPitch());
                 }
             }
         }

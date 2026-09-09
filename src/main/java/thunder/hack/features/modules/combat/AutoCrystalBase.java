@@ -91,8 +91,8 @@ public class AutoCrystalBase extends Module {
     public void onSync(EventSync e) {
         if (rotate.getValue() && bestData != null && isWorth()) {
             float[] angle = InteractionUtility.calculateAngle(bestData.bhr().getPos());
-            mc.player.setYaw(angle[0]);
-            mc.player.setPitch(angle[1]);
+            mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
         }
     }
 

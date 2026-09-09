@@ -26,7 +26,7 @@ public class MixinBoatEntity {
     @Inject(method = "updatePassengerPosition", at = @At("RETURN"))
     protected void updatePassengerPositionHookPost(Entity passenger, Entity.PositionUpdater positionUpdater, CallbackInfo ci) {
         if(ModuleManager.boatFly.isEnabled()) {
-            passenger.setYaw(prevYaw);
+            passenger.changeLookDirection((prevYaw) - passenger.getYaw(), 0);
             passenger.setHeadYaw(prevHeadYaw);
         }
     }

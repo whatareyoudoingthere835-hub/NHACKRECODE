@@ -38,12 +38,12 @@ public class ElytraRecast extends Module {
     @EventHandler
     public void onSync(EventSync e) {
         if (changePitch.getValue())
-            mc.player.setPitch(pitchValue.getValue());
+            mc.player.changeLookDirection(0, (pitchValue.getValue()) - mc.player.getPitch());
 
         switch (exploit.getValue()) {
             case None -> {}
-            case Strict -> mc.player.setYaw(mc.player.getYaw() + jitter);
-            case Strong -> mc.player.setPitch(pitchValue.getValue() - Math.abs(jitter / 2f));
+            case Strict -> mc.player.changeLookDirection((mc.player.getYaw() + jitter) - mc.player.getYaw(), 0);
+            case Strong -> mc.player.changeLookDirection(0, (pitchValue.getValue() - Math.abs(jitter / 2f)) - mc.player.getPitch());
         }
     }
 
@@ -53,18 +53,18 @@ public class ElytraRecast extends Module {
             if (e.isPre()) {
                 prevClientPitch = mc.player.getPitch();
                 prevClientYaw = mc.player.getYaw();
-                mc.player.setPitch(pitchValue.getValue());
+                mc.player.changeLookDirection(0, (pitchValue.getValue()) - mc.player.getPitch());
 
                 switch (exploit.getValue()) {
                     case None -> {
                     }
-                    case Strict -> mc.player.setYaw(mc.player.getYaw() + jitter);
-                    case Strong -> mc.player.setPitch(pitchValue.getValue() - Math.abs(jitter / 2f));
+                    case Strict -> mc.player.changeLookDirection((mc.player.getYaw() + jitter) - mc.player.getYaw(), 0);
+                    case Strong -> mc.player.changeLookDirection(0, (pitchValue.getValue() - Math.abs(jitter / 2f)) - mc.player.getPitch());
                 }
             } else {
-                mc.player.setPitch(prevClientPitch);
+                mc.player.changeLookDirection(0, (prevClientPitch) - mc.player.getPitch());
                 if (exploit.getValue() == Exploit.Strict)
-                    mc.player.setYaw(prevClientYaw);
+                    mc.player.changeLookDirection((prevClientYaw) - mc.player.getYaw(), 0);
             }
     }
 
@@ -98,7 +98,7 @@ public class ElytraRecast extends Module {
     }
 
     private boolean checkElytra() {
-        if (mc.player.input.jumping && !mc.player.getAbilities().flying && !mc.player.hasVehicle() && !mc.player.isClimbing()) {
+        if (thunder.hack.utility.player.InputUtility.jump() && !mc.player.getAbilities().flying && !mc.player.hasVehicle() && !mc.player.isClimbing()) {
             ItemStack is = mc.player.getEquippedStack(EquipmentSlot.CHEST);
             return is.isOf(Items.ELYTRA) && (ItemChecks.isElytraUsable(is) || allowBroken.getValue());
         }

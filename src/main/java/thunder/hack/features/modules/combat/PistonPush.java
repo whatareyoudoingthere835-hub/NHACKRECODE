@@ -3,7 +3,7 @@ package thunder.hack.features.modules.combat;
 import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
@@ -111,7 +111,7 @@ public final class PistonPush extends Module {
         else placeCharge(onSync);
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         renderPoses.forEach((pos, time) -> {
             if (System.currentTimeMillis() - time > 500) {
                 renderPoses.remove(pos);
@@ -142,8 +142,8 @@ public final class PistonPush extends Module {
             if (onSync) {
                 sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround(), mc.player.horizontalCollision));
             } else {
-                mc.player.setYaw(angle[0]);
-                mc.player.setPitch(angle[1]);
+                mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+                mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
             }
         }
 
@@ -173,8 +173,8 @@ public final class PistonPush extends Module {
 
             if (extra) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround(), mc.player.horizontalCollision));
             else {
-                mc.player.setYaw(angle[0]);
-                mc.player.setPitch(angle[1]);
+                mc.player.changeLookDirection((angle[0]) - mc.player.getYaw(), 0);
+                mc.player.changeLookDirection(0, (angle[1]) - mc.player.getPitch());
             }
         }
 
@@ -182,14 +182,14 @@ public final class PistonPush extends Module {
             final float angle = InteractionUtility.calculateAngle(target.getEyePos(), pistonPos.toCenterPos())[0];
             sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle, 0, mc.player.isOnGround(), mc.player.horizontalCollision));
             float prevYaw = mc.player.getYaw();
-            mc.player.setYaw(angle);
-            mc.player.getYaw() = angle;
+            mc.player.changeLookDirection((angle) - mc.player.getYaw(), 0);
+            mc.player.changeLookDirection((angle) - mc.player.getYaw(), 0);
             ((IClientPlayerEntity) mc.player).setLastYaw(angle);
             int prevSlot = mc.player.getInventory().getSelectedSlot();
             InteractionUtility.placeBlock(pistonPos, InteractionUtility.Rotate.None, interact.getValue(), placeMode.getValue(), getPistonSlot(), true, false);
             sendPacket(new UpdateSelectedSlotC2SPacket(prevSlot));
             mc.player.getInventory().setSelectedSlot(prevSlot);
-            mc.player.setYaw(prevYaw);
+            mc.player.changeLookDirection((prevYaw) - mc.player.getYaw(), 0);
             firstPlace = false;
             if (swing.getValue())
                 mc.player.swingHand(Hand.MAIN_HAND);

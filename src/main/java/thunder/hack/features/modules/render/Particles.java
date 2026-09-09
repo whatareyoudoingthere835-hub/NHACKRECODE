@@ -3,7 +3,7 @@ package thunder.hack.features.modules.render;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+import thunder.hack.utility.render.PoseStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
@@ -70,7 +70,7 @@ public class Particles extends Module {
         }
     }
 
-    public void onRender3D(MatrixStack stack) {
+    public void onRender3D(PoseStack stack) {
         if (FireFlies.getValue().isEnabled()) {
             stack.push();
         Render2DEngine.bindTexture(TextureStorage.firefly);
@@ -151,7 +151,7 @@ public class Particles extends Module {
                 Camera camera = mc.gameRenderer.getCamera();
                 for (Trails.Trail ctx : trails) {
                     Vec3d pos = ctx.interpolate(1f);
-                    MatrixStack matrices = new MatrixStack();
+                    PoseStack matrices = new PoseStack();
                     matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
                     matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                     matrices.translate(pos.x, pos.y, pos.z);
@@ -159,10 +159,10 @@ public class Particles extends Module {
                     matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
                     Matrix4f matrix = matrices.peek().getPositionMatrix();
 
-                    bufferBuilder.vertex(matrix, 0, -ffsize.getValue(), 0).texture(0f, 1f).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta()))).getRGB());
-                    bufferBuilder.vertex(matrix, -ffsize.getValue(), -ffsize.getValue(), 0).texture(1f, 1f).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta()))).getRGB());
-                    bufferBuilder.vertex(matrix, -ffsize.getValue(), 0, 0).texture(1f, 0).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta()))).getRGB());
-                    bufferBuilder.vertex(matrix, 0, 0, 0).texture(0, 0).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta()))).getRGB());
+                    bufferBuilder.vertex(matrix, 0, -ffsize.getValue(), 0).texture(0f, 1f).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta(false)))).getRGB());
+                    bufferBuilder.vertex(matrix, -ffsize.getValue(), -ffsize.getValue(), 0).texture(1f, 1f).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta(false)))).getRGB());
+                    bufferBuilder.vertex(matrix, -ffsize.getValue(), 0, 0).texture(1f, 0).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta(false)))).getRGB());
+                    bufferBuilder.vertex(matrix, 0, 0, 0).texture(0, 0).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta(false)))).getRGB());
                 }
             }
         }
@@ -225,7 +225,7 @@ public class Particles extends Module {
             Color color1 = lmode.getValue() == ColorMode.Sync ? HudEditor.getColor(age * 2) : color.getValue().getColorObject();
             Vec3d pos = Render3DEngine.interpolatePos(prevposX, prevposY, prevposZ, posX, posY, posZ);
 
-            MatrixStack matrices = new MatrixStack();
+            PoseStack matrices = new PoseStack();
             matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
             matrices.translate(pos.x, pos.y, pos.z);

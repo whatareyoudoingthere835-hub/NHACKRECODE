@@ -18,7 +18,7 @@ public class MouseElytraFix extends Module {
         ItemStack cursorStack = mc.player.currentScreenHandler.getCursorStack();
         if (ItemChecks.armorSlot(cursorStack) == EquipmentSlot.CHEST && !ItemChecks.isElytra(cursorStack) && !ElytraSwap.swapping) {
             if (delay.every(300))
-                if (mc.player.getInventory().getArmorStack(2).getItem() == Items.ELYTRA) {
+                if (mc.player.getInventory().getStack(38).getItem() == Items.ELYTRA) {
                     mc.interactionManager.clickSlot(0, 6, 1, SlotActionType.PICKUP, mc.player);
                     int empty = findEmptySlot();
                     boolean needDrop = (empty == 999);

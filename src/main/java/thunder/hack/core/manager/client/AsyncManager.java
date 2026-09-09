@@ -80,7 +80,7 @@ public class AsyncManager implements IManager {
                     } else Thread.yield();
                 } catch (Exception exception) {
                     exception.printStackTrace();
-                    Command.sendMessage(exception.getMessage());
+                    Command.sendMessage(exception.getMessage(), false);
                 }
             }
         }

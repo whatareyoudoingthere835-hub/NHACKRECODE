@@ -85,9 +85,9 @@ public class Strafe extends Module {
 
     public float getAIMoveSpeed() {
         boolean prevSprinting = mc.player.isSprinting();
-        mc.player.setSprinting(false);
+        mc.player.input.playerInput = player.input.playerInput.withSprint(false);
         float speed = mc.player.getMovementSpeed() * 1.3f;
-        mc.player.setSprinting(prevSprinting);
+        mc.player.input.playerInput = player.input.playerInput.withSprint(prevSprinting);
         return speed;
     }
 
@@ -175,7 +175,7 @@ public class Strafe extends Module {
 
     @EventHandler
     public void onSync(EventSync e) {
-        oldSpeed = Math.hypot(mc.player.getX() - (mc.player.getX() - mc.player.getDeltaMovement().x), mc.player.getZ() - (mc.player.getZ() - mc.player.getDeltaMovement().z)) * contextFriction;
+        oldSpeed = Math.hypot(mc.player.getX() - (mc.player.getX() - mc.player.getVelocity().x), mc.player.getZ() - (mc.player.getZ() - mc.player.getVelocity().z)) * contextFriction;
     }
 
 

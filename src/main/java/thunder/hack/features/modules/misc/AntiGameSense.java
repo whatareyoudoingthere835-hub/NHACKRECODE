@@ -130,8 +130,8 @@ public class AntiGameSense extends Module {
         float newYaw = currentYaw + 180f;
         while (newYaw > 180f) newYaw -= 360f;
         while (newYaw < -180f) newYaw += 360f;
-        mc.player.setYaw(newYaw);
-        mc.player.getYaw() = newYaw;
+        mc.player.changeLookDirection((newYaw) - mc.player.getYaw(), 0);
+        mc.player.changeLookDirection((newYaw) - mc.player.getYaw(), 0);
     }
 
     private int getArmorSlotId(EquipmentSlot slot) {

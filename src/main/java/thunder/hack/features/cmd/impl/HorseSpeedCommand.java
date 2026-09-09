@@ -19,7 +19,7 @@ public class HorseSpeedCommand extends Command {
     public void executeBuild(@NotNull LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
             if (mc.player.getVehicle() != null && mc.player.getVehicle() instanceof HorseEntity horse) {
-                if (!horse.isSaddled()) {
+                if (false) { // 1.21.11: isSaddled gone
                     if (isRu()) sendMessage(Formatting.RED + "У тебя нет седла!");
                     else sendMessage(Formatting.RED + "You don't have a saddle!");
                     return SINGLE_SUCCESS;

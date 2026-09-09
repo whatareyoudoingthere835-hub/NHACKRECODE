@@ -163,8 +163,8 @@ public class Scaffold extends Module {
             if (rotate.getValue() && !mode.is(Mode.Grim)) {
                 Vec3d hitVec = new Vec3d(currentblock.position().getX() + 0.5, currentblock.position().getY() + 0.5, currentblock.position().getZ() + 0.5).add(new Vec3d(currentblock.facing().getUnitVector()).multiply(0.5));
                 float[] rotations = InteractionUtility.calculateAngle(hitVec);
-                mc.player.setYaw(rotations[0]);
-                mc.player.setPitch(rotations[1]);
+                mc.player.changeLookDirection((rotations[0]) - mc.player.getYaw(), 0);
+                mc.player.changeLookDirection(0, (rotations[1]) - mc.player.getPitch());
             }
         }
     }
@@ -186,7 +186,7 @@ public class Scaffold extends Module {
         int prevItem = prePlace(true);
 
         if (prevItem != -1) {
-            if (mc.player.input.jumping && !MovementUtility.isMoving() && tower.getValue() && !mode.is(Mode.Grim)) {
+            if (thunder.hack.utility.player.InputUtility.jump() && !MovementUtility.isMoving() && tower.getValue() && !mode.is(Mode.Grim)) {
                 mc.player.setVelocity(0.0, 0.42, 0.0);
                 if (timer.passedMs(1500)) {
                     mc.player.setVelocity(mc.player.getVelocity().x, -0.28, mc.player.getVelocity().z);
@@ -206,7 +206,7 @@ public class Scaffold extends Module {
             boolean sneak = InteractionUtility.needSneak(mc.world.getBlockState(bhr.getBlockPos()).getBlock()) && !mc.player.isSneaking();
 
             if (sneak)
-                mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+                mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SNEAKING));
 
             if (mode.is(Mode.Grim))
                 sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), rotations[0], rotations[1], mc.player.isOnGround(), mc.player.horizontalCollision));
@@ -222,7 +222,7 @@ public class Scaffold extends Module {
             prevY = currentblock.position().getY();
 
             if (sneak)
-                mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+                mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
 
             if (mode.is(Mode.Grim))
                 sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround(), mc.player.horizontalCollision));

@@ -76,7 +76,7 @@ public final class AutoBuff extends Module {
     public void onPostRotationSet(EventAfterRotate event) {
         if (Aura.target != null && mc.player.getAttackCooldownProgress(1) > 0.5f) return;
         if (mc.player.age > 80 && shouldThrow()) {
-            mc.player.setPitch(90);
+            mc.player.changeLookDirection(0, (90) - mc.player.getPitch());
             spoofed = true;
         }
     }
