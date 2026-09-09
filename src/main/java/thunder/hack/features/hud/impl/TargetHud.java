@@ -251,7 +251,7 @@ public class TargetHud extends HudElement {
         Render2DEngine.drawRect(context.getMatrices(), getPosX() + 50, getPosY() + 30, MathUtility.clamp((int) (60 * (health / target.getMaxHealth())), 0, 60), 10, color.getValue().getColorObject().brighter().brighter().brighter());
 
         if (target instanceof PlayerEntity) {
-        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target));
 
         } else {
         Render2DEngine.bindTexture(getEntityTexture(target));
@@ -291,7 +291,7 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
-        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target));
 
         } else {
         Render2DEngine.bindTexture(getEntityTexture(target));
@@ -372,7 +372,7 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
-        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target));
 
         } else {
         Render2DEngine.bindTexture(getEntityTexture(target));
@@ -508,7 +508,7 @@ public class TargetHud extends HudElement {
         headAnimation.setValue(hurtPercent2);
 
         if (target instanceof PlayerEntity) {
-        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(target));
 
         } else {
         Render2DEngine.bindTexture(getEntityTexture(target));

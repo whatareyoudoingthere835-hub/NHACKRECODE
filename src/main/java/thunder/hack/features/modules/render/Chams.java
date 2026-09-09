@@ -114,7 +114,7 @@ public class Chams extends Module {
         BufferBuilder buffer;
 
         if (!simple.getValue()) {
-        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(pe)));
+        Render2DEngine.bindTexture(thunder.hack.utility.SkinUtility.skin(pe));
 
 
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);

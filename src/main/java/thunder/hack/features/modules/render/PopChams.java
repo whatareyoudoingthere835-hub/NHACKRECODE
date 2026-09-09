@@ -84,7 +84,7 @@ public final class PopChams extends Module {
         // 1.21.11: handSwingTicks not settable
         // 1.21.11: input is ClientPlayerEntity-only
         // limb animation transfer unsupported on 1.21.11 LimbAnimator
-        popList.add(new Person(entity, thunder.hack.utility.SkinUtility.skin(e.getEntity()))));
+        popList.add(new Person(entity, thunder.hack.utility.SkinUtility.skin(e.getEntity())));
     }
 
     private void renderEntity(@NotNull PoseStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
