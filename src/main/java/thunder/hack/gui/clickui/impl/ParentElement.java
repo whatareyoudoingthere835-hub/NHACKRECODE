@@ -39,12 +39,12 @@ public class ParentElement extends AbstractElement {
         animation = fast(animation, getParentSetting().getValue().isExtended() ? 0 : 1, 15f);
 
         matrixStack.pushMatrix();
-        matrixStack.translate((float) (tx), (float) (ty), 0.0)
+        matrixStack.translate((float) (tx), (float) (ty));
         matrixStack.rotate((-180f * animation) * MathHelper.RADIANS_PER_DEGREE);
-        matrixStack.translate((float) (-tx), (float) (-ty), 0.0)
-        matrixStack.translate((float) ((x + width - 14)), (float) ((y + 4.5f)), 0.0)
+        matrixStack.translate((float) (-tx), (float) (-ty));
+        matrixStack.translate((float) ((x + width - 14)), (float) ((y + 4.5f)));
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6, -1);
-        matrixStack.translate((float) (-(x + width - 14)), (float) (-(y + 4.5f)), 0.0)
+        matrixStack.translate((float) (-(x + width - 14)), (float) (-(y + 4.5f)));
         matrixStack.popMatrix();
 
         FontRenderers.sf_medium_mini.drawString(matrixStack, setting.getName(), x + 6 + (6 * getParentSetting().getValue().getHierarchy()), y + height / 2 - 1f, new Color(-1).getRGB());

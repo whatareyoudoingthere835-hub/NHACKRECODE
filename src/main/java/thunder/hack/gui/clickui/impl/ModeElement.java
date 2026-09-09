@@ -47,13 +47,13 @@ public class ModeElement extends AbstractElement {
         float thetaRotation = -180f * animation;
         matrixStack.pushMatrix();
 
-        matrixStack.translate((float) (tx), (float) (ty), 0.0)
+        matrixStack.translate((float) (tx), (float) (ty));
         matrixStack.rotate((thetaRotation) * MathHelper.RADIANS_PER_DEGREE);
-        matrixStack.translate((float) (-tx), (float) (-ty), 0.0)
+        matrixStack.translate((float) (-tx), (float) (-ty));
 
-        matrixStack.translate((float) ((x + width - 14)), (float) (y + 4.5f), 0.0)
+        matrixStack.translate((float) ((x + width - 14)), (float) (y + 4.5f));
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6, -1);
-        matrixStack.translate((float) (-(x + width - 14)), (float) (-y - 4.5f), 0.0)
+        matrixStack.translate((float) (-(x + width - 14)), (float) (-y - 4.5f));
 
         matrixStack.popMatrix();
 

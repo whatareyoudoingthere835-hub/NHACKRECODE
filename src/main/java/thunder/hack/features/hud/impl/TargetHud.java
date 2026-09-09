@@ -631,9 +631,9 @@ public class TargetHud extends HudElement {
     }
 
     public static void sizeAnimation(org.joml.Matrix3x2fStack matrixStack, double width, double height, double animation) {
-        matrixStack.translate((float) width, (float) height, 0.0)
+        matrixStack.translate((float) width, (float) height);
         matrixStack.scale((float) animation, (float) animation);
-        matrixStack.translate((float) -width, (float) -height, 0.0)
+        matrixStack.translate((float) -width, (float) -height);
     }
 
     public static String getPotionName(StatusEffect p) {
