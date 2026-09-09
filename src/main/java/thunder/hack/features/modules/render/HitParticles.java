@@ -185,13 +185,13 @@ public class HitParticles extends Module {
             matrixStack.scale(scale, scale, scale);
 
             matrixStack.translate(size / 2, size / 2, size / 2);
-            matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw()));
-            matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPitch()));
+            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw()));
+            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPitch()));
 
             if (mode.is(Mode.Text))
-                matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(180));
+                matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
             else
-                matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(rotationAngle += (float) (AnimationUtility.deltaTime() * rotationSpeed)));
+                matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotationAngle += (float) (AnimationUtility.deltaTime() * rotationSpeed)));
 
             matrixStack.translate(-size / 2, -size / 2, -size / 2);
 

@@ -161,11 +161,7 @@ public abstract class MixinMinecraftClient {
             for (int i = 0; i < imgList.size(); i++) {
                 NativeImage nativeImage = NativeImage.read(imgList.get(i));
                 ByteBuffer bytebuffer = MemoryUtil.memAlloc(nativeImage.getWidth() * nativeImage.getHeight() * 4);
-
-                java.nio.IntBuffer pixelBuffer = bytebuffer.asIntBuffer();
-                for (int py = 0; py < nativeImage.getHeight(); py++)
-                    for (int px = 0; px < nativeImage.getWidth(); px++)
-                        pixelBuffer.put(nativeImage.getPixelColor(px, py));
+                bytebuffer.asIntBuffer().put(nativeImage.copyPixelsAbgr());
                 buffer.position(i);
                 buffer.width(nativeImage.getWidth());
                 buffer.height(nativeImage.getHeight());

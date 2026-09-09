@@ -229,7 +229,7 @@ public final class Core {
         float g = (float) -((Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) + ((Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) - Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) * tickDelta);
         float h = MathHelper.lerp(tickDelta, 0.0F, 0.0F);
         matrices.translate(MathHelper.sin(g * (float) Math.PI) * h * 0.1f, -Math.abs(MathHelper.cos(g * (float) Math.PI) * h) * 0.3, 0.0f);
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0f));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2f) * h) * 0.3f));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0f));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2f) * h) * 0.3f));
     }
 }

@@ -444,9 +444,9 @@ public class Render3DEngine {
     public static @NotNull MatrixStack matrixFrom(double x, double y, double z) {
         MatrixStack matrices = new MatrixStack();
 
-        Camera camera = MinecraftClient.getInstance().net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+        Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
 
         matrices.translate(x - camera.getCameraPos().x, y - camera.getCameraPos().y, z - camera.getCameraPos().z);
 
@@ -667,11 +667,11 @@ public class Render3DEngine {
 
                 float offset = ((float) i / espLength);
                 MatrixStack matrices = new MatrixStack();
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                 matrices.translate(tPosX + Math.cos(radians) * target.getWidth(), (tPosY + 1 + sinQuad), tPosZ + Math.sin(radians) * target.getWidth());
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
                 Matrix4f matrix = matrices.peek().getPositionMatrix();
                 int color = Render2DEngine.applyOpacity(HudEditor.getColor((int) (180 * offset)), offset).getRGB();
                 float scale = Math.max(0.24f * (offset), 0.2f);
@@ -711,7 +711,7 @@ public static float getTickDelta(boolean secondsPerTick) {
     }
 
     public static float getTickDelta() {
-        return net.minecraft.client.MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false);
+        return net.minecraft.client.MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(false);
     }
 
     public record FillAction(Box box, Color color) {

@@ -168,7 +168,7 @@ public class LogoutSpots extends Module {
         ((IEntity) entity).setPos(new Vec3d(entity.getX(), entity.getY(), entity.getZ()));
         matrices.push();
         matrices.translate((float) x, (float) y, (float) z);
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw())));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw())));
         prepareScale(matrices);
         PlayerEntityRenderState state = new PlayerEntityRenderState();
         state.age = entity.age + Render3DEngine.getTickDelta(false);

@@ -1,6 +1,6 @@
 package thunder.hack.features.modules.movement;
 
-import net.minecraft.client.input.PlayerInput;
+import net.minecraft.util.PlayerInput;
 
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.ClientPlayerEntity;

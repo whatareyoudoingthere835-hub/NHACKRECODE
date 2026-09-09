@@ -50,7 +50,7 @@ public abstract class MixinGameRenderer {
         if (Module.fullNullCheck()) return;
 
         Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
-        float tickDelta = tickCounter.getTickDelta(false);
+        float tickDelta = tickCounter.getTickProgress(false);
 
         Matrix4f rotations = new Matrix4f()
                 .rotateX(camera.getPitch() * MathHelper.RADIANS_PER_DEGREE)

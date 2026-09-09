@@ -32,8 +32,8 @@ public class Avoid extends Module {
         if (fullNullCheck()) return;
         Block b = e.getState().getBlock();
 
-        boolean avoidUnloaded = !mc.world.isChunkLoaded(new Vec3d(e.getX(), e.getY(), e.getZ()).getX() >> 4, new Vec3d(e.getX(), e.getY(), e.getZ()).getZ() >> 4) && unloaded.getValue();
-        boolean avoidVoid = new Vec3d(e.getX(), e.getY(), e.getZ()).getY() < mc.world.getBottomY() && voidAir.getValue();
+        boolean avoidUnloaded = !mc.world.isChunkLoaded((int) Math.floor(e.getX()) >> 4, (int) Math.floor(e.getZ()) >> 4) && unloaded.getValue();
+        boolean avoidVoid = e.getY() < mc.world.getBottomY() && voidAir.getValue();
         boolean avoidCactus = b == Blocks.CACTUS && cactus.getValue();
         boolean avoidFire = (b == Blocks.FIRE || b == Blocks.SOUL_FIRE) && fire.getValue();
         boolean avoidBerryBush = (b == Blocks.SWEET_BERRY_BUSH) && berryBush.getValue();

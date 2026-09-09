@@ -51,7 +51,7 @@ public final class ThunderUtility {
 
     public static Identifier getCustomImg(String name) throws IOException {
         Identifier id = Identifier.of("thunderhack", "textures/th-" + name + "-" + (int) MathUtility.random(0, 1000) + ".png");
-        mc.getTextureManager().registerTexture(id, new NativeImageBackedTexture(NativeImage.read(new FileInputStream(IMAGES_FOLDER + "/" + name + ".png"))));
+        mc.getTextureManager().registerTexture(id, new NativeImageBackedTexture(id::toString, NativeImage.read(new FileInputStream(IMAGES_FOLDER + "/" + name + ".png"))));
         return id;
     }
 

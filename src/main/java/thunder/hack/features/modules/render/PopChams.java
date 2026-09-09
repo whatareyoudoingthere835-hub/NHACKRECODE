@@ -106,7 +106,7 @@ public final class PopChams extends Module {
         float yRotYaw = ((alpha / 255f) * 360f * rotSpeed.getValue());
         yRotYaw = yRotYaw == 0 ? 0 : Render2DEngine.interpolateFloat(yRotYaw, yRotYaw - (((aSpeed.getValue() / 255f) * 360f * rotSpeed.getValue())), Render3DEngine.getTickDelta(false));
 
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw() + yRotYaw)));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw() + yRotYaw)));
         prepareScale(matrices);
 
         PlayerEntityRenderState state = new PlayerEntityRenderState();

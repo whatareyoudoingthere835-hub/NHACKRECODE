@@ -78,7 +78,7 @@ public class PredictUtility {
         copyEntity.setHealth(original.getHealth());
         // 1.21.11: prev-position not writable
         // 1.21.11: prev-position not writable
-        copyEntity.prevY = original.prevY;
+        // 1.21.11: Entity.prevX/Y/Z removed - dropped: copyEntity.prevY = original.prevY;
         copyEntity.getInventory().clone(original.getInventory());
         for (StatusEffectInstance se : original.getStatusEffects()) {
             copyEntity.addStatusEffect(se);

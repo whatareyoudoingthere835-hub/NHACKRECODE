@@ -96,11 +96,11 @@ public class Animations extends Module {
                 int i = arm == Arm.RIGHT ? 1 : -1;
                 translateToViewModel(matrices);
                 float f1 = MathHelper.sin(swingProgress * swingProgress * 3.1415927F);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * (45.0F + f1 * -20.0F)));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * (45.0F + f1 * -20.0F)));
                 float g = MathHelper.sin(MathHelper.sqrt(swingProgress) * 3.1415927F);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * g * -20.0F));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(g * 0.0F));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * -45.0F));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * g * -20.0F));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(g * 0.0F));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * -45.0F));
                 translateBack(matrices);
             }
             case Two ->
@@ -111,16 +111,16 @@ public class Animations extends Module {
                 applyEquipOffset(matrices, arm, n);
                 int i = arm == Arm.RIGHT ? 1 : -1;
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * (45.0F + f * -20.0F)));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * g * -70.0F));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-70f));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * -45.0F));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * (45.0F + f * -20.0F)));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * g * -70.0F));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-70f));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * -45.0F));
                 translateBack(matrices);
             }
             case Four -> {
                 applyEquipOffset(matrices, arm, 0);
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(swingProgress > 0 ? -MathHelper.sin(swingProgress * 13f) * 37f : 0));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(swingProgress > 0 ? -MathHelper.sin(swingProgress * 13f) * 37f : 0));
                 translateBack(matrices);
             }
             case Five -> {
@@ -128,19 +128,19 @@ public class Animations extends Module {
                 int i = arm == Arm.RIGHT ? 1 : -1;
                 float g = MathHelper.sin(MathHelper.sqrt(swingProgress) * 3.1415927F);
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * g * -20.0F));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * g * -20.0F));
                 translateBack(matrices);
             }
             case Six -> {
                 applyEquipOffset(matrices, arm, equipProgress);
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(swingProgress * (flip ? 360.0F : -360)));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(swingProgress * (flip ? 360.0F : -360)));
                 translateBack(matrices);
             }
             case Eight -> {
                 applyEquipOffset(matrices, arm, equipProgress);
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(swingProgress * -360));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(swingProgress * -360));
                 translateBack(matrices);
             }
             case Seven -> {
@@ -152,9 +152,9 @@ public class Animations extends Module {
                 float g = MathHelper.sin(MathHelper.sqrt(swingProgress) * 3.1415927F);
                 applyEquipOffset(matrices, arm, 0);
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(50f));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-30f * (1f - g) - 30f));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(110f));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(50f));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-30f * (1f - g) - 30f));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(110f));
                 translateBack(matrices);
             }
             case Ten -> {
@@ -162,18 +162,18 @@ public class Animations extends Module {
                 matrices.translate(0, 0, 0);
                 applyEquipOffset(matrices, arm, 0);
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(50f));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-60f * g - 50));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(110f));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(50f));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-60f * g - 50));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(110f));
                 translateBack(matrices);
             }
             case Eleven -> {
                 float g = MathHelper.sin(MathHelper.sqrt(swingProgress) * 3.1415927F);
                 applyEquipOffset(matrices, arm, 0);
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(50f));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-60f));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(110f + 20f * g));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(50f));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-60f));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(110f + 20f * g));
                 translateBack(matrices);
             }
             case Twelve -> {
@@ -181,15 +181,15 @@ public class Animations extends Module {
                 applyEquipOffset(matrices, arm, 0);
                 matrices.translate(0, 0, -g / 4f);
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-120f));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-120f));
                 translateBack(matrices);
             }
             case Thirteen -> {
                 float g = MathHelper.sin(MathHelper.sqrt(swingProgress) * 3.1415927F);
                 applyEquipOffset(matrices, arm, 0);
                 translateToViewModel(matrices);
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-MathHelper.sin(swingProgress * 3f) * 60f));
-                matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(-60f * g));
+                matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-MathHelper.sin(swingProgress * 3f) * 60f));
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-60f * g));
                 translateBack(matrices);
             }
             case Fourteen -> {
@@ -198,15 +198,15 @@ public class Animations extends Module {
                     matrices.translate(0.56F, equipProgress * -0.2f - 0.5F, -0.7F);
 
                     translateToViewModel(matrices);
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(45));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(g * -85.0F));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(45));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(g * -85.0F));
 
                     if (ModuleManager.viewModel.isEnabled())
                         matrices.translate(-0.1F * ModuleManager.viewModel.scaleMain.getValue(), 0.28F * ModuleManager.viewModel.scaleMain.getValue(), 0.2F * ModuleManager.viewModel.scaleMain.getValue());
                     else
                         matrices.translate(-0.1F, 0.28F, 0.2F);
 
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-85.0F));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-85.0F));
                     translateBack(matrices);
                 } else {
                     float n = -0.4f * MathHelper.sin(MathHelper.sqrt(swingProgress) * (float) Math.PI);
@@ -239,9 +239,9 @@ public class Animations extends Module {
                 if (player.isUsingItem() && player.getItemUseTimeLeft() > 0 && player.getActiveHand() == hand) {
                     applyEquipOffset(matrices, arm, equipProgress);
                     matrices.translate((float) i * -0.4785682F, -0.094387F, 0.05731531F);
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-11.935F));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * 65.3F));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * -9.785F));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-11.935F));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * 65.3F));
+                    matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * -9.785F));
                     f = (float) item.getMaxUseTime(mc.player) - ((float) mc.player.getItemUseTimeLeft() - tickDelta + 1.0F);
                     g = f / (float) CrossbowItem.getPullTime(item, mc.player);
                     if (g > 1.0F) {
@@ -257,7 +257,7 @@ public class Animations extends Module {
 
                     matrices.translate(g * 0.0F, g * 0.0F, g * 0.04F);
                     matrices.scale(1.0F, 1.0F, 1.0F + g * 0.2F);
-                    matrices.multiplyPositionMatrix(RotationAxis.NEGATIVE_Y.rotationDegrees((float) i * 45.0F));
+                    matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees((float) i * 45.0F));
                 } else {
                     f = -0.4F * MathHelper.sin(MathHelper.sqrt(swingProgress) * 3.1415927F);
                     g = 0.2F * MathHelper.sin(MathHelper.sqrt(swingProgress) * 6.2831855F);
@@ -267,7 +267,7 @@ public class Animations extends Module {
                     applySwingOffset(matrices, arm, swingProgress);
                     if (bl2 && swingProgress < 0.001F && bl) {
                         matrices.translate((float) i * -0.641864F, 0.0F, 0.0F);
-                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * 10.0F));
+                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * 10.0F));
                     }
                 }
 
@@ -289,9 +289,9 @@ public class Animations extends Module {
                         case BOW -> {
                             applyEquipOffset(matrices, arm, equipProgress);
                             matrices.translate((float) l * -0.2785682F, 0.18344387F, 0.15731531F);
-                            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-13.935F));
-                            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 35.3F));
-                            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -9.785F));
+                            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-13.935F));
+                            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 35.3F));
+                            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -9.785F));
                             m = (float) item.getMaxUseTime(mc.player) - ((float) mc.player.getItemUseTimeLeft() - tickDelta + 1.0F);
                             f = m / 20.0F;
                             f = (f * f + f * 2.0F) / 3.0F;
@@ -306,14 +306,14 @@ public class Animations extends Module {
                             }
                             matrices.translate(f * 0.0F, f * 0.0F, f * 0.04F);
                             matrices.scale(1.0F, 1.0F, 1.0F + f * 0.2F);
-                            matrices.multiplyPositionMatrix(RotationAxis.NEGATIVE_Y.rotationDegrees((float) l * 45.0F));
+                            matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees((float) l * 45.0F));
                         }
                         case SPEAR -> {
                             applyEquipOffset(matrices, arm, equipProgress);
                             matrices.translate((float) l * -0.5F, 0.7F, 0.1F);
-                            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-55.0F));
-                            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 35.3F));
-                            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -9.785F));
+                            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-55.0F));
+                            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 35.3F));
+                            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -9.785F));
                             m = (float) item.getMaxUseTime(mc.player) - ((float) mc.player.getItemUseTimeLeft() - tickDelta + 1.0F);
                             f = m / 10.0F;
                             if (f > 1.0F) {
@@ -327,7 +327,7 @@ public class Animations extends Module {
                             }
                             matrices.translate(0.0F, 0.0F, f * 0.2F);
                             matrices.scale(1.0F, 1.0F, 1.0F + f * 0.2F);
-                            matrices.multiplyPositionMatrix(RotationAxis.NEGATIVE_Y.rotationDegrees((float) l * 45.0F));
+                            matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees((float) l * 45.0F));
                         }
                         case BRUSH -> applyBrushTransformation(matrices, tickDelta, arm, item, equipProgress);
                     }
@@ -335,8 +335,8 @@ public class Animations extends Module {
                     applyEquipOffset(matrices, arm, equipProgress);
                     l = bl2 ? 1 : -1;
                     matrices.translate((float) l * -0.4F, 0.8F, 0.3F);
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 65.0F));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -85.0F));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 65.0F));
+                    matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -85.0F));
                 } else {
                     renderSwordAnimation(matrices, f, swingProgress, equipProgress, arm);
                 }
@@ -356,16 +356,16 @@ public class Animations extends Module {
 
         if (arm != Arm.RIGHT) {
             matrices.translate(0.1, 0.83, 0.35);
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-80.0F));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(m));
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-80.0F));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(m));
             matrices.translate(-0.3, 0.22, 0.35);
         } else {
             matrices.translate(-0.25, 0.22, 0.35);
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-80.0F));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(0.0F));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(m));
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-80.0F));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F));
+            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(0.0F));
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(m));
         }
     }
 
@@ -377,11 +377,11 @@ public class Animations extends Module {
     private void applySwingOffset(@NotNull MatrixStack matrices, Arm arm, float swingProgress) {
         int i = arm == Arm.RIGHT ? 1 : -1;
         float f = MathHelper.sin(swingProgress * swingProgress * 3.1415927F);
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * (45.0F + f * -20.0F)));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * (45.0F + f * -20.0F)));
         float g = MathHelper.sin(MathHelper.sqrt(swingProgress) * 3.1415927F);
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * g * -20.0F));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(g * -80.0F));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * -45.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * g * -20.0F));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(g * -80.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * -45.0F));
     }
 
     public void renderItem(LivingEntity entity, ItemStack stack, ItemDisplayContext renderMode, boolean leftHanded, MatrixStack matrices, OrderedRenderCommandQueue vertexConsumers, int light) {
@@ -403,9 +403,9 @@ public class Animations extends Module {
         int i = arm == Arm.RIGHT ? 1 : -1;
 
         matrices.translate(h * 0.6F * (float) i * ModuleManager.viewModel.eatX.getValue(), h * -0.5F * ModuleManager.viewModel.eatY.getValue(), h * 0.0F);
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * h * 90.0F));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(h * 10.0F));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * h * 30.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * h * 90.0F));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(h * 10.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * h * 30.0F));
     }
 
     private void translateToViewModel(MatrixStack matrices) {

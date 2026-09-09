@@ -152,11 +152,11 @@ public class Particles extends Module {
                 for (Trails.Trail ctx : trails) {
                     Vec3d pos = ctx.interpolate(1f);
                     MatrixStack matrices = new MatrixStack();
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                     matrices.translate(pos.x, pos.y, pos.z);
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
                     Matrix4f matrix = matrices.peek().getPositionMatrix();
 
                     bufferBuilder.vertex(matrix, 0, -ffsize.getValue(), 0).texture(0f, 1f).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta(false)))).getRGB());
@@ -226,11 +226,11 @@ public class Particles extends Module {
             Vec3d pos = Render3DEngine.interpolatePos(prevposX, prevposY, prevposZ, posX, posY, posZ);
 
             MatrixStack matrices = new MatrixStack();
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
             matrices.translate(pos.x, pos.y, pos.z);
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
             Matrix4f matrix1 = matrices.peek().getPositionMatrix();
 

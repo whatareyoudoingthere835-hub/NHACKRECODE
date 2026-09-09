@@ -1,6 +1,6 @@
 package thunder.hack.injection;
 
-import net.minecraft.client.input.PlayerInput;
+import net.minecraft.util.PlayerInput;
 
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.Entity;

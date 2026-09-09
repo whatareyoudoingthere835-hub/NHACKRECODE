@@ -56,9 +56,9 @@ public abstract class MixinHeldItemRenderer {
         int i = arm == Arm.RIGHT ? 1 : -1;
 
         matrices.translate(h * 0.6F * (float) i * ModuleManager.viewModel.eatX.getValue(), h * -0.5F * ModuleManager.viewModel.eatY.getValue(), h * 0.0F);
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * h * 90.0F));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(h * 10.0F));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * h * 30.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * h * 90.0F));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(h * 10.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * h * 30.0F));
     }
 
     @Inject(method = "applyEatOrDrinkTransformation", at = @At(value = "HEAD"), cancellable = true)

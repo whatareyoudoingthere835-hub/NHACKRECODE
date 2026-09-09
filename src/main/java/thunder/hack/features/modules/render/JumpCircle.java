@@ -94,8 +94,8 @@ public class JumpCircle extends Module {
 
             stack.push();
             stack.translate(c.pos().x - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x, c.pos().y - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y, c.pos().z - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z);
-            stack.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(90));
-            stack.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(sizeAnim * rotateSpeed.getValue() * 1000f));
+            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
+            stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(sizeAnim * rotateSpeed.getValue() * 1000f));
             float scale = sizeAnim * 2f;
             Matrix4f matrix = stack.peek().getPositionMatrix();
 

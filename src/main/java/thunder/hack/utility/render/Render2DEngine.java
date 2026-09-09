@@ -57,10 +57,10 @@ public class Render2DEngine {
 
     public static void addWindow(Matrix3x2fStack stack, Rectangle r1) {
         Matrix3x2f m = new Matrix3x2f(stack);
-        float ax = (float) (m.m00 * r1.x() + m.m01 * r1.y() + m.m02);
-        float ay = (float) (m.m10 * r1.x() + m.m11 * r1.y() + m.m12);
-        float bx = (float) (m.m00 * r1.x1() + m.m01 * r1.y1() + m.m02);
-        float by = (float) (m.m10 * r1.x1() + m.m11 * r1.y1() + m.m12);
+        float ax = (float) (m.m00 * r1.x() + m.m10 * r1.y() + m.m20);
+        float ay = (float) (m.m01 * r1.x() + m.m11 * r1.y() + m.m21);
+        float bx = (float) (m.m00 * r1.x1() + m.m10 * r1.y1() + m.m20);
+        float by = (float) (m.m01 * r1.x1() + m.m11 * r1.y1() + m.m21);
         Rectangle r = new Rectangle(ax, ay, bx, by);
         if (clipStack.isEmpty()) {
             clipStack.push(r);
@@ -790,8 +790,8 @@ public class Render2DEngine {
     public static Matrix4f toMatrix4f(org.joml.Matrix3x2fc mm) {
         org.joml.Matrix3x2f t = new org.joml.Matrix3x2f(mm);
         return new Matrix4f(
-                t.m00, t.m01, 0f, t.m02,
-                t.m10, t.m11, 0f, t.m12,
+                t.m00, t.m10, 0f, t.m20,
+                t.m01, t.m11, 0f, t.m21,
                 0f, 0f, 1f, 0f,
                 0f, 0f, 0f, 1f);
     }

@@ -614,10 +614,10 @@ public class TargetHud extends HudElement {
         if (target instanceof PlayerEntity ent && (mc.getNetworkHandler() != null && mc.getNetworkHandler().getServerInfo() != null && mc.getNetworkHandler().getServerInfo().address.contains("funtime") || funTimeHP.getValue())) {
             ScoreboardObjective scoreBoard = null;
             String resolvedHp = "";
-            if ((ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME) != null) {
-                scoreBoard = (ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME);
+            if ((ent.getEntityWorld().getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME) != null) {
+                scoreBoard = (ent.getEntityWorld().getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME);
                 if (scoreBoard != null) {
-                    ReadableScoreboardScore readableScoreboardScore = ent.getScoreboard().getScore(ent, scoreBoard);
+                    ReadableScoreboardScore readableScoreboardScore = ent.getEntityWorld().getScoreboard().getScore(ent, scoreBoard);
                     resolvedHp = readableScoreboardScore == null ? "" : String.valueOf(readableScoreboardScore.getScore());
                 }
             }

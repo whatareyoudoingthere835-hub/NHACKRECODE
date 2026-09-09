@@ -18,7 +18,7 @@ public class NoBob extends Module {
             return;
 
         float g = (float) -Math.hypot(mc.player.getVelocity().x, mc.player.getVelocity().z);
-        float h = mc.player.strideDistance;
+        float h = 1f; // 1.21.11: strideDistance no longer exposed; unit amplitude
         matrices.translate(0.0, -Math.abs(g * h * (mode.is(Mode.Sexy) ? 0.00035 : 0.0)), 0.0);
     }
 

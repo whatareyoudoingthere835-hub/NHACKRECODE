@@ -1,6 +1,6 @@
 package thunder.hack.features.modules.combat;
 
-import net.minecraft.client.input.PlayerInput;
+import net.minecraft.util.PlayerInput;
 
 import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;

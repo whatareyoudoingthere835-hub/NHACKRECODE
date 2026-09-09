@@ -1,6 +1,6 @@
 package thunder.hack.features.modules.misc;
 
-import net.minecraft.client.input.PlayerInput;
+import net.minecraft.util.PlayerInput;
 
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;

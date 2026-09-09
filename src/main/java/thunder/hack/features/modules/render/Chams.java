@@ -88,17 +88,17 @@ public class Chams extends Module {
         matrixStack.scale(2.0f, 2.0f, 2.0f);
         matrixStack.translate(0.0f, -0.5f, 0.0f);
         int k = OverlayTexture.DEFAULT_UV;
-        matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         matrixStack.translate(0.0f, 1.5f + h / 2.0f, 0.0f);
         matrixStack.multiply(new Quaternionf().setAngleAxis(1.0471976f, SINE_45_DEGREES, 0.0f, SINE_45_DEGREES));
         frame.render(matrixStack, buffer, i, k, 0xFFFFFFFF);
         matrixStack.scale(0.875f, 0.875f, 0.875f);
         matrixStack.multiply(new Quaternionf().setAngleAxis(1.0471976f, SINE_45_DEGREES, 0.0f, SINE_45_DEGREES));
-        matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         frame.render(matrixStack, buffer, i, k, 0xFFFFFFFF);
         matrixStack.scale(0.875f, 0.875f, 0.875f);
         matrixStack.multiply(new Quaternionf().setAngleAxis(1.0471976f, SINE_45_DEGREES, 0.0f, SINE_45_DEGREES));
-        matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         core.render(matrixStack, buffer, i, k, 0xFFFFFFFF);
         matrixStack.pop();
         matrixStack.pop();
@@ -208,7 +208,7 @@ public class Chams extends Module {
             l = h;
             m = MathHelper.clamp(l * l / 100.0F, 0.0F, 1.0F);
             if (!abstractClientPlayerEntity.isUsingRiptide()) {
-                matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(m * (-90.0F - k)));
+                matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(m * (-90.0F - k)));
             }
 
             Vec3d vec3d = abstractClientPlayerEntity.getRotationVec(h);
@@ -218,13 +218,13 @@ public class Chams extends Module {
             if (d > 0.0 && e > 0.0) {
                 double n = (vec3d2.x * vec3d.x + vec3d2.z * vec3d.z) / Math.sqrt(d * e);
                 double o = vec3d2.x * vec3d.z - vec3d2.z * vec3d.x;
-                matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotation((float) (Math.signum(o) * Math.acos(n))));
+                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float) (Math.signum(o) * Math.acos(n))));
             }
         } else if (j > 0.0F) {
             // 1.21.11: LivingEntityRenderer.setupTransforms is private
             l = abstractClientPlayerEntity.isTouchingWater() ? -90.0F - k : -90.0F;
             m = MathHelper.lerp(j, 0.0F, l);
-            matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(m));
+            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(m));
             if (abstractClientPlayerEntity.isInSwimmingPose()) {
                 matrixStack.translate(0.0F, -1.0F, 0.3F);
             }
@@ -235,7 +235,7 @@ public class Chams extends Module {
 
     private void setupTransforms(PlayerEntity entity, MatrixStack matrices, float animationProgress, float bodyYaw, float tickDelta) {
         if (!entity.isInPose(EntityPose.SLEEPING)) {
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - bodyYaw));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - bodyYaw));
         }
 
         if (entity.deathTime > 0) {
@@ -245,16 +245,16 @@ public class Chams extends Module {
                 f = 1.0F;
             }
 
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(f * 90.0F));
+            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(f * 90.0F));
         } else if (entity.isUsingRiptide()) {
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-90.0F - entity.getPitch()));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(((float) entity.age + tickDelta) * -75.0F));
+            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90.0F - entity.getPitch()));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(((float) entity.age + tickDelta) * -75.0F));
         } else if (entity.isInPose(EntityPose.SLEEPING)) {
             Direction direction = entity.getSleepingDirection();
             float g = direction != null ? getYaw(direction) : bodyYaw;
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(g));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(90.0F));
-            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(270.0F));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(g));
+            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90.0F));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(270.0F));
         }
     }
 

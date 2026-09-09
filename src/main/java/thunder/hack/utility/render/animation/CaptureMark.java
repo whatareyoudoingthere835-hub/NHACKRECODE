@@ -29,12 +29,12 @@ public class CaptureMark {
         MatrixStack matrices = new MatrixStack();
 
 
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
         matrices.translate(tPosX, (tPosY + target.getEyeHeight(target.getPose()) / 2f), tPosZ);
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(Render2DEngine.interpolateFloat(prevEspValue, espValue, Render3DEngine.getTickDelta(false))));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(Render2DEngine.interpolateFloat(prevEspValue, espValue, Render3DEngine.getTickDelta(false))));
         Render2DEngine.bindTexture(TextureStorage.capture);
 
 

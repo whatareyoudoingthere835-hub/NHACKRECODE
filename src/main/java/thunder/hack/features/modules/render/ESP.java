@@ -134,11 +134,11 @@ public class ESP extends Module {
 
                     MatrixStack matrices = new MatrixStack();
                     Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                     matrices.translate(x, y, z);
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
 
                     matrices.translate(0, 0, 0);
@@ -238,11 +238,11 @@ public class ESP extends Module {
 
                     MatrixStack matrices = new MatrixStack();
                     Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                     matrices.translate(x + 0.5f, y + 0.5f, z + 0.5f);
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
 
                     matrices.translate(0, 0, 0);
@@ -258,18 +258,18 @@ public class ESP extends Module {
             for (Entity ent : mc.world.getEntities()) {
                 if (ent instanceof TntEntity tnt) {
                     double x = (tnt.getX() - tnt.getVelocity().x) * Render3DEngine.getTickDelta(false) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
-                    double y = tnt.prevY + (tnt.getY() - tnt.prevY) * Render3DEngine.getTickDelta(false) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
-                    double z = tnt.prevZ + (tnt.getZ() - tnt.prevZ) * Render3DEngine.getTickDelta(false) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
+                    double y = (tnt.getY() - tnt.getVelocity().y) + (tnt.getY() - (tnt.getY() - tnt.getVelocity().y)) * Render3DEngine.getTickDelta(false) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
+                    double z = (tnt.getZ() - tnt.getVelocity().z) + (tnt.getZ() - (tnt.getZ() - tnt.getVelocity().z)) * Render3DEngine.getTickDelta(false) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
                     if (tntFuse.getValue()) {
 
                         MatrixStack matrices = new MatrixStack();
                         Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
-                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                         matrices.translate(x, y + 0.5f, z);
-                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
 
                         matrices.translate(0, 0, 0);
@@ -300,7 +300,7 @@ public class ESP extends Module {
                     float yOffset = mc.getWindow().getScaledHeight() / 2f;
 
                     float xPos = (float) ((pearl.getX() - pearl.getVelocity().x) * Render3DEngine.getTickDelta(false));
-                    float zPos = (float) (pearl.prevZ + (pearl.getZ() - pearl.prevZ) * Render3DEngine.getTickDelta(false));
+                    float zPos = (float) ((pearl.getZ() - pearl.getVelocity().z) + (pearl.getZ() - (pearl.getZ() - pearl.getVelocity().z)) * Render3DEngine.getTickDelta(false));
 
                     float yaw = getRotations(new Vec2f(xPos, zPos)) - mc.player.getYaw();
                     context.getMatrices().translate((float) (xOffset), (float) (yOffset));
