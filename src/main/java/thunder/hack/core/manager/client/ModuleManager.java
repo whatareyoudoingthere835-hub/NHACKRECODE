@@ -19,7 +19,6 @@ import thunder.hack.features.modules.movement.Timer;
 import thunder.hack.features.modules.movement.*;
 import thunder.hack.features.modules.player.*;
 import thunder.hack.features.modules.render.Particles;
-import thunder.hack.features.modules.misc.PVETools;
 import thunder.hack.features.modules.render.*;
 
 import java.lang.reflect.Field;
@@ -34,7 +33,6 @@ public class ModuleManager implements IManager {
     public List<Integer> activeMouseKeys = new ArrayList<>();
     public static AntiGameSense antiGameSense = new AntiGameSense();
     public static AutoDuel autoDuel = new AutoDuel();
-    public static PVETools pveTools = new PVETools();
     public static PenisESP penisESP = new PenisESP();
     public static AntiPacketException antiPacketException = new AntiPacketException();
     public static RedstoneCrasher redstoneCrasher = new RedstoneCrasher();

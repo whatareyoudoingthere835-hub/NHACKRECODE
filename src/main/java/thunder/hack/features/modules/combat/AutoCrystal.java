@@ -350,7 +350,7 @@ public class AutoCrystal extends Module {
 
         if (e.getPacket() instanceof ExplosionS2CPacket explosion) {
             for (Entity ent : Lists.newArrayList(mc.world.getEntities()))
-                if (ent instanceof EndCrystalEntity crystal && crystal.squaredDistanceTo(explosion.x(), explosion.y(), explosion.z()) <= 144 && !crystalManager.isDead(crystal.getId()))
+                if (ent instanceof EndCrystalEntity crystal && crystal.squaredDistanceTo(explosion.getX(), explosion.getY(), explosion.getZ()) <= 144 && !crystalManager.isDead(crystal.getId()))
                     crystalManager.setDead(crystal.getId(), System.currentTimeMillis());
         }
     }

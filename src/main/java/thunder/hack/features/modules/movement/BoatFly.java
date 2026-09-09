@@ -108,7 +108,7 @@ public class BoatFly extends Module {
         for (int i = 0; i < 255; ++i) {
             if (!mc.world.getBlockState(blockPos).isReplaceable() || mc.world.getBlockState(blockPos).getBlock() == Blocks.WATER) {
                 boat.setPosition(boat.getX(), blockPos.getY() + 1, boat.getZ());
-                sendMovePacket(new VehicleMoveC2SPacket(boat));
+                sendMovePacket(new VehicleMoveC2SPacket(new Vec3d(boat.getX(), boat.getY(), boat.getZ()), boat.getYaw(), boat.getPitch(), boat.isOnGround()));
                 boat.setPosition(boat.getX(), boat.getY(), boat.getZ());
                 break;
             }
@@ -207,7 +207,7 @@ public class BoatFly extends Module {
 
         if (mode.getValue() == Mode.Packet) {
             entity.setPosition(predictedX, predictedY, predictedZ);
-            sendMovePacket(new VehicleMoveC2SPacket(entity));
+            sendMovePacket(new VehicleMoveC2SPacket(new Vec3d(entity.getX(), entity.getY(), entity.getZ()), entity.getYaw(), entity.getPitch(), entity.isOnGround()));
         }
 
         if (slotClick.getValue())
@@ -219,7 +219,7 @@ public class BoatFly extends Module {
             entityBoat.setPosition(vec3d.x, vec3d.y, vec3d.z);
             entityBoat.changeLookDirection((entity.getYaw()) - entityBoat.getYaw(), 0);
             entityBoat.changeLookDirection(0, (entity.getPitch()) - entityBoat.getPitch());
-            sendMovePacket(new VehicleMoveC2SPacket(entityBoat));
+            sendMovePacket(new VehicleMoveC2SPacket(new Vec3d(entityBoat.getX(), entityBoat.getY(), entityBoat.getZ()), entityBoat.getYaw(), entityBoat.getPitch(), entityBoat.isOnGround()));
         }
 
         ev.cancel();

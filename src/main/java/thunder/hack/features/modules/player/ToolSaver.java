@@ -17,7 +17,7 @@ public class ToolSaver extends Module {
     @Override
     public void onUpdate() {
         ItemStack tool = mc.player.getMainHandStack();
-        if(!(tool.contains(net.minecraft.component.DataComponents.TOOL)))
+        if(!(tool.contains(net.minecraft.component.DataComponentTypes.TOOL)))
             return;
 
         float durability = tool.getMaxDamage() - tool.getDamage();

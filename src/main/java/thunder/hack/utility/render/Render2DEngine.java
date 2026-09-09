@@ -694,7 +694,7 @@ public class Render2DEngine {
         org.joml.Matrix4f matrix = matrices.peek().getPositionMatrix();
         Color c = HudEditor.getColor(0);
         int a = (int) (255f * Math.max(0f, Math.min(1f, 1f - factor)));
-        net.minecraft.client.render.BufferBuilder buffer = net.minecraft.client.render.Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+        net.minecraft.client.render.BufferBuilder buffer = net.minecraft.client.render.Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR);
         buffer.vertex(matrix, -h, -h, 0f).texture(0f, 0f).color(c.getRed(), c.getGreen(), c.getBlue(), a);
         buffer.vertex(matrix, -h, h, 0f).texture(0f, 1f).color(c.getRed(), c.getGreen(), c.getBlue(), a);
         buffer.vertex(matrix, h, h, 0f).texture(1f, 1f).color(c.getRed(), c.getGreen(), c.getBlue(), a);

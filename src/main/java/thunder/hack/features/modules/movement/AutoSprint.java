@@ -17,13 +17,14 @@ public class AutoSprint extends Module {
 
     @Override
     public void onUpdate() {
-        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(
-                mc.player.getHungerManager().getFoodLevel() > 6
-                        && !mc.player.horizontalCollision
-                        && thunder.hack.utility.player.InputUtility.forward() > 0
-                        && (!mc.player.isSneaking() || (ModuleManager.noSlow.isEnabled() && ModuleManager.noSlow.sneak.getValue()))
-                        && (!mc.player.isUsingItem() || !stopWhileUsing.getValue())
-                        && (!ModuleManager.aura.isEnabled() || Aura.target == null || !pauseWhileAura.getValue())
-        );
+        boolean wantSprint = mc.player.getHungerManager().getFoodLevel() > 6
+                && !mc.player.horizontalCollision
+                && thunder.hack.utility.player.InputUtility.forward() > 0
+                && (!mc.player.isSneaking() || (ModuleManager.noSlow.isEnabled() && ModuleManager.noSlow.sneak.getValue()))
+                && (!mc.player.isUsingItem() || !stopWhileUsing.getValue())
+                && (!ModuleManager.aura.isEnabled() || Aura.target == null || !pauseWhileAura.getValue());
+        net.minecraft.util.PlayerInput pi = mc.player.input.playerInput;
+        mc.player.input.playerInput = new net.minecraft.util.PlayerInput(
+                pi.forward(), pi.backward(), pi.left(), pi.right(), pi.jump(), pi.sneak(), wantSprint);
     }
 }

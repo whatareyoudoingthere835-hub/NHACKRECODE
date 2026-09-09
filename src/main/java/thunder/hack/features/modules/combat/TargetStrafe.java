@@ -240,7 +240,7 @@ public class TargetStrafe extends Module {
             oldSpeed = 0;
         }
         EntityVelocityUpdateS2CPacket velocity;
-        if (e.getPacket() instanceof EntityVelocityUpdateS2CPacket && (velocity = e.getPacket()).entityId() == mc.player.getId() && boost.getValue() == Boost.Damage) {
+        if (e.getPacket() instanceof EntityVelocityUpdateS2CPacket && (velocity = e.getPacket()).getEntityId() == mc.player.getId() && boost.getValue() == Boost.Damage) {
             if (mc.player.isOnGround()) return;
 
             double vX = ((int) (velocity.getVelocity().x * 8000.0));
