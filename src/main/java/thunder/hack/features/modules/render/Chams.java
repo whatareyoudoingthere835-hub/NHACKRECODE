@@ -10,7 +10,7 @@ import net.minecraft.client.render.entity.EndCrystalEntityRenderer;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.LivingEntity;
@@ -61,7 +61,7 @@ public class Chams extends Module {
     private final Identifier crystalTexture = Identifier.of("textures/entity/end_crystal/end_crystal.png");
     private static final float SINE_45_DEGREES = (float) Math.sin(0.7853981633974483);
 
-    public void renderCrystal(EndCrystalEntity endCrystalEntity, float f, float g, PoseStack matrixStack, int i, ModelPart core, ModelPart frame) {
+    public void renderCrystal(EndCrystalEntity endCrystalEntity, float f, float g, MatrixStack matrixStack, int i, ModelPart core, ModelPart frame) {
 
         BufferBuilder buffer;
 
@@ -88,17 +88,17 @@ public class Chams extends Module {
         matrixStack.scale(2.0f, 2.0f, 2.0f);
         matrixStack.translate(0.0f, -0.5f, 0.0f);
         int k = OverlayTexture.DEFAULT_UV;
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+        matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         matrixStack.translate(0.0f, 1.5f + h / 2.0f, 0.0f);
         matrixStack.multiply(new Quaternionf().setAngleAxis(1.0471976f, SINE_45_DEGREES, 0.0f, SINE_45_DEGREES));
         frame.render(matrixStack, buffer, i, k, 0xFFFFFFFF);
         matrixStack.scale(0.875f, 0.875f, 0.875f);
         matrixStack.multiply(new Quaternionf().setAngleAxis(1.0471976f, SINE_45_DEGREES, 0.0f, SINE_45_DEGREES));
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+        matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         frame.render(matrixStack, buffer, i, k, 0xFFFFFFFF);
         matrixStack.scale(0.875f, 0.875f, 0.875f);
         matrixStack.multiply(new Quaternionf().setAngleAxis(1.0471976f, SINE_45_DEGREES, 0.0f, SINE_45_DEGREES));
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(j));
+        matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(j));
         core.render(matrixStack, buffer, i, k, 0xFFFFFFFF);
         matrixStack.pop();
         matrixStack.pop();
@@ -109,7 +109,7 @@ public class Chams extends Module {
 
     }
 
-    public void renderPlayer(PlayerEntity pe, float g, LivingEntityRenderState state, PoseStack matrixStack, int i, EntityModel model, CallbackInfo ci, Runnable post) {
+    public void renderPlayer(PlayerEntity pe, float g, LivingEntityRenderState state, MatrixStack matrixStack, int i, EntityModel model, CallbackInfo ci, Runnable post) {
 
         BufferBuilder buffer;
 
@@ -134,8 +134,8 @@ public class Chams extends Module {
 
         }
 
-        float h = MathHelper.lerpAngleDegrees(g, state.prevBodyYaw, state.bodyYaw);
-        float j = MathHelper.lerpAngleDegrees(g, state.prevHeadYaw, state.headYaw);
+        float h = state.bodyYaw;
+        float j = state.bodyYaw + state.relativeHeadYaw;
         float k = j - h;
         if (pe.hasVehicle() && (entity = pe.getVehicle()) instanceof LivingEntity) {
             LivingEntity livingEntity2 = (LivingEntity) entity;
@@ -154,7 +154,7 @@ public class Chams extends Module {
             }
             k = j - h;
         }
-        float m = MathHelper.lerp(g, state.prevPitch, state.pitch);
+        float m = state.pitch;
         if (pe.isSleeping()) {
             m *= -1.0f;
             k *= -1.0f;
@@ -185,7 +185,7 @@ public class Chams extends Module {
         model.resetTransforms();
         model.setAngles(state);
         int p = net.minecraft.client.render.OverlayTexture.DEFAULT_UV;
-        model.render(state, matrixStack, buffer, i, p);
+        model.render(matrixStack, buffer, i, p);
         Render2DEngine.endBuilding(buffer);
 
 
@@ -198,17 +198,17 @@ public class Chams extends Module {
         }
     }
 
-    public void setupTransforms1(PlayerEntity abstractClientPlayerEntity, PoseStack matrixStack, float f, float g, float h) {
+    public void setupTransforms1(PlayerEntity abstractClientPlayerEntity, MatrixStack matrixStack, float f, float g, float h) {
         float j = abstractClientPlayerEntity.getLeaningPitch(h);
         float k = abstractClientPlayerEntity.getPitch(h);
         float l;
         float m;
         if (abstractClientPlayerEntity.isGliding()) {
             // 1.21.11: LivingEntityRenderer.setupTransforms is private
-            l = (float) abstractClientPlayerEntity.getFallFlyingTicks() + h;
+            l = h;
             m = MathHelper.clamp(l * l / 100.0F, 0.0F, 1.0F);
             if (!abstractClientPlayerEntity.isUsingRiptide()) {
-                matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(m * (-90.0F - k)));
+                matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(m * (-90.0F - k)));
             }
 
             Vec3d vec3d = abstractClientPlayerEntity.getRotationVec(h);
@@ -218,13 +218,13 @@ public class Chams extends Module {
             if (d > 0.0 && e > 0.0) {
                 double n = (vec3d2.x * vec3d.x + vec3d2.z * vec3d.z) / Math.sqrt(d * e);
                 double o = vec3d2.x * vec3d.z - vec3d2.z * vec3d.x;
-                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float) (Math.signum(o) * Math.acos(n))));
+                matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotation((float) (Math.signum(o) * Math.acos(n))));
             }
         } else if (j > 0.0F) {
             // 1.21.11: LivingEntityRenderer.setupTransforms is private
             l = abstractClientPlayerEntity.isTouchingWater() ? -90.0F - k : -90.0F;
             m = MathHelper.lerp(j, 0.0F, l);
-            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(m));
+            matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(m));
             if (abstractClientPlayerEntity.isInSwimmingPose()) {
                 matrixStack.translate(0.0F, -1.0F, 0.3F);
             }
@@ -233,9 +233,9 @@ public class Chams extends Module {
         }
     }
 
-    private void setupTransforms(PlayerEntity entity, PoseStack matrices, float animationProgress, float bodyYaw, float tickDelta) {
+    private void setupTransforms(PlayerEntity entity, MatrixStack matrices, float animationProgress, float bodyYaw, float tickDelta) {
         if (!entity.isInPose(EntityPose.SLEEPING)) {
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - bodyYaw));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - bodyYaw));
         }
 
         if (entity.deathTime > 0) {
@@ -245,16 +245,16 @@ public class Chams extends Module {
                 f = 1.0F;
             }
 
-            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(f * 90.0F));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(f * 90.0F));
         } else if (entity.isUsingRiptide()) {
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90.0F - entity.getPitch()));
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(((float) entity.age + tickDelta) * -75.0F));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(-90.0F - entity.getPitch()));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(((float) entity.age + tickDelta) * -75.0F));
         } else if (entity.isInPose(EntityPose.SLEEPING)) {
             Direction direction = entity.getSleepingDirection();
             float g = direction != null ? getYaw(direction) : bodyYaw;
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(g));
-            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90.0F));
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(270.0F));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(g));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(90.0F));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(270.0F));
         }
     }
 

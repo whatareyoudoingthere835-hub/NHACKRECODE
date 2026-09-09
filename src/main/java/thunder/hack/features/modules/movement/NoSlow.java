@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.client.input.PlayerInput;
+
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Items;
@@ -38,7 +40,7 @@ public class NoSlow extends Module {
     public void onUpdate() {
         if (returnSneak) {
             mc.options.sneakKey.setPressed(false);
-            mc.player.input.playerInput = mc.player.input.playerInput.withSprint(true);
+            mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), true);
             returnSneak = false;
         }
 

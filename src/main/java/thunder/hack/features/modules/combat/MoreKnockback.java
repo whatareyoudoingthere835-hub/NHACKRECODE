@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.client.input.PlayerInput;
+
 import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
@@ -44,7 +46,7 @@ public class MoreKnockback extends Module {
             sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
             sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SPRINTING));
             debug("wtap");
-            mc.player.input.playerInput = mc.player.input.playerInput.withSprint(true);
+            mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), true);
             mc.player.lastSprinting = true;
         }
     }

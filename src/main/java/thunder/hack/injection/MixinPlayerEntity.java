@@ -1,5 +1,7 @@
 package thunder.hack.injection;
 
+import net.minecraft.client.input.PlayerInput;
+
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
@@ -47,7 +49,7 @@ public class MixinPlayerEntity {
         if (ModuleManager.autoSprint.isEnabled() && AutoSprint.sprint.getValue()) {
             final float multiplier = 0.6f + 0.4f * AutoSprint.motion.getValue();
             mc.player.setVelocity(mc.player.getVelocity().x / 0.6 * multiplier, mc.player.getVelocity().y, mc.player.getVelocity().z / 0.6 * multiplier);
-            mc.player.input.playerInput = mc.player.input.playerInput.withSprint(true);
+            mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), true);
         }
     }
 

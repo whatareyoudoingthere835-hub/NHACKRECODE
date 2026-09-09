@@ -3,7 +3,7 @@ package thunder.hack.gui.clickui.impl;
 import thunder.hack.utility.render.Draw2D;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import thunder.hack.ThunderHack;
 import thunder.hack.gui.clickui.AbstractElement;
 import thunder.hack.gui.font.FontRenderers;

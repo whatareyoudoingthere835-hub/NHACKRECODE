@@ -1,8 +1,10 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.client.input.PlayerInput;
+
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CommonPongC2SPacket;
 import net.minecraft.network.packet.c2s.common.KeepAliveC2SPacket;
@@ -133,8 +135,8 @@ public class Blink extends Module {
             mc.player.setPos(lastPos.getX(), lastPos.getY(), lastPos.getZ());
             mc.player.setVelocity(prevVelocity);
             mc.player.changeLookDirection((prevYaw) - mc.player.getYaw(), 0);
-            mc.player.input.playerInput = mc.player.input.playerInput.withSprint(prevSprinting);
-            mc.player.input.playerInput = mc.player.input.playerInput.withSneak(false);
+            mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), prevSprinting);
+            mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), false, mc.player.input.playerInput.sprint());
             mc.options.sneakKey.setPressed(false);
             sending.set(true);
             while (!storedTransactions.isEmpty())
@@ -179,7 +181,7 @@ public class Blink extends Module {
         storedPackets.clear();
     }
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (mc.player == null || mc.world == null) return;
         if (render.getValue() && lastPos != null) {
             if (renderMode.getValue() == RenderMode.Circle || renderMode.getValue() == RenderMode.Both) {

@@ -13,7 +13,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RespawnAnchorBlock;
 import net.minecraft.client.util.InputUtil;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -310,7 +310,7 @@ public final class AutoAnchor extends Module {
     }
 
     @Override
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (render.getValue()) {
             final Object2ObjectMap<BlockPos, Long> cache = new Object2ObjectOpenHashMap<>(renderPositions);
 
@@ -450,8 +450,6 @@ public final class AutoAnchor extends Module {
             return;
 
         if (ak47.is(AK47.OFF)) {
-            if (mc.player.isSneaking())
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
 
             if (mc.world.getBlockState(bhr.getBlockPos()).get(RespawnAnchorBlock.CHARGES) == 0) {
                 sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(offhand ? Hand.OFF_HAND : Hand.MAIN_HAND, bhr, id));
@@ -462,8 +460,6 @@ public final class AutoAnchor extends Module {
                 mc.player.swingHand(Hand.MAIN_HAND);
             }
         } else {
-            if (mc.player.isSneaking())
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
             sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(offhand ? Hand.OFF_HAND : Hand.MAIN_HAND, bhr, id));
             mc.player.swingHand(offhand ? Hand.OFF_HAND : Hand.MAIN_HAND);
 

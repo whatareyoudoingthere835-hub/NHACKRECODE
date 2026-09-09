@@ -2,7 +2,7 @@ package thunder.hack.features.modules.render;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.*;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -88,7 +88,7 @@ public class BlockESP extends Module {
         canContinue = true;
     }
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (fullNullCheck() || blocks.isEmpty()) return;
         int count = 0;
 
@@ -117,8 +117,8 @@ public class BlockESP extends Module {
 
                 if (tracers.getValue()) {
                     Vec3d vec2 = new Vec3d(0, 0, 75)
-                            .rotateX(-(float) Math.toRadians(mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPitch()))
-                            .rotateY(-(float) Math.toRadians(mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw()))
+                            .rotateX(-(float) Math.toRadians(net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPitch()))
+                            .rotateY(-(float) Math.toRadians(net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw()))
                             .add(mc.getCameraEntity().getEyePos());
 
                     Render3DEngine.drawLineDebug(vec2, vec.getVector(), color.getValue().getColorObject());

@@ -3,7 +3,7 @@ package thunder.hack.features.modules.misc;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.EnderChestBlockEntity;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -39,7 +39,7 @@ public class ChestStealer extends Module {
     private final Timer timer = new Timer();
     private final Random rnd = new Random();
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (mc.player.currentScreenHandler instanceof GenericContainerScreenHandler chest) {
             for (int i = 0; i < chest.getInventory().size(); i++) {
                 Slot slot = chest.getSlot(i);

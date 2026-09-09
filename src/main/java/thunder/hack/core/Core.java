@@ -7,7 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.InputUtil;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
@@ -221,7 +221,7 @@ public final class Core {
         return (float) -(Math.atan2(x, z) * (180 / Math.PI));
     }
 
-    public void bobView(PoseStack matrices, float tickDelta) {
+    public void bobView(MatrixStack matrices, float tickDelta) {
         if (!(mc.getCameraEntity() instanceof PlayerEntity playerEntity)) {
             return;
         }
@@ -229,7 +229,7 @@ public final class Core {
         float g = (float) -((Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) + ((Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) - Math.hypot(playerEntity.getVelocity().x, playerEntity.getVelocity().z)) * tickDelta);
         float h = MathHelper.lerp(tickDelta, 0.0F, 0.0F);
         matrices.translate(MathHelper.sin(g * (float) Math.PI) * h * 0.1f, -Math.abs(MathHelper.cos(g * (float) Math.PI) * h) * 0.3, 0.0f);
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0f));
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2f) * h) * 0.3f));
+        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0f));
+        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2f) * h) * 0.3f));
     }
 }

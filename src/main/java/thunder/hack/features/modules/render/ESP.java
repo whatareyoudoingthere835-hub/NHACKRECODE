@@ -11,7 +11,7 @@ import net.minecraft.block.entity.BeaconBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -89,7 +89,7 @@ public class ESP extends Module {
 
     private float dizorentAnimation = 0f;
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if(mc.options.hudHidden) return;
         if (lingeringPotions.getValue()) {
             for (Entity ent : mc.world.getEntities()) {
@@ -132,13 +132,13 @@ public class ESP extends Module {
                     stack.pop();
 
 
-                    PoseStack matrices = new PoseStack();
-                    Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                    MatrixStack matrices = new MatrixStack();
+                    Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                     matrices.translate(x, y, z);
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
 
                     matrices.translate(0, 0, 0);
@@ -236,13 +236,13 @@ public class ESP extends Module {
                         || block == Blocks.WITHER_SKELETON_SKULL) {
                     Render3DEngine.drawBoxOutline(new Box(blockPos), burrowColor.getValue().getColorObject(), 2);
 
-                    PoseStack matrices = new PoseStack();
-                    Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                    MatrixStack matrices = new MatrixStack();
+                    Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                     matrices.translate(x + 0.5f, y + 0.5f, z + 0.5f);
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
 
                     matrices.translate(0, 0, 0);
@@ -263,13 +263,13 @@ public class ESP extends Module {
 
                     if (tntFuse.getValue()) {
 
-                        PoseStack matrices = new PoseStack();
-                        Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
-                        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                        MatrixStack matrices = new MatrixStack();
+                        Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
+                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                         matrices.translate(x, y + 0.5f, z);
-                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
 
                         matrices.translate(0, 0, 0);

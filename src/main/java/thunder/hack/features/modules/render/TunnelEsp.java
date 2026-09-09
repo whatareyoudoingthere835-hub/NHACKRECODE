@@ -1,6 +1,6 @@
 package thunder.hack.features.modules.render;
 
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import thunder.hack.features.modules.Module;
@@ -26,7 +26,7 @@ public class TunnelEsp extends Module {
     List<Box> renderBoxes = new ArrayList<>();
     private Timer delayTimer = new Timer();
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         try {
             for (Box box_ : renderBoxes) {
                 // рандомные генерации

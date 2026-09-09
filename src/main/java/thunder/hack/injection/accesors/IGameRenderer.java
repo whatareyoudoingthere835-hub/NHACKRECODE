@@ -2,7 +2,7 @@ package thunder.hack.injection.accesors;
 
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.HeldItemRenderer;
+import net.minecraft.client.render.item.HeldItemRenderer;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;

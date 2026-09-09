@@ -8,7 +8,7 @@ import meteordevelopment.orbit.EventPriority;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
@@ -426,7 +426,7 @@ public class AutoCrystal extends Module {
     }
 
     @Override
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         crystalManager.update();
 
         if (target != null) switch (targetEsp.getValue()) {

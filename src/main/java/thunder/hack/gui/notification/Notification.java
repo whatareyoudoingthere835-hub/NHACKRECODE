@@ -1,7 +1,7 @@
 package thunder.hack.gui.notification;
 
 import org.joml.Matrix3x2fStack;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
 import thunder.hack.features.modules.client.HudEditor;
 import thunder.hack.gui.font.FontRenderers;

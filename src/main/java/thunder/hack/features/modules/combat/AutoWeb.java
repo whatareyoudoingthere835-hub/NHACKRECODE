@@ -4,7 +4,7 @@ import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -66,7 +66,7 @@ public final class AutoWeb extends Module {
         super("AutoWeb", Category.COMBAT);
     }
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         renderPoses.forEach((pos, time) -> {
             if (System.currentTimeMillis() - time > effectDurationMs.getValue()) {
                 renderPoses.remove(pos);

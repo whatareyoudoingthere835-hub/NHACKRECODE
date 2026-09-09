@@ -67,7 +67,7 @@ public class Spider extends Module {
             mc.player.setVelocity(mc.player.getVelocity().getX(), 0.21, mc.player.getVelocity().getZ());
         } else if (mode.getValue() == Mode.Matrix) {
             mc.player.setOnGround(mc.player.age % delay.getValue() == 0);
-            (mc.player.getY() - mc.player.getVelocity().y) -= 2.0E-232;
+            // 1.21.11: prevY no longer writable; micro-offset dropped
             if (mc.player.isOnGround())
                 mc.player.setVelocity(mc.player.getVelocity().getX(), 0.42, mc.player.getVelocity().getZ());
         }
@@ -93,12 +93,12 @@ public class Spider extends Module {
                 Direction opposite = side.getOpposite();
                 Vec3d hitVec = new Vec3d(neighbour.getX() + 0.5, neighbour.getY() + 0.5, neighbour.getZ() + 0.5).add(new Vec3d(opposite.getUnitVector()).multiply(0.5));
                 sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, new BlockHitResult(hitVec, opposite, neighbour, false), id));
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SNEAKING));
+                // 1.21.11: START/STOP_SNEAKING removed from ClientCommandC2SPacket.Mode (sneak now rides PlayerInput packets)
                 if (mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).add(0, 2, 0)).getBlock() != Blocks.AIR) {
                     sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, neighbour, opposite));
                     sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, neighbour, opposite));
                 }
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
+                // 1.21.11: START/STOP_SNEAKING removed from ClientCommandC2SPacket.Mode (sneak now rides PlayerInput packets)
             }
             mc.player.setOnGround(true);
             mc.player.jump();

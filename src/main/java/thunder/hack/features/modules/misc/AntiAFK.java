@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.misc;
 
+import net.minecraft.client.input.PlayerInput;
+
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
 import thunder.hack.core.Managers;
@@ -73,7 +75,7 @@ public class AntiAFK extends Module {
             if(!isAfk()) return;
 
             if(move.getValue())
-                mc.player.input.playerInput = mc.player.input.playerInput.withSprint(false);
+                mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), false);
 
             if (spin.getValue()) {
                 double gcdFix = (Math.pow(mc.options.getMouseSensitivity().getValue() * 0.6 + 0.2, 3.0)) * 1.2;

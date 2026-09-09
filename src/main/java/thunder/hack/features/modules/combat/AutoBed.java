@@ -6,7 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BedItem;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
@@ -169,7 +169,7 @@ public final class AutoBed extends Module {
     }
 
     @Override
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (bestPos != null && render.getValue()) {
             Box box = new Box(bestPos.hitResult.getBlockPos().up());
             Box box2 = new Box(bestPos.hitResult.getBlockPos().up().offset(bestPos.dir));

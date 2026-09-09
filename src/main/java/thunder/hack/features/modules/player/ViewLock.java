@@ -1,6 +1,6 @@
 package thunder.hack.features.modules.player;
 
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
 
@@ -23,7 +23,7 @@ public class ViewLock extends Module {
         }
     }
 
-    public void onRender3D(PoseStack m) {
+    public void onRender3D(MatrixStack m) {
         if (pitch.getValue()) mc.player.changeLookDirection(0, (pitchValue.getValue()) - mc.player.getPitch());
         if (yaw.getValue()) mc.player.changeLookDirection((yawValue.getValue()) - mc.player.getYaw(), 0);
     }

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PendingUpdateManager;
 import net.minecraft.client.network.SequencedPacketCreator;
 import net.minecraft.client.util.InputUtil;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
@@ -73,7 +73,7 @@ public abstract class Module {
     }
 
 
-    public void onRender3D(PoseStack event) {
+    public void onRender3D(MatrixStack event) {
     }
 
     public void onUnload() {

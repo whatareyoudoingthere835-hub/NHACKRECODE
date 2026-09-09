@@ -3,7 +3,7 @@ package thunder.hack.features.modules.render;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
@@ -70,7 +70,7 @@ public class Particles extends Module {
         }
     }
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (FireFlies.getValue().isEnabled()) {
             stack.push();
         Render2DEngine.bindTexture(TextureStorage.firefly);
@@ -148,15 +148,15 @@ public class Particles extends Module {
         Render2DEngine.bindTexture(TextureStorage.firefly);
 
             if (!trails.isEmpty()) {
-                Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
+                Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
                 for (Trails.Trail ctx : trails) {
                     Vec3d pos = ctx.interpolate(1f);
-                    PoseStack matrices = new PoseStack();
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                    MatrixStack matrices = new MatrixStack();
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
                     matrices.translate(pos.x, pos.y, pos.z);
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                    matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
                     Matrix4f matrix = matrices.peek().getPositionMatrix();
 
                     bufferBuilder.vertex(matrix, 0, -ffsize.getValue(), 0).texture(0f, 1f).color(Render2DEngine.injectAlpha(ctx.color(), (int) (255 * ((float) age / (float) maxAge) * ctx.animation(Render3DEngine.getTickDelta(false)))).getRGB());
@@ -221,16 +221,16 @@ public class Particles extends Module {
                 case Stars -> Render2DEngine.bindTexture(TextureStorage.star);
             }
 
-            Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
+            Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
             Color color1 = lmode.getValue() == ColorMode.Sync ? HudEditor.getColor(age * 2) : color.getValue().getColorObject();
             Vec3d pos = Render3DEngine.interpolatePos(prevposX, prevposY, prevposZ, posX, posY, posZ);
 
-            PoseStack matrices = new PoseStack();
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+            MatrixStack matrices = new MatrixStack();
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
             matrices.translate(pos.x, pos.y, pos.z);
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
             Matrix4f matrix1 = matrices.peek().getPositionMatrix();
 

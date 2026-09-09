@@ -1,7 +1,7 @@
 package thunder.hack.features.hud.impl;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.TextureStorage;

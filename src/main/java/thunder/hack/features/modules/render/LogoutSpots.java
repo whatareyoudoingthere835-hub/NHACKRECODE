@@ -12,7 +12,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.model.Dilation;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
@@ -102,7 +102,7 @@ public class LogoutSpots extends Module {
         }
     }
 
-    public void onRender3D(PoseStack s) {
+    public void onRender3D(MatrixStack s) {
 
 
 
@@ -154,7 +154,7 @@ public class LogoutSpots extends Module {
         }
     }
 
-    private void renderEntity(@NotNull PoseStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
+    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
         modelBase.leftPants.visible = true;
         modelBase.rightPants.visible = true;
         modelBase.leftSleeve.visible = true;
@@ -168,7 +168,7 @@ public class LogoutSpots extends Module {
         ((IEntity) entity).setPos(new Vec3d(entity.getX(), entity.getY(), entity.getZ()));
         matrices.push();
         matrices.translate((float) x, (float) y, (float) z);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw())));
+        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw())));
         prepareScale(matrices);
         PlayerEntityRenderState state = new PlayerEntityRenderState();
         state.age = entity.age + Render3DEngine.getTickDelta(false);
@@ -196,7 +196,7 @@ public class LogoutSpots extends Module {
         matrices.pop();
     }
 
-    private static void prepareScale(@NotNull PoseStack matrixStack) {
+    private static void prepareScale(@NotNull MatrixStack matrixStack) {
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
         matrixStack.scale(1.6f, 1.8f, 1.6f);
         matrixStack.translate(0.0F, -1.501F, 0.0F);

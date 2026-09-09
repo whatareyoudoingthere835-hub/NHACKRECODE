@@ -30,7 +30,7 @@ public abstract class MixinInGameHud {
     @Inject(at = @At(value = "TAIL"), method = "render")
     public void renderTailHook(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         if (thunder.hack.core.manager.client.ModuleManager.totemAnimation.isEnabled()) {
-            thunder.hack.core.manager.client.ModuleManager.totemAnimation.renderFloatingItem(context, mc.getRenderTickCounter().getTickDelta(false));
+            thunder.hack.core.manager.client.ModuleManager.totemAnimation.renderFloatingItem(context, tickCounter.getTickDelta(false));
         }
     }
 
@@ -48,7 +48,7 @@ public abstract class MixinInGameHud {
 
         if (ModuleManager.hotbar.isEnabled()) {
             ci.cancel();
-            Hotbar.renderHotBarItems(mc.getRenderTickCounter().getTickDelta(false), context);
+            Hotbar.renderHotBarItems(tickCounter.getTickDelta(false), context);
         }
     }
 

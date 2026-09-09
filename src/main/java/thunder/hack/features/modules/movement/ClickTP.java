@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.movement;
 
 import meteordevelopment.orbit.EventHandler;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -43,7 +43,7 @@ public class ClickTP extends Module {
     }
 
     @Override
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         HitResult ray = mc.player.raycast(256, Render3DEngine.getTickDelta(false), false);
         if (ray instanceof BlockHitResult bhr && !mc.world.isAir(bhr.getBlockPos())) {
             BlockPos pos = bhr.getBlockPos();

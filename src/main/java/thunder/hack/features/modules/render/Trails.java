@@ -6,7 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.*;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
@@ -59,7 +59,7 @@ public class Trails extends Module {
 
     private List<Particle> particles = new ArrayList<>();
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         for (Entity en : Managers.ASYNC.getAsyncEntities()) {
             if (en instanceof EnderPearlEntity && pearls.is(Particles.Trail))
                 calcTrajectory(en);
@@ -107,7 +107,7 @@ public class Trails extends Module {
                 if (entity != mc.player && onlySelf.getValue())
                     continue;
                 float alpha = color.getValue().getAlpha();
-                Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
+                Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
                 stack.push();
         Render2DEngine.bindTexture(TextureStorage.firefly);
 
@@ -122,15 +122,15 @@ public class Trails extends Module {
                 if (!((IEntity) entity).getTrails().isEmpty()) {
                     for (int i = 0; i < size; i++) {
                         Trail ctx = ((IEntity) entity).getTrails().get(i);
-                        PoseStack matrices = new PoseStack();
-                        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+                        MatrixStack matrices = new MatrixStack();
+                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
 
                         Vec3d pos = ctx.interpolate(Render3DEngine.getTickDelta(false));
                         matrices.translate(pos.x, pos.y + 0.9f, pos.z);
 
-                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+                        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
                         Matrix4f matrix = matrices.peek().getPositionMatrix();
 
                         Color col = ctx.color();
@@ -430,21 +430,21 @@ public class Trails extends Module {
             motionY /= 1.005;
         }
 
-        public void render(PoseStack matrixStack, BufferBuilder bufferBuilder) {
+        public void render(MatrixStack matrixStack, BufferBuilder bufferBuilder) {
             update();
             float scale = starsScale.getValue() / 10f;
             final double posX = x - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x;
             final double posY = y - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y;
             final double posZ = z - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
-            Camera camera = mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
+            Camera camera = net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera();
 
-            PoseStack matrices = new PoseStack();
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
+            MatrixStack matrices = new MatrixStack();
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
             matrices.translate(posX, posY, posZ);
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
+            matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 
             Matrix4f matrix = matrices.peek().getPositionMatrix();
 

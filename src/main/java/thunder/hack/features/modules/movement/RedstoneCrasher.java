@@ -176,8 +176,6 @@ public class RedstoneCrasher extends Module {
 
         boolean sneak = InteractionUtility.needSneak(mc.world.getBlockState(floor).getBlock()) && !mc.player.isSneaking();
 
-        if (sneak)
-            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SNEAKING));
 
         // Отправляем актуальную ротацию
         sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), currentYaw, currentPitch, mc.player.isOnGround(), mc.player.horizontalCollision));
@@ -186,8 +184,6 @@ public class RedstoneCrasher extends Module {
         mc.interactionManager.interactBlock(mc.player, prevItem == -2 ? Hand.OFF_HAND : Hand.MAIN_HAND, bhr);
         mc.player.networkHandler.sendPacket(new HandSwingC2SPacket(prevItem == -2 ? Hand.OFF_HAND : Hand.MAIN_HAND));
 
-        if (sneak)
-            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SNEAKING));
 
         // Рендер
         if (render.getValue()) {

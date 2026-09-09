@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.VertexFormats;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Contract;

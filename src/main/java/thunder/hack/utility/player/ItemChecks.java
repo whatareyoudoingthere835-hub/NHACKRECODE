@@ -78,7 +78,7 @@ public final class ItemChecks {
         double[] out = new double[2];
         var amc = stack.get(net.minecraft.component.DataComponentTypes.ATTRIBUTE_MODIFIERS);
         if (amc != null) for (var entry : amc.modifiers()) {
-            var attr = entry.modifier().attribute();
+            var attr = entry.attribute();
             if (attr.equals(ARMOR)) out[0] += entry.modifier().value();
             else if (attr.equals(TOUGHNESS)) out[1] += entry.modifier().value();
         }
@@ -91,7 +91,7 @@ public final class ItemChecks {
         double[] out = new double[]{-1};
         var amc = stack.get(net.minecraft.component.DataComponentTypes.ATTRIBUTE_MODIFIERS);
         if (amc != null) for (var entry : amc.modifiers()) {
-            var attr = entry.modifier().attribute();
+            var attr = entry.attribute();
             if (attr.equals(net.minecraft.entity.attribute.EntityAttributes.ATTACK_DAMAGE)) {
                 if (out[0] < 0) out[0] = 0;
                 out[0] += entry.modifier().value();

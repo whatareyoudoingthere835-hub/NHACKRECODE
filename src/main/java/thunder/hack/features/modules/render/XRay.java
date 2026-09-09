@@ -5,7 +5,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.DrawContext;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.util.Hand;
@@ -140,7 +140,7 @@ public class XRay extends Module {
             });
     }
 
-    public void onRender3D(PoseStack stack) { //FABOS IDI NAHUI
+    public void onRender3D(MatrixStack stack) { //FABOS IDI NAHUI
         for (BlockPos pos : ores) {
             Block block = mc.world.getBlockState(pos).getBlock();
             if ((block == Blocks.DIAMOND_ORE || block == Blocks.DEEPSLATE_DIAMOND_ORE) && diamond.getValue())

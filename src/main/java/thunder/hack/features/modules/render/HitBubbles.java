@@ -3,7 +3,7 @@ package thunder.hack.features.modules.render;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import thunder.hack.core.Managers;
@@ -34,14 +34,14 @@ public class HitBubbles extends Module {
             bubbles.add(new HitBubble((float) point.x, (float) point.y, (float) point.z, -((IClientPlayerEntity) mc.player).getLastYaw(), ((IClientPlayerEntity) mc.player).getLastPitch(), new Timer()));
     }
 
-    public void onRender3D(PoseStack matrixStack) {
+    public void onRender3D(MatrixStack matrixStack) {
 
         ArrayList<HitBubble> bubblesCopy = Lists.newArrayList(bubbles);
         bubblesCopy.forEach(b -> {
             matrixStack.push();
             matrixStack.translate(b.x - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().x, b.y - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().y, b.z - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z);
-            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(b.yaw));
-            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(b.pitch));
+            matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(b.yaw));
+            matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(b.pitch));
             drawBubble(matrixStack, -b.life.getPassedTimeMs() / 4f, b.life.getPassedTimeMs() / 1500f);
             matrixStack.pop();
         });

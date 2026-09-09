@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.client.input.PlayerInput;
+
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 
 import net.minecraft.util.math.Vec3d;
@@ -7,7 +9,7 @@ import thunder.hack.utility.player.ItemChecks;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.network.OtherClientPlayerEntity;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -313,13 +315,13 @@ public class Aura extends Module {
     }
 
     private void disableSprint() {
-        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(false);
+        mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), false);
         mc.options.sprintKey.setPressed(false);
         sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
     }
 
     private void enableSprint() {
-        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(true);
+        mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), true);
         mc.options.sprintKey.setPressed(true);
         sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SPRINTING));
     }
@@ -738,7 +740,7 @@ public class Aura extends Module {
         return current + delta * factor;
     }
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (!haveWeapon() || target == null)
             return;
 

@@ -3,7 +3,7 @@ package thunder.hack.features.hud.impl;
 import thunder.hack.utility.render.Draw2D;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import thunder.hack.gui.font.FontRenderers;

@@ -98,11 +98,11 @@ public final class Quiver extends Module {
             if (stack.getItem() instanceof TippedArrowItem) {
                 var contents = stack.get(net.minecraft.component.DataComponentTypes.POTION_CONTENTS);
                 if (contents == null) return false;
-                var effs = contents.getEffects();
+                var effs = contents.getEffects().toList();
                 if (effs == null) return false;
                 for (var ap : effs) {
                     try {
-                        if (ap.effect().valueOrThrow().getTranslationKey().contains("effect." + name)) return true;
+                        if (ap.effect().value().getTranslationKey().contains("effect." + name)) return true;
                     } catch (Exception ignored) {
                     }
                 }

@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.render;
 
 import net.minecraft.block.Blocks;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import thunder.hack.features.modules.Module;
@@ -23,7 +23,7 @@ public class VoidESP extends Module {
 
     private List<BlockPos> holes = new ArrayList<>();
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         holes.forEach(h -> Render3DEngine.renderCrosses(new Box(h), color.getValue().getColorObject(), 2.0f));
     }
 

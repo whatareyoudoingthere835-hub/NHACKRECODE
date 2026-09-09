@@ -7,7 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -308,7 +308,7 @@ public class TargetHud extends HudElement {
 
 
 
-        Render2DEngine.renderRoundedQuadInternal(Render2DEngine.toMatrix4f(context.getMatrices()), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 3.5f, getPosY() + 3.5f, getPosX() + 3.5f + 40, getPosY() + 3.5f + 40, 7, 10);
+        Render2DEngine.renderRoundedQuad(context.getMatrices(), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 3.5f, getPosY() + 3.5f, getPosX() + 3.5f + 40, getPosY() + 3.5f + 40, 7, 10);
 
 
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 3.5f, getPosY() + 3.5f, 40, 40, 8, 8, 8, 8, 64, 64);
@@ -389,7 +389,7 @@ public class TargetHud extends HudElement {
 
 
 
-        Render2DEngine.renderRoundedQuadInternal(Render2DEngine.toMatrix4f(context.getMatrices()), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 30, getPosY() + 2.5 + 30, 5, 10);
+        Render2DEngine.renderRoundedQuad(context.getMatrices(), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 30, getPosY() + 2.5 + 30, 5, 10);
 
 
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 2.5, getPosY() + 2.5, 30, 30, 8, 8, 8, 8, 64, 64);
@@ -526,7 +526,7 @@ public class TargetHud extends HudElement {
 
 
 
-        Render2DEngine.renderRoundedQuadInternal(Render2DEngine.toMatrix4f(context.getMatrices()), animationFactor, animationFactor, animationFactor, animationFactor,
+        Render2DEngine.renderRoundedQuad(context.getMatrices(), animationFactor, animationFactor, animationFactor, animationFactor,
                 getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 45, getPosY() + 2.5 + 45, 5, 10);
 
 
@@ -618,8 +618,7 @@ public class TargetHud extends HudElement {
                 scoreBoard = (ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME);
                 if (scoreBoard != null) {
                     ReadableScoreboardScore readableScoreboardScore = ent.getScoreboard().getScore(ent, scoreBoard);
-                    MutableText text2 = ReadableScoreboardScore.getFormattedScore(readableScoreboardScore, scoreBoard.getNumberFormatOr(StyledNumberFormat.EMPTY));
-                    resolvedHp = text2.getString();
+                    resolvedHp = readableScoreboardScore == null ? "" : String.valueOf(readableScoreboardScore.getScore());
                 }
             }
             float numValue = 0;
@@ -632,9 +631,9 @@ public class TargetHud extends HudElement {
     }
 
     public static void sizeAnimation(org.joml.Matrix3x2fStack matrixStack, double width, double height, double animation) {
-        matrixStack.translate((float) width, (float) height);
+        matrixStack.translate((float) width, (float) height, 0.0)
         matrixStack.scale((float) animation, (float) animation);
-        matrixStack.translate((float) -width, (float) -height);
+        matrixStack.translate((float) -width, (float) -height, 0.0)
     }
 
     public static String getPotionName(StatusEffect p) {

@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.client.input.PlayerInput;
+
 import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
@@ -158,7 +160,7 @@ public class Velocity extends Module {
                     double var3 = mc.player.getYaw() * 0.017453292F;
                     double var5 = Math.sqrt(mc.player.getVelocity().x * mc.player.getVelocity().x + mc.player.getVelocity().z * mc.player.getVelocity().z);
                     mc.player.setVelocity(-Math.sin(var3) * var5, mc.player.getVelocity().y, Math.cos(var3) * var5);
-                    mc.player.input.playerInput = mc.player.input.playerInput.withSprint(mc.player.age % 2 != 0);
+                    mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), mc.player.age % 2 != 0);
                 }
             }
             case Jump -> {

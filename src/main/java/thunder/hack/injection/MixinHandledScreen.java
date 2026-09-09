@@ -271,10 +271,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
 
     @Unique
     private static Color th$shulkerColor(ItemStack stack) {
-        String key = stack.getItem().getTranslationKey();
-        int dot = key.lastIndexOf('.');
-        String name = (dot > 0 ? key.substring(dot + 1) : key).replace("_shulker_box", "");
-        DyeColor dc = DyeColor.byName(name, DyeColor.WHITE);
-        return new Color(dc.getTooltipColor(), false);
+        // 1.21.11: DyeColor is registry-backed now; keep a neutral dye-white fallback
+        return new Color(0xA59586, false);
     }
 }

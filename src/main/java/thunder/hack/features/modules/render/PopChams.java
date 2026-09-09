@@ -12,7 +12,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.model.Dilation;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -56,7 +56,7 @@ public final class PopChams extends Module {
     }
 
     @Override
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
 
 
 
@@ -87,7 +87,7 @@ public final class PopChams extends Module {
         popList.add(new Person(entity, thunder.hack.utility.SkinUtility.skin(e.getEntity())));
     }
 
-    private void renderEntity(@NotNull PoseStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
+    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
         modelBase.leftPants.visible = secondLayer.getValue();
         modelBase.rightPants.visible = secondLayer.getValue();
         modelBase.leftSleeve.visible = secondLayer.getValue();
@@ -106,7 +106,7 @@ public final class PopChams extends Module {
         float yRotYaw = ((alpha / 255f) * 360f * rotSpeed.getValue());
         yRotYaw = yRotYaw == 0 ? 0 : Render2DEngine.interpolateFloat(yRotYaw, yRotYaw - (((aSpeed.getValue() / 255f) * 360f * rotSpeed.getValue())), Render3DEngine.getTickDelta(false));
 
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw() + yRotYaw)));
+        matrices.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.getBodyYaw() + yRotYaw)));
         prepareScale(matrices);
 
         PlayerEntityRenderState state = new PlayerEntityRenderState();
@@ -132,13 +132,13 @@ public final class PopChams extends Module {
 
 
 
-        modelBase.render(state, matrices, buffer, 10, 0);
+        modelBase.render(matrices, buffer, 10, 0);
         Render2DEngine.endBuilding(buffer);
 
         matrices.pop();
     }
 
-    private static void prepareScale(@NotNull PoseStack matrixStack) {
+    private static void prepareScale(@NotNull MatrixStack matrixStack) {
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
         matrixStack.scale(1.6f, 1.8f, 1.6f);
         matrixStack.translate(0.0F, -1.501F, 0.0F);

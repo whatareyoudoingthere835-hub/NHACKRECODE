@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.render;
 
 import net.minecraft.util.math.Vec3d;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -46,7 +46,7 @@ public class HoleESP extends Module {
     }
 
     @Override
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (positions.isEmpty()) return;
 
         for (BoxWithColor pwc : positions) {

@@ -61,7 +61,7 @@ public class AutoTrader extends Module {
 
         if (mc.currentScreen instanceof MerchantScreen merch) {
             MerchantScreenHandler msh = merch.getScreenHandler();
-            TradeOfferList offers = msh.screenHandler.getOffers();
+            TradeOfferList offers = msh.getRecipes();
 
             for (int i = 0; i < offers.size(); i++) {
                 TradeOffer offer = offers.get(i);

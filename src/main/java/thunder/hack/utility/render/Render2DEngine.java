@@ -57,9 +57,11 @@ public class Render2DEngine {
 
     public static void addWindow(Matrix3x2fStack stack, Rectangle r1) {
         Matrix3x2f m = new Matrix3x2f(stack);
-        float[] a = m.transform((float) r1.x(), (float) r1.y(), new float[2]);
-        float[] b = m.transform((float) r1.x1(), (float) r1.y1(), new float[2]);
-        Rectangle r = new Rectangle(a[0], a[1], b[0], b[1]);
+        float ax = (float) (m.m00 * r1.x() + m.m01 * r1.y() + m.m02);
+        float ay = (float) (m.m10 * r1.x() + m.m11 * r1.y() + m.m12);
+        float bx = (float) (m.m00 * r1.x1() + m.m01 * r1.y1() + m.m02);
+        float by = (float) (m.m10 * r1.x1() + m.m11 * r1.y1() + m.m12);
+        Rectangle r = new Rectangle(ax, ay, bx, by);
         if (clipStack.isEmpty()) {
             clipStack.push(r);
             beginScissor(r.x(), r.y(), r.x1(), r.y1());
@@ -325,6 +327,12 @@ public class Render2DEngine {
 
     public static void drawRound(Matrix3x2fStack matrices, float x, float y, float width, float height, float radius, Color c1, Color c2, Color c3, Color c4) {
         renderRoundedQuad2(matrices, c1, c2, c3, c4, x, y, x + width, y + height, radius);
+    }
+
+    public static void renderRoundedQuad(Matrix3x2fStack matrices, float cr, float cg, float cb, float ca, double fromX, double fromY, double toX, double toY, double radius, double samples) {
+        Batch b = Draw2D.of(matrices, VertexFormat.DrawMode.TRIANGLE_FAN);
+        renderRoundedQuadInternal(b, cr, cg, cb, ca, fromX, fromY, toX, toY, radius, samples);
+        b.submit();
     }
 
     public static void renderRoundedQuad(Matrix3x2fStack matrices, Color c, double fromX, double fromY, double toX, double toY, double radius, double samples) {
@@ -779,10 +787,11 @@ public class Render2DEngine {
         }
     }
 
-    public static Matrix4f toMatrix4f(org.joml.Matrix3x2fc m) {
+    public static Matrix4f toMatrix4f(org.joml.Matrix3x2fc mm) {
+        org.joml.Matrix3x2f t = new org.joml.Matrix3x2f(mm);
         return new Matrix4f(
-                m.m00(), m.m01(), 0f, m.m02(),
-                m.m10(), m.m11(), 0f, m.m12(),
+                t.m00, t.m01, 0f, t.m02,
+                t.m10, t.m11, 0f, t.m12,
                 0f, 0f, 1f, 0f,
                 0f, 0f, 0f, 1f);
     }

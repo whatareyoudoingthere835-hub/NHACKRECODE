@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -81,7 +81,7 @@ public class HitParticles extends Module {
         }
     }
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
 
         if (mc.player != null && mc.world != null) {
             for (Particle particle : particles) {
@@ -180,18 +180,18 @@ public class HitParticles extends Module {
             final double posZ = Render2DEngine.interpolate(pz, z, Render3DEngine.getTickDelta(false)) - net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos().z;
 
             matrixStack.pushMatrix();
-            matrixStack.translate((float) (posX), (float) (posY));
+            matrixStack.translate((float) (posX), (float) (posY), 0.0)
 
             matrixStack.scale(scale, scale, scale);
 
             matrixStack.translate(size / 2, size / 2, size / 2);
-            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw()));
-            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(mc.net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPitch()));
+            matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Y.rotationDegrees(-net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getYaw()));
+            matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_X.rotationDegrees(net.minecraft.client.MinecraftClient.getInstance().gameRenderer.getCamera().getPitch()));
 
             if (mode.is(Mode.Text))
-                matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
+                matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(180));
             else
-                matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(rotationAngle += (float) (AnimationUtility.deltaTime() * rotationSpeed)));
+                matrixStack.multiplyPositionMatrix(RotationAxis.POSITIVE_Z.rotationDegrees(rotationAngle += (float) (AnimationUtility.deltaTime() * rotationSpeed)));
 
             matrixStack.translate(-size / 2, -size / 2, -size / 2);
 

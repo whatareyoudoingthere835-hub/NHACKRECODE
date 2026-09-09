@@ -1,7 +1,7 @@
 package thunder.hack.features.modules.combat;
 
 import meteordevelopment.orbit.EventHandler;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -162,7 +162,7 @@ public final class AimBot extends Module {
         rotationPitch = mc.player.getPitch();
     }
 
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (mode.getValue() == Mode.AimAssist) {
             if (Float.isNaN(rotationYaw)) return;
             mc.player.changeLookDirection(((float) Render2DEngine.interpolate(mc.player.getYaw(), rotationYaw, assistAcceleration)) - mc.player.getYaw(), 0);

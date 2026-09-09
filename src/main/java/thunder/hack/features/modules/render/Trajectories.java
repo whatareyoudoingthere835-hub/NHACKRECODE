@@ -3,7 +3,7 @@ package thunder.hack.features.modules.render;
 import net.minecraft.registry.RegistryKeys;
 
 import net.minecraft.block.Blocks;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -56,7 +56,7 @@ public class Trajectories extends Module {
     }
 
     @Override
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (mc.options.hudHidden) return;
         if (mc.player == null || mc.world == null || !mc.options.getPerspective().isFirstPerson())
             return;

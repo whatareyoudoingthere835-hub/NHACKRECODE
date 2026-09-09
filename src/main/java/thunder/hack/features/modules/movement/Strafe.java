@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.client.input.PlayerInput;
+
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
@@ -85,9 +87,9 @@ public class Strafe extends Module {
 
     public float getAIMoveSpeed() {
         boolean prevSprinting = mc.player.isSprinting();
-        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(false);
+        mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), false);
         float speed = mc.player.getMovementSpeed() * 1.3f;
-        mc.player.input.playerInput = mc.player.input.playerInput.withSprint(prevSprinting);
+        mc.player.input.playerInput = new PlayerInput(mc.player.input.playerInput.forward(), mc.player.input.playerInput.backward(), mc.player.input.playerInput.left(), mc.player.input.playerInput.right(), mc.player.input.playerInput.jump(), mc.player.input.playerInput.sneak(), prevSprinting);
         return speed;
     }
 

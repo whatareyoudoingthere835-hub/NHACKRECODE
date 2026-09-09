@@ -2,7 +2,7 @@ package thunder.hack.features.modules.combat;
 
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.*;
-import thunder.hack.utility.render.PoseStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
@@ -568,7 +568,7 @@ public final class PistonAura extends Module {
     }
 
     @Override
-    public void onRender3D(PoseStack stack) {
+    public void onRender3D(MatrixStack stack) {
         if (pistonPos == null || crystalPos == null || redStonePos == null) {
             return;
         }
