@@ -1,7 +1,7 @@
 package thunder.hack.injection;
 
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.BoatEntityRenderer;
+import net.minecraft.client.render.entity.AbstractBoatEntityRenderer;
 import net.minecraft.client.render.entity.state.BoatEntityRenderState;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import thunder.hack.core.manager.client.ModuleManager;
 
-@Mixin(BoatEntityRenderer.class)
+@Mixin(AbstractBoatEntityRenderer.class)
 public abstract class MixinBoatEntityRenderer {
     @Inject(method = "render(Lnet/minecraft/client/render/entity/state/BoatEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At("HEAD"), require = 0)
     public void render(BoatEntityRenderState state, MatrixStack matrixStack, OrderedRenderCommandQueue renderQueue, CameraRenderState camera, CallbackInfo ci) {

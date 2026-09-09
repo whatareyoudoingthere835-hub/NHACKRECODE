@@ -3,7 +3,6 @@ package thunder.hack.features.modules.player;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import thunder.hack.events.impl.PacketEvent;
-import thunder.hack.injection.accesors.IPlayerPositionLookS2CPacket;
 import thunder.hack.features.modules.Module;
 
 public class NoServerRotate extends Module {

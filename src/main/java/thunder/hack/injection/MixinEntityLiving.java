@@ -29,18 +29,46 @@ import static thunder.hack.features.modules.movement.WaterSpeed.Mode.CancelResur
 
 @Mixin(LivingEntity.class)
 public class MixinEntityLiving implements IEntityLiving {
-    @Shadow
-    protected double serverX;
-    @Shadow
-    protected double serverY;
-    @Shadow
-    protected double serverZ;
-
     @Unique
     double prevServerX, prevServerY, prevServerZ;
 
     @Unique
+    private double lastTrackedX, lastTrackedY, lastTrackedZ;
+
+    @Override
+    public void th$onTrackedUpdate(double x, double y, double z) {
+        if (Module.fullNullCheck()) return;
+        prevServerX = lastTrackedX;
+        prevServerY = lastTrackedY;
+        prevServerZ = lastTrackedZ;
+        lastTrackedX = x;
+        lastTrackedY = y;
+        lastTrackedZ = z;
+        positonHistory.add(new Aura.Position(x, y, z));
+        positonHistory.removeIf(Aura.Position::shouldRemove);
+    }
+
+    @Unique
     public List<Aura.Position> positonHistory = new ArrayList<>();
+
+    @Inject(method = "jump", at = @At("HEAD"))
+    private void onJumpPre(CallbackInfo ci) {
+        if ((Object) this != mc.player) return;
+        thunder.hack.ThunderHack.EVENT_BUS.post(new thunder.hack.events.impl.EventPlayerJump(true));
+    }
+
+    @Inject(method = "jump", at = @At("RETURN"))
+    private void onJumpPost(CallbackInfo ci) {
+        if ((Object) this != mc.player) return;
+        thunder.hack.ThunderHack.EVENT_BUS.post(new thunder.hack.events.impl.EventPlayerJump(false));
+    }
+
+    @Inject(method = "consumeItem", at = @At("HEAD"))
+    private void consumeItemHook(CallbackInfo ci) {
+        LivingEntity self = (LivingEntity) (Object) this;
+        if (self.isUsingItem())
+            thunder.hack.ThunderHack.EVENT_BUS.post(new thunder.hack.events.impl.EventEatFood(self.getActiveItem()));
+    }
 
     @Override
     public List<Aura.Position> getPositionHistory() {
@@ -51,16 +79,6 @@ public class MixinEntityLiving implements IEntityLiving {
     private void getArmSwingAnimationEnd(final CallbackInfoReturnable<Integer> info) {
         if (!ModuleManager.noRender.noSwing.getValue() && ModuleManager.animations.shouldChangeAnimationDuration() && Animations.slowAnimation.getValue())
             info.setReturnValue(Animations.slowAnimationVal.getValue());
-    }
-
-    @Inject(method = {"updateTrackedPositionAndAngles"}, at = {@At("HEAD")})
-    private void updateTrackedPositionAndAnglesHook(double x, double y, double z, float yaw, float pitch, int interpolationSteps, CallbackInfo ci) {
-        if (Module.fullNullCheck()) return;
-        prevServerX = serverX;
-        prevServerY = serverY;
-        prevServerZ = serverZ;
-        positonHistory.add(new Aura.Position(serverX, serverY, serverZ));
-        positonHistory.removeIf(Aura.Position::shouldRemove);
     }
 
     @Override
@@ -81,7 +99,7 @@ public class MixinEntityLiving implements IEntityLiving {
     @Unique
     private boolean prevFlying = false;
 
-    @Inject(method = "isFallFlying", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "isGliding", at = @At("TAIL"), cancellable = true)
     public void isFallFlyingHook(CallbackInfoReturnable<Boolean> cir) {
         if (ModuleManager.elytraRecast.isEnabled()) {
             boolean elytra = cir.getReturnValue();

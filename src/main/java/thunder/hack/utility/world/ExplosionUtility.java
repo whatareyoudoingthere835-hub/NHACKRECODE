@@ -84,7 +84,6 @@ public final class ExplosionUtility {
         ((IExplosion) explosion).setY(explosionPos.y);
         ((IExplosion) explosion).setZ(explosionPos.z);
 
-        if (((IExplosion) explosion).getWorld() != mc.world) ((IExplosion) explosion).setWorld(mc.world);
 
         if (!new Box(MathHelper.floor(explosionPos.x - 11), MathHelper.floor(explosionPos.y - 11), MathHelper.floor(explosionPos.z - 11), MathHelper.floor(explosionPos.x + 13), MathHelper.floor(explosionPos.y + 13), MathHelper.floor(explosionPos.z + 13)).intersects(target.getBoundingBox()))
             return 0f;
@@ -144,7 +143,6 @@ public final class ExplosionUtility {
         ((IExplosion) explosion).setY(explosionPos.y);
         ((IExplosion) explosion).setZ(explosionPos.z);
 
-        if (((IExplosion) explosion).getWorld() != mc.world) ((IExplosion) explosion).setWorld(mc.world);
 
         if (!new Box(MathHelper.floor(explosionPos.x - 11d), MathHelper.floor(explosionPos.y - 11d), MathHelper.floor(explosionPos.z - 11d), MathHelper.floor(explosionPos.x + 13d), MathHelper.floor(explosionPos.y + 13d), MathHelper.floor(explosionPos.z + 13d)).intersects(predict))
             return 0f;
@@ -233,7 +231,6 @@ public final class ExplosionUtility {
         ((IExplosion) explosion).setY(explosionPos.y);
         ((IExplosion) explosion).setZ(explosionPos.z);
 
-        if (((IExplosion) explosion).getWorld() != mc.world) ((IExplosion) explosion).setWorld(mc.world);
 
         double maxDist = 12;
         if (!new Box(MathHelper.floor(explosionPos.x - maxDist - 1.0), MathHelper.floor(explosionPos.y - maxDist - 1.0), MathHelper.floor(explosionPos.z - maxDist - 1.0), MathHelper.floor(explosionPos.x + maxDist + 1.0), MathHelper.floor(explosionPos.y + maxDist + 1.0), MathHelper.floor(explosionPos.z + maxDist + 1.0)).intersects(target.getBoundingBox())) {
@@ -399,10 +396,11 @@ public final class ExplosionUtility {
 
     private static Explosion th$dummyExplosion() {
         try {
-            java.lang.reflect.Constructor<?> c = Explosion.class.getDeclaredConstructor(
-                    World.class, Entity.class, DamageSource.class,
-                    double.class, double.class, double.class, float.class, boolean.class);
-            return (Explosion) c.newInstance(mc.world, mc.player, null, 1.0, 1.0, 1.0, 6.0f, false);
+            // 1.21.11: Explosion is an interface; impl ctor (world, source, damageSource, behavior, pos, power, fire, destructionType)
+            return new net.minecraft.world.explosion.ExplosionImpl(
+                    null, mc.player, null, null,
+                    new Vec3d(1.0, 1.0, 1.0), 6.0f, false,
+                    Explosion.DestructionType.KEEP);
         } catch (Throwable t) {
             return null;
         }

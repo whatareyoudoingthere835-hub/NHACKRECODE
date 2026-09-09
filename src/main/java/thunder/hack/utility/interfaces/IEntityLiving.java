@@ -5,6 +5,8 @@ import thunder.hack.features.modules.combat.Aura;
 import java.util.List;
 
 public interface IEntityLiving {
+    default void th$onTrackedUpdate(double x, double y, double z) {}
+
     double getPrevServerX();
 
     double getPrevServerY();

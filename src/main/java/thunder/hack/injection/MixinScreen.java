@@ -37,9 +37,6 @@ import static thunder.hack.features.modules.client.ClientSettings.isRu;
 
 @Mixin(Screen.class)
 public abstract class MixinScreen {
-    @Shadow
-    public abstract void init(MinecraftClient client, int width, int height);
-
     @Inject(method = "handleTextClick", at = @At("HEAD"), cancellable = true, require = 0)
     private void onRunCommand(ClickEvent click, CallbackInfoReturnable<Boolean> cir) {
         if (click instanceof ClickEvent.RunCommand run && run.command().startsWith(Managers.COMMAND.getPrefix())) {
@@ -49,67 +46,6 @@ public abstract class MixinScreen {
                 cir.setReturnValue(true);
             } catch (CommandSyntaxException ignored) {
             }
-        }
-    }
-
-    @Inject(method = "filesDragged", at = @At("HEAD"))
-    public void filesDragged(List<Path> paths, CallbackInfo ci) {
-        String configPath = paths.get(0).toString();
-        File cfgFile = new File(configPath);
-        String fileName = cfgFile.getName();
-
-        if (fileName.contains(".th")) {
-            DialogScreen dialogScreen = new DialogScreen(
-                    TextureStorage.questionPic,
-                    isRu() ? "Обнаружен конфиг!" : "Config detected!",
-                    isRu() ? "Ты действительно хочешь загрузить " + fileName + "?" : "Are you sure you want to load " + fileName + "?",
-                    isRu() ? "Да" : "Yes", 
-                    isRu() ? "Нет" : "No",
-                    () -> {
-                        Managers.MODULE.onUnload("none");
-                        Managers.CONFIG.load(cfgFile);
-                        Managers.MODULE.onLoad("none");
-                        mc.setScreen(null);
-                    }, () -> mc.setScreen(null));
-            mc.setScreen(dialogScreen);
-
-        } else if (fileName.contains(".txt")){
-            DialogScreen dialogScreen2 = new DialogScreen(
-                    TextureStorage.questionPic,
-                    isRu() ? "Обнаружен текстовый файл!" : "Text file detected!",
-                    isRu() ? "Импортировать файл " + fileName + " как" : "Import file " + fileName + " as",
-                    isRu() ? "Прокси" : "Proxies", 
-                    isRu() ? "Забить" : "Cancel",
-                    () -> {
-                        try {
-                            try (BufferedReader reader = new BufferedReader(new FileReader(cfgFile))) {
-                                while (reader.ready()) {
-                                    String[] line = reader.readLine().split(":");
-
-                                    String ip = line[0];
-                                    String port = line[1];
-                                    String login = line[2];
-                                    String password = line[3];
-
-                                    int p = 80;
-
-                                    try {
-                                        p = Integer.parseInt(port);
-                                    } catch (Exception e) {
-                                        LogUtils.getLogger().warn(e.getMessage());
-                                    }
-
-                                    Managers.PROXY.addProxy(new ProxyManager.ThProxy("Proxy" + (int) MathUtility.random(0, 10000), ip, p, login, password));
-                                }
-                            }
-                        } catch (Exception ignored) {
-                        }
-                        mc.setScreen(null);
-                    },
-                    () -> {
-                        mc.setScreen(null);
-                    });
-            mc.setScreen(dialogScreen2);
         }
     }
 

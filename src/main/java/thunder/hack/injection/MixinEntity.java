@@ -33,6 +33,12 @@ import static thunder.hack.features.modules.Module.mc;
 @Mixin(Entity.class)
 public abstract class MixinEntity implements IEntity {
 
+    @Inject(method = "updateTrackedPositionAndAngles(Lnet/minecraft/util/math/Vec3d;FF)V", at = @At("HEAD"))
+    private void updateTrackedHook(net.minecraft.util.math.Vec3d pos, float yaw, float pitch, CallbackInfo ci) {
+        if ((Object) this instanceof thunder.hack.utility.interfaces.IEntityLiving iel)
+            iel.th$onTrackedUpdate(pos.x, pos.y, pos.z);
+    }
+
     @Shadow
     protected abstract BlockPos getVelocityAffectingPos();
 

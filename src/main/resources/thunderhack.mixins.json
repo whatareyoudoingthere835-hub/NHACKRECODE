@@ -73,7 +73,6 @@
     "MixinPlayerEntity",
     "MixinScoreBoard",
     "MixinScoreboardPlayerScore",
-    "MixinShulkerBoxBlock",
     "MixinSkinTextures",
     "MixinSlimeBlock",
     "MixinSodiumBlockOcclusionCache",
@@ -92,8 +91,6 @@
     "accesors.ILivingEntity",
     "accesors.IPlayerInteractBlockC2SPacket",
     "accesors.IPlayerMoveC2SPacket",
-    "accesors.IPlayerPositionLookS2CPacket",
-    "accesors.ISPacketEntityVelocity",
-    "accesors.ISPacketPlayerPosLook"
+    "accesors.ISPacketEntityVelocity"
   ]
 }

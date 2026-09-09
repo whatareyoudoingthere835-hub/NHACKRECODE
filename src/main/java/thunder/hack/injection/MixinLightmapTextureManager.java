@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LightmapTextureManager.class)
 public class MixinLightmapTextureManager {
 
-    @Inject(method = "getDarknessFactor(F)F", at = @At("HEAD"), cancellable = true)
-    private void getDarknessFactor(float tickDelta, CallbackInfoReturnable<Float> info) {
+    @Inject(method = "getDarkness(Lnet/minecraft/entity/LivingEntity;FF)F", at = @At("HEAD"), cancellable = true)
+    private void getDarknessFactor(net.minecraft.entity.LivingEntity entity, float factor, float tickProgress, CallbackInfoReturnable<Float> info) {
         if (ModuleManager.noRender.isEnabled() && ModuleManager.noRender.darkness.getValue()) info.setReturnValue(0.0f);
     }
     @Inject(method = "getBrightness", at = @At("HEAD"), cancellable = true)

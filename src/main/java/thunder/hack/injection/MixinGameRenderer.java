@@ -56,7 +56,7 @@ public abstract class MixinGameRenderer {
                 .rotateX(camera.getPitch() * MathHelper.RADIANS_PER_DEGREE)
                 .rotateY(camera.getYaw() * MathHelper.RADIANS_PER_DEGREE + (float) Math.PI);
 
-        Render3DEngine.lastProjMat.set(((thunder.hack.injection.accesors.IGameRenderer) mc.gameRenderer).th$projectionMatrix());
+        Render3DEngine.lastProjMat.set(mc.gameRenderer.getBasicProjectionMatrix((float) mc.options.getFov().getValue()));
         Render3DEngine.lastModMat.set(rotations);
         Render3DEngine.lastWorldSpaceMatrix.set(rotations);
 

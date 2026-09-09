@@ -66,15 +66,16 @@ public abstract class MixinInGameHud {
         }
     }
 
-    @Inject(method = "renderExperienceBar", at = @At(value = "HEAD"), cancellable = true)
-    public void renderXpBarCustom(DrawContext context, int x, CallbackInfo ci) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/bar/Bar;drawExperienceLevel(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/font/TextRenderer;I)V"))
+    public void renderXpBarCustom(DrawContext context, net.minecraft.client.font.TextRenderer textRenderer, int level) {
         if (mc != null && mc.currentScreen instanceof WindowsScreen)
-            ci.cancel();
+            return;
 
         if (ModuleManager.hotbar.isEnabled()) {
-            ci.cancel();
-            Hotbar.renderXpBar(x, context.getMatrices());
+            Hotbar.renderXpBar(mc.getWindow().getScaledWidth() / 2 - 91, context.getMatrices());
+            return;
         }
+        net.minecraft.client.gui.hud.bar.Bar.drawExperienceLevel(context, textRenderer, level);
     }
 
     @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", at = @At(value = "HEAD"), cancellable = true)
