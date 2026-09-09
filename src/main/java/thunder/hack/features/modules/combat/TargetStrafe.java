@@ -1,6 +1,7 @@
 package thunder.hack.features.modules.combat;
 
 import net.minecraft.util.PlayerInput;
+import net.minecraft.util.math.Vec3d;
 
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
@@ -252,9 +253,7 @@ public class TargetStrafe extends Module {
             oldSpeed = (vX + vZ) / (velReduction.getValue() * 1000f);
             oldSpeed = Math.min(oldSpeed, maxVelocitySpeed.getValue());
 
-            ((ISPacketEntityVelocity) velocity).setMotionX(0);
-            ((ISPacketEntityVelocity) velocity).setMotionY(0);
-            ((ISPacketEntityVelocity) velocity).setMotionZ(0);
+            ((ISPacketEntityVelocity) velocity).th$setVelocity(Vec3d.ZERO);
         }
     }
 

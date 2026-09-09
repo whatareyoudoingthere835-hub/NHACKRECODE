@@ -6,6 +6,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+/**
+ * Pure accessor mixin (see IExplosionS2CPacket for the rationale). 8000x conversion helpers
+ * are inlined in the consuming modules.
+ */
 @Mixin(EntityVelocityUpdateS2CPacket.class)
 public interface ISPacketEntityVelocity {
     @Accessor("velocity")
@@ -14,19 +18,4 @@ public interface ISPacketEntityVelocity {
     @Mutable
     @Accessor("velocity")
     void th$setVelocity(Vec3d velocity);
-
-    default void setMotionX(int velocityX) {
-        Vec3d v = th$getVelocity();
-        th$setVelocity(new Vec3d(velocityX / 8000.0, v.y, v.z));
-    }
-
-    default void setMotionY(int velocityY) {
-        Vec3d v = th$getVelocity();
-        th$setVelocity(new Vec3d(v.x, velocityY / 8000.0, v.z));
-    }
-
-    default void setMotionZ(int velocityZ) {
-        Vec3d v = th$getVelocity();
-        th$setVelocity(new Vec3d(v.x, v.y, velocityZ / 8000.0));
-    }
 }

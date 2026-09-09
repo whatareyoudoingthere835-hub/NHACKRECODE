@@ -21,6 +21,8 @@ import thunder.hack.injection.accesors.ISPacketEntityVelocity;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.player.MovementUtility;
 
+import java.util.Optional;
+
 //TY <3
 //https://github.com/SkidderMC/FDPClient/blob/main/src/main/java/net/ccbluex/liquidbounce/features/module/modules/combat/velocitys/vanilla/JumpVelocity.kt
 
@@ -73,22 +75,22 @@ public class Velocity extends Module {
                             flag = true;
                         } else {
                             flag = false;
-                            ((ISPacketEntityVelocity) pac).setMotionX(((int) (((int) (pac.getVelocity().x * 8000.0)) * -0.1)));
-                            ((ISPacketEntityVelocity) pac).setMotionZ(((int) (((int) (pac.getVelocity().z * 8000.0)) * -0.1)));
+                            th$setMotionX(pac, ((int) (((int) (pac.getVelocity().x * 8000.0)) * -0.1)));
+                            th$setMotionZ(pac, ((int) (((int) (pac.getVelocity().z * 8000.0)) * -0.1)));
                         }
                     }
                     case Redirect -> {
                         double vX = Math.abs(((int) (pac.getVelocity().x * 8000.0)));
                         double vZ = Math.abs(((int) (pac.getVelocity().z * 8000.0)));
                         double[] motion = MovementUtility.forward((vX + vZ));
-                        ((ISPacketEntityVelocity) pac).setMotionX((int) (motion[0]));
-                        ((ISPacketEntityVelocity) pac).setMotionY(0);
-                        ((ISPacketEntityVelocity) pac).setMotionZ((int) (motion[1]));
+                        th$setMotionX(pac, (int) (motion[0]));
+                        th$setMotionY(pac, 0);
+                        th$setMotionZ(pac, (int) (motion[1]));
                     }
                     case Custom -> {
-                        ((ISPacketEntityVelocity) pac).setMotionX((int) ((float) ((int) (pac.getVelocity().x * 8000.0)) * horizontal.getValue() / 100f));
-                        ((ISPacketEntityVelocity) pac).setMotionY((int) ((float) ((int) (pac.getVelocity().y * 8000.0)) * vertical.getValue() / 100f));
-                        ((ISPacketEntityVelocity) pac).setMotionZ((int) ((float) ((int) (pac.getVelocity().z * 8000.0)) * horizontal.getValue() / 100f));
+                        th$setMotionX(pac, (int) ((float) ((int) (pac.getVelocity().x * 8000.0)) * horizontal.getValue() / 100f));
+                        th$setMotionY(pac, (int) ((float) ((int) (pac.getVelocity().y * 8000.0)) * vertical.getValue() / 100f));
+                        th$setMotionZ(pac, (int) ((float) ((int) (pac.getVelocity().z * 8000.0)) * horizontal.getValue() / 100f));
                     }
                     case Sunrise -> {
                         e.cancel();
@@ -96,8 +98,8 @@ public class Velocity extends Module {
                     }
                     case Cancel -> e.cancel();
                     case Jump -> {
-                        ((ISPacketEntityVelocity) pac).setMotionX((int) ((float) ((int) (pac.getVelocity().x * 8000.0)) * horizontal.getValue() / 100f));
-                        ((ISPacketEntityVelocity) pac).setMotionZ((int) ((float) ((int) (pac.getVelocity().z * 8000.0)) * horizontal.getValue() / 100f));
+                        th$setMotionX(pac, (int) ((float) ((int) (pac.getVelocity().x * 8000.0)) * horizontal.getValue() / 100f));
+                        th$setMotionZ(pac, (int) ((float) ((int) (pac.getVelocity().z * 8000.0)) * horizontal.getValue() / 100f));
                     }
                     case OldGrim -> {
                         e.cancel();
@@ -115,19 +117,19 @@ public class Velocity extends Module {
         if (e.getPacket() instanceof ExplosionS2CPacket explosion && explosions.getValue()) {
             switch (mode.getValue()) {
                 case Cancel -> {
-                    ((IExplosionS2CPacket) (Object) explosion).setMotionX(0);
-                    ((IExplosionS2CPacket) (Object) explosion).setMotionY(0);
-                    ((IExplosionS2CPacket) (Object) explosion).setMotionZ(0);
+                    th$setExpX(explosion, 0);
+                    th$setExpY(explosion, 0);
+                    th$setExpZ(explosion, 0);
                 }
                 case Custom -> {
-                    ((IExplosionS2CPacket) (Object) explosion).setMotionX(((IExplosionS2CPacket) (Object) explosion).getMotionX() * horizontal.getValue() / 100f);
-                    ((IExplosionS2CPacket) (Object) explosion).setMotionZ(((IExplosionS2CPacket) (Object) explosion).getMotionZ() * horizontal.getValue() / 100f);
-                    ((IExplosionS2CPacket) (Object) explosion).setMotionY(((IExplosionS2CPacket) (Object) explosion).getMotionY() * vertical.getValue() / 100f);
+                    th$setExpX(explosion, th$getExpX(explosion) * horizontal.getValue() / 100f);
+                    th$setExpZ(explosion, th$getExpZ(explosion) * horizontal.getValue() / 100f);
+                    th$setExpY(explosion, th$getExpY(explosion) * vertical.getValue() / 100f);
                 }
                 case GrimNew -> {
-                    ((IExplosionS2CPacket) (Object) explosion).setMotionX(0);
-                    ((IExplosionS2CPacket) (Object) explosion).setMotionY(0);
-                    ((IExplosionS2CPacket) (Object) explosion).setMotionZ(0);
+                    th$setExpX(explosion, 0);
+                    th$setExpY(explosion, 0);
+                    th$setExpZ(explosion, 0);
                     flag = true;
                 }
             }
@@ -223,5 +225,48 @@ public class Velocity extends Module {
 
     public enum jumpModeEn {
         Motion, Jump, Both
+    }
+
+    // ==== 1.21.11: per-axis packet setters (interface mixins must stay accessor-only) ====
+    private static void th$setMotionX(EntityVelocityUpdateS2CPacket pac, int velocityX) {
+        Vec3d v = ((ISPacketEntityVelocity) pac).th$getVelocity();
+        ((ISPacketEntityVelocity) pac).th$setVelocity(new Vec3d(velocityX / 8000.0, v.y, v.z));
+    }
+
+    private static void th$setMotionY(EntityVelocityUpdateS2CPacket pac, int velocityY) {
+        Vec3d v = ((ISPacketEntityVelocity) pac).th$getVelocity();
+        ((ISPacketEntityVelocity) pac).th$setVelocity(new Vec3d(v.x, velocityY / 8000.0, v.z));
+    }
+
+    private static void th$setMotionZ(EntityVelocityUpdateS2CPacket pac, int velocityZ) {
+        Vec3d v = ((ISPacketEntityVelocity) pac).th$getVelocity();
+        ((ISPacketEntityVelocity) pac).th$setVelocity(new Vec3d(v.x, v.y, velocityZ / 8000.0));
+    }
+
+    private static void th$setExpX(ExplosionS2CPacket p, float velocityX) {
+        Vec3d v = ((IExplosionS2CPacket) (Object) p).th$getKnockback().orElse(Vec3d.ZERO);
+        ((IExplosionS2CPacket) (Object) p).th$setKnockback(Optional.of(new Vec3d(velocityX, v.y, v.z)));
+    }
+
+    private static void th$setExpY(ExplosionS2CPacket p, float velocityY) {
+        Vec3d v = ((IExplosionS2CPacket) (Object) p).th$getKnockback().orElse(Vec3d.ZERO);
+        ((IExplosionS2CPacket) (Object) p).th$setKnockback(Optional.of(new Vec3d(v.x, velocityY, v.z)));
+    }
+
+    private static void th$setExpZ(ExplosionS2CPacket p, float velocityZ) {
+        Vec3d v = ((IExplosionS2CPacket) (Object) p).th$getKnockback().orElse(Vec3d.ZERO);
+        ((IExplosionS2CPacket) (Object) p).th$setKnockback(Optional.of(new Vec3d(v.x, v.y, velocityZ)));
+    }
+
+    private static float th$getExpX(ExplosionS2CPacket p) {
+        return (float) ((IExplosionS2CPacket) (Object) p).th$getKnockback().orElse(Vec3d.ZERO).x;
+    }
+
+    private static float th$getExpY(ExplosionS2CPacket p) {
+        return (float) ((IExplosionS2CPacket) (Object) p).th$getKnockback().orElse(Vec3d.ZERO).y;
+    }
+
+    private static float th$getExpZ(ExplosionS2CPacket p) {
+        return (float) ((IExplosionS2CPacket) (Object) p).th$getKnockback().orElse(Vec3d.ZERO).z;
     }
 }
