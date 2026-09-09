@@ -3,6 +3,7 @@ package thunder.hack.features.modules.movement;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.MovementType;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundCategory;
@@ -31,7 +32,7 @@ public class TridentBoost extends Module {
     @EventHandler
     public void onUseTrident(UseTridentEvent e) {
         if (mc.player.getItemUseTime() >= cooldown.getValue()) {
-            float j = EnchantmentHelper.getTridentSpinAttackStrength(mc.player.getActiveItem(), mc.player);
+            float j = mc.world == null ? 0 : EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.RIPTIDE.getRegistryRef()).getEntry(Enchantments.RIPTIDE).get(), mc.player.getActiveItem());
             if (anyWeather.getValue() || mc.player.isTouchingWaterOrRain()) {
                 if (j > 0) {
                     float f = mc.player.getYaw();
@@ -48,7 +49,7 @@ public class TridentBoost extends Module {
                     speedZ *= n / plannedSpeed;
 
                     mc.player.addVelocity(speedX, speedY, speedZ);
-                    mc.player.useRiptide(20, 8f, mc.player.getActiveItem());
+                    mc.player.tryUseRiptide();
 
                     if (mc.player.isOnGround())
                         mc.player.move(MovementType.SELF, new Vec3d(0.0, 1.1999999284744263, 0.0));

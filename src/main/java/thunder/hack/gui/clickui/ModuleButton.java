@@ -111,9 +111,9 @@ public class ModuleButton extends AbstractButton {
                 float py = y + 12f + (height + (float) getElementsHeight()) / 2f;
                 int gScale = ModuleManager.clickGui.gearScale.getValue();
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(px, py);
+                context.getMatrices().translate((float) (px), (float) (py));
                 context.getMatrices().rotate((gearAnimation.getValue()) * MathHelper.RADIANS_PER_DEGREE);
-                context.getMatrices().translate(-px, -py);
+                context.getMatrices().translate((float) (-px), (float) (-py));
         Render2DEngine.bindTexture(TextureStorage.Gear);
 
 
@@ -124,9 +124,9 @@ public class ModuleButton extends AbstractButton {
                         Render2DEngine.injectAlpha(HudEditor.getColor(180).darker(), 110),
                         Render2DEngine.injectAlpha(HudEditor.getColor(90).darker(), 110));
 
-                context.getMatrices().translate(px, py);
+                context.getMatrices().translate((float) (px), (float) (py));
                 context.getMatrices().rotate(((float) Render2DEngine.interpolate(mc.player.age - 1, mc.player.age, Render3DEngine.getTickDelta()) * -4f) * MathHelper.RADIANS_PER_DEGREE);
-                context.getMatrices().translate(-px, -py);
+                context.getMatrices().translate((float) (-px), (float) (-py));
                 context.getMatrices().popMatrix();
                 Render2DEngine.popWindow();
             }
@@ -217,7 +217,7 @@ public class ModuleButton extends AbstractButton {
         if (binding)
             FontRenderers.sf_medium_modules.drawString(context.getMatrices(), holdbind ? (Formatting.GRAY + "Toggle / " + Formatting.RESET + "Hold") : (Formatting.RESET + "Toggle " + Formatting.GRAY + "/ Hold"), x + width - 11 - FontRenderers.sf_medium_modules.getStringWidth("Toggle/Hold"), iy + 2, Render2DEngine.applyOpacity(Color.WHITE.getRGB(), animation2));
 
-        if (hovered && InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT_SHIFT)) {
+        if (hovered && InputUtil.isKeyPressed(mc.getWindow(), InputUtil.GLFW_KEY_LEFT_SHIFT)) {
             FontRenderers.sf_medium_modules.drawString(context.getMatrices(), "Drawn " + (module.isDrawn() ? Formatting.GREEN + "TRUE" : Formatting.RED + "FALSE"), ix + 1f, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
         } else {
             if (binding)
@@ -272,12 +272,12 @@ public class ModuleButton extends AbstractButton {
         }
 
         if (hovered) {
-            if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT_SHIFT) && button == 0) {
+            if (InputUtil.isKeyPressed(mc.getWindow(), InputUtil.GLFW_KEY_LEFT_SHIFT) && button == 0) {
                 module.setDrawn(!module.isDrawn());
                 return;
             }
 
-            if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_DELETE) && button == 0) {
+            if (InputUtil.isKeyPressed(mc.getWindow(), InputUtil.GLFW_KEY_DELETE) && button == 0) {
                 DialogScreen dialogScreen = new DialogScreen(
                         TextureStorage.questionPic,
                         isRu() ? "Сброс модуля" : "Reset module",

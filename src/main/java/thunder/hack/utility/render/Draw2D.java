@@ -159,7 +159,7 @@ public final class Draw2D {
         @Override
         public ScreenRect bounds() {
             if (size == 0) return ScreenRect.EMPTY;
-            return new ScreenRect(Math.round(minX), Math.round(minY), Math.round(maxX - minX), Math.round(maxY - minY)).transform(pose);
+            return new ScreenRect(Math.round(minX), Math.round(minY), Math.round(maxX - minX), Math.round(maxY - minY));
         }
 
         /** Submits to the render state. Call exactly once. */

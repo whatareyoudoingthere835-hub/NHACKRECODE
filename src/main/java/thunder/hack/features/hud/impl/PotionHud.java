@@ -110,7 +110,7 @@ public class PotionHud extends HudElement {
 
             context.getMatrices().pushMatrix();
             context.getMatrices().translate(getPosX() + 2, getPosY() + 16 + y_offset);
-            context.drawSprite(0, 0, 0, 8, 8, mc.getStatusEffectSpriteManager().getSprite(potionEffect.getEffectType()));
+            // TODO 1.21.11: StatusEffectSpriteManager removed; icon omitted
             context.getMatrices().popMatrix();
 
             FontRenderers.sf_bold_mini.drawString(context.getMatrices(), potion.getName().getString() + " " + Formatting.RED + (potionEffect.getAmplifier() + 1), getPosX() + 12, getPosY() + 19 + y_offset, HudEditor.textColor.getValue().getColor());

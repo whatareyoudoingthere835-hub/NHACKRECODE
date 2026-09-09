@@ -1,5 +1,6 @@
 package thunder.hack.gui.windows.impl;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -81,7 +82,7 @@ public class ItemSelectWindow extends WindowBase {
         bufferBuilder.vertex(getX() + 92, getY() + 19, 0f).color(tabColor2);
         bufferBuilder.vertex(getX() + 100, getY() + 29, 0f).color(Color.GRAY.getRGB());
         bufferBuilder.vertex(getX() + getWidth() - 1, getY() + 29, 0f).color(Color.DARK_GRAY.getRGB());
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        Render2DEngine.endBuilding(bufferBuilder);
 
         FontRenderers.sf_medium_mini.drawString(context.getMatrices(), "All", getX() + 25, getY() + 25, tabColor1);
         FontRenderers.sf_medium_mini.drawString(context.getMatrices(), "Selected", getX() + 60, getY() + 25, tabColor2);
@@ -171,7 +172,7 @@ public class ItemSelectWindow extends WindowBase {
 
     @Override
     public void keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_F && (InputUtil.isKeyPressed(mc.getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) || InputUtil.isKeyPressed(mc.getWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL))) {
+        if (keyCode == GLFW.GLFW_KEY_F && (InputUtil.isKeyPressed(mc.getWindow(), GLFW.GLFW_KEY_LEFT_CONTROL) || InputUtil.isKeyPressed(mc.getWindow(), GLFW.GLFW_KEY_RIGHT_CONTROL))) {
             listening = !listening;
             return;
         }

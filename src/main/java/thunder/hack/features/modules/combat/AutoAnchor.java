@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.util.math.Vec3d;
 import thunder.hack.utility.player.ItemChecks;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -185,7 +186,7 @@ public final class AutoAnchor extends Module {
         if (mc.player == null || mc.world == null) return;
 
         long currentTime = System.currentTimeMillis();
-        final List<PlaceData> blocks = getPossibleBlocks(target, mc.player.getPos(), placeRange.getValue());
+        final List<PlaceData> blocks = getPossibleBlocks(target, new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()), placeRange.getValue());
         calcPosition(blocks);
         getAnchorToExplode(blocks);
         calcTime = System.currentTimeMillis() - currentTime;
@@ -262,18 +263,18 @@ public final class AutoAnchor extends Module {
         if (e.getPrevState() == null || e.getState() == null)
             return;
 
-        if (target != null && target.squaredDistanceTo(e.getPos().toCenterPos()) <= 4 && e.getState().getBlock() instanceof RespawnAnchorBlock && e.getPrevState().isReplaceable()) {
-            debug("Detected change of state " + e.getPos() + ", exploding...");
-            //explodeAnchor(getInteractResult(e.getPos()));
+        if (target != null && target.squaredDistanceTo(new Vec3d(e.getX(), e.getY(), e.getZ()).toCenterPos()) <= 4 && e.getState().getBlock() instanceof RespawnAnchorBlock && e.getPrevState().isReplaceable()) {
+            debug("Detected change of state " + new Vec3d(e.getX(), e.getY(), e.getZ()) + ", exploding...");
+            //explodeAnchor(getInteractResult(new Vec3d(e.getX(), e.getY(), e.getZ())));
         }
     }
 
     public void calcRotations() {
         if (rotate.getValue() && !shouldPause() && (bestPosition != null || bestAnchor != null) && mc.player != null) {
-            Vec3d vec = bestPosition == null ? bestAnchor.getPos() : bestPosition.bhr().getPos();
+            Vec3d vec = bestPosition == null ? new Vec3d(bestAnchor.getX(), bestAnchor.getY(), bestAnchor.getZ()) : bestPosition.bhr().getPos();
 
             float yawDelta = wrapDegrees((float) wrapDegrees(Math.toDegrees(Math.atan2(vec.z - mc.player.getZ(), (vec.x - mc.player.getX()))) - 90) - rotationYaw);
-            float pitchDelta = ((float) (-Math.toDegrees(Math.atan2(vec.y - (mc.player.getPos().y + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((vec.x - mc.player.getX()), 2) + Math.pow(vec.z - mc.player.getZ(), 2))))) - rotationPitch);
+            float pitchDelta = ((float) (-Math.toDegrees(Math.atan2(vec.y - (mc.player.getY() + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((vec.x - mc.player.getX()), 2) + Math.pow(vec.z - mc.player.getZ(), 2))))) - rotationPitch);
 
             yawDelta = (float) (yawDelta + Render2DEngine.interpolate(-1.2f, 1.2f, Math.sin(mc.player.age % 80)) + MathUtility.random(-1.2f, 1.2f));
             pitchDelta = pitchDelta + MathUtility.random(-0.8f, 0.8f);
@@ -477,13 +478,13 @@ public final class AutoAnchor extends Module {
     private int switchTo(SearchInvResult result, SearchInvResult resultInv, @NotNull Setting<Switch> switchMode) {
         if (mc.player == null || mc.world == null || mc.interactionManager == null) return -1;
 
-        int prevSlot = mc.player.getInventory().selectedSlot;
+        int prevSlot = mc.player.getInventory().getSelectedSlot();
 
         switch (switchMode.getValue()) {
             case INVENTORY -> {
                 if (resultInv.found()) {
                     prevSlot = resultInv.slot();
-                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, prevSlot, mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, prevSlot, mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP, mc.player);
                     sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
                 }
             }
@@ -508,7 +509,7 @@ public final class AutoAnchor extends Module {
         if (rotate.getValue()) {
             if (instant) {
                 float[] angle = InteractionUtility.calculateAngle(data.bhr().getPos());
-                sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), angle[0], angle[1], mc.player.isOnGround()));
+                sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), angle[0], angle[1], mc.player.isOnGround(), mc.player.horizontalCollision));
             } else if (!rotated)
                 return;
         }
@@ -551,7 +552,7 @@ public final class AutoAnchor extends Module {
             InventoryUtility.switchTo(slot);
 
         if (autoSwitch.getValue() == Switch.INVENTORY && slot != -1) {
-            mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, slot, mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+            mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, slot, mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP, mc.player);
             sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
         }
     }
@@ -646,7 +647,7 @@ public final class AutoAnchor extends Module {
                     break;
                 }
 
-        if (facePlaceButton.getValue().getKey() != -1 && InputUtil.isKeyPressed(mc.getWindow().getHandle(), facePlaceButton.getValue().getKey()))
+        if (facePlaceButton.getValue().getKey() != -1 && InputUtil.isKeyPressed(mc.getWindow(), facePlaceButton.getValue().getKey()))
             override = true;
 
         if ((target.getHealth() + target.getAbsorptionAmount()) - (damage * lethalMultiplier.getValue()) < 0.5)
@@ -684,7 +685,7 @@ public final class AutoAnchor extends Module {
         if (mc.player == null || mc.world == null)
             return null;
 
-        if (target != null && target.getPos().squaredDistanceTo(bp.toCenterPos()) > 144)
+        if (target != null && new Vec3d(target.getX(), target.getY(), target.getZ()).squaredDistanceTo(bp.toCenterPos()) > 144)
             return null;
 
         BlockState state = mc.world.getBlockState(bp);

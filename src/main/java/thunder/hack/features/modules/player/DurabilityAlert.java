@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.player;
 
+import net.minecraft.client.gl.RenderPipelines;
 import thunder.hack.utility.player.ItemChecks;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -32,7 +33,7 @@ public class DurabilityAlert extends Module {
             for (PlayerEntity player : mc.world.getPlayers()) {
                 if (!Managers.FRIEND.isFriend(player)) continue;
                 if (player == mc.player) continue;
-                for (ItemStack stack : player.getInventory().armor) {
+                for (ItemStack stack : java.util.List.of(player.getInventory().getStack(36), player.getInventory().getStack(37), player.getInventory().getStack(38), player.getInventory().getStack(39))) {
                     if (stack.isEmpty() || !ItemChecks.isArmor(stack)) continue;
                     if (getDurability(stack) < percent.getValue() && timer.passedMs(30000)) {
                         mc.player.networkHandler.sendChatCommand("msg " + player.getName().getString() + (isRu() ? " Срочно чини броню!" : " Fix your armor right now!"));
@@ -44,7 +45,7 @@ public class DurabilityAlert extends Module {
         }
 
         boolean flag = false;
-        for (ItemStack stack : mc.player.getInventory().armor) {
+        for (ItemStack stack : java.util.List.of(mc.player.getInventory().getStack(36), mc.player.getInventory().getStack(37), mc.player.getInventory().getStack(38), mc.player.getInventory().getStack(39))) {
             if (stack.isEmpty() || !ItemChecks.isArmor(stack)) continue;
             if (getDurability(stack) < percent.getValue()) {
                 need_alert = true;
@@ -60,7 +61,7 @@ public class DurabilityAlert extends Module {
 
             Color c1 = new Color(0xFFDF00);
 
-            context.drawTexture(TextureStorage.brokenShield, (int) (mc.getWindow().getScaledWidth() / 2f - 40), (int) (mc.getWindow().getScaledHeight() / 3f - 120), 80, 80, 0, 0, 80, 80, 80, 80);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.brokenShield, (int) (mc.getWindow().getScaledWidth() / 2f - 40), (int) (mc.getWindow().getScaledHeight() / 3f - 120), 0, 0, 80, 80, 80, 80, -1);
 
         }
     }

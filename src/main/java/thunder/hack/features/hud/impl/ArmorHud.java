@@ -23,12 +23,12 @@ public class ArmorHud extends HudElement {
     public void onRender2D(DrawContext context) {
         super.onRender2D(context);
         float xItemOffset = getPosX();
-        for (ItemStack itemStack : mc.player.getInventory().armor.reversed()) {
+        for (ItemStack itemStack : mc.player.java.util.List.of(getInventory().getStack(39), getInventory().getStack(38), getInventory().getStack(37), getInventory().getStack(36))) {
             if (itemStack.isEmpty()) continue;
 
             if (mode.is(Mode.V1)) {
                 context.drawItem(itemStack, (int) xItemOffset, (int) getPosY());
-                context.drawItemInSlot(mc.textRenderer,itemStack,  (int) xItemOffset, (int) getPosY());
+                context.drawStackOverlay(mc.textRenderer,itemStack,  (int) xItemOffset, (int) getPosY());
             } else {
 
                 context.drawItem(itemStack, (int) xItemOffset, (int) getPosY());

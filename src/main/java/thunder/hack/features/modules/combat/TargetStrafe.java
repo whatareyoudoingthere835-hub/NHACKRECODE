@@ -211,7 +211,7 @@ public class TargetStrafe extends Module {
 
     @EventHandler
     public void updateValues(EventSync e) {
-        oldSpeed = Math.hypot(mc.player.getX() - mc.player.prevX, mc.player.getZ() - mc.player.prevZ) * contextFriction;
+        oldSpeed = Math.hypot(mc.player.getX() - (mc.player.getX() - mc.player.getDeltaMovement().x), mc.player.getZ() - (mc.player.getZ() - mc.player.getDeltaMovement().z)) * contextFriction;
 
         if (mc.player.isOnGround() && jump.getValue() && Aura.target != null) {
             mc.player.jump();
@@ -241,8 +241,8 @@ public class TargetStrafe extends Module {
         if (e.getPacket() instanceof EntityVelocityUpdateS2CPacket && (velocity = e.getPacket()).getId() == mc.player.getId() && boost.getValue() == Boost.Damage) {
             if (mc.player.isOnGround()) return;
 
-            double vX = velocity.getVelocityX();
-            double vZ = velocity.getVelocityZ();
+            double vX = ((int) (velocity.getVelocity().x * 8000.0));
+            double vZ = ((int) (velocity.getVelocity().z * 8000.0));
 
             if (vX < 0) vX *= -1;
             if (vZ < 0) vZ *= -1;

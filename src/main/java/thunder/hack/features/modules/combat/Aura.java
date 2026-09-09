@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.util.math.Vec3d;
 import thunder.hack.utility.player.ItemChecks;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
@@ -192,10 +193,10 @@ public class Aura extends Module {
     }
 
     private float getRange(){
-        return elytra.getValue() && mc.player.isFallFlying() ? elytraAttackRange.getValue() : attackRange.getValue();
+        return elytra.getValue() && mc.player.isGliding() ? elytraAttackRange.getValue() : attackRange.getValue();
     }
     private float getWallRange(){
-        return elytra.getValue() && mc.player != null && mc.player.isFallFlying() ? elytraWallRange.getValue() : wallRange.getValue();
+        return elytra.getValue() && mc.player != null && mc.player.isGliding() ? elytraWallRange.getValue() : wallRange.getValue();
     }
 
     public void auraLogic() {
@@ -293,7 +294,7 @@ public class Aura extends Module {
             disableSprint();
 
         if (rotationMode.is(Mode.Grim))
-            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), rotationYaw, rotationPitch, mc.player.isOnGround()));
+            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), rotationYaw, rotationPitch, mc.player.isOnGround(), mc.player.horizontalCollision));
 
         return new boolean[]{blocking, sprint};
     }
@@ -306,7 +307,7 @@ public class Aura extends Module {
             sendSequencedPacket(id -> new PlayerInteractItemC2SPacket(Hand.OFF_HAND, id, rotationYaw, rotationPitch));
 
         if (rotationMode.is(Mode.Grim))
-            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround()));
+            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround(), mc.player.horizontalCollision));
     }
 
     private void disableSprint() {
@@ -345,7 +346,7 @@ public class Aura extends Module {
         SearchInvResult swordResult = InventoryUtility.getSwordHotBar();
         if (swordResult.found() && switchMode.getValue() != Switch.None) {
             if (switchMode.getValue() == Switch.Silent)
-                prevSlot = mc.player.getInventory().selectedSlot;
+                prevSlot = mc.player.getInventory().getSelectedSlot();
             swordResult.switchTo();
         }
 
@@ -462,7 +463,7 @@ public class Aura extends Module {
         boolean reasonForSkipCrit =
                 !smartCrit.getValue().isEnabled()
                         || mc.player.getAbilities().flying
-                        || (mc.player.isFallFlying() || ModuleManager.elytraPlus.isEnabled())
+                        || (mc.player.isGliding() || ModuleManager.elytraPlus.isEnabled())
                         || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
                         || mc.player.hasStatusEffect(StatusEffects.SLOW_FALLING)
                         || Managers.PLAYER.isInWeb();
@@ -509,17 +510,17 @@ public class Aura extends Module {
             return false;
 
         if (axeSlot >= 9) {
-            mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, axeSlot, mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+            mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, axeSlot, mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP, mc.player);
             sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
             mc.interactionManager.attackEntity(mc.player, target);
             swingHand();
-            mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, axeSlot, mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+            mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, axeSlot, mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP, mc.player);
             sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
         } else {
             sendPacket(new UpdateSelectedSlotC2SPacket(axeSlot));
             mc.interactionManager.attackEntity(mc.player, target);
             swingHand();
-            sendPacket(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().selectedSlot));
+            sendPacket(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().getSelectedSlot()));
         }
         hitTicks = 10;
         return true;
@@ -533,11 +534,11 @@ public class Aura extends Module {
     }
 
     public boolean isAboveWater() {
-        return mc.player.isSubmergedInWater() || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos().add(0, -0.4, 0))).getBlock() == Blocks.WATER;
+        return mc.player.isSubmergedInWater() || mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).add(0, -0.4, 0))).getBlock() == Blocks.WATER;
     }
 
     public float getAttackCooldownProgressPerTick() {
-        return (float) (1.0 / mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_SPEED) * (20.0 * ThunderHack.TICK_TIMER * (tpsSync.getValue() ? Managers.SERVER.getTPSFactor() : 1f)));
+        return (float) (1.0 / mc.player.getAttributeValue(EntityAttributes.ATTACK_SPEED) * (20.0 * ThunderHack.TICK_TIMER * (tpsSync.getValue() ? Managers.SERVER.getTPSFactor() : 1f)));
     }
 
     public float getAttackCooldown() {
@@ -580,7 +581,7 @@ public class Aura extends Module {
 
         Vec3d targetVec;
 
-        if (mc.player.isFallFlying() || ModuleManager.elytraPlus.isEnabled()) targetVec = target.getEyePos();
+        if (mc.player.isGliding() || ModuleManager.elytraPlus.isEnabled()) targetVec = target.getEyePos();
         else targetVec = getLegitLook(target);
 
         if (targetVec == null)
@@ -590,7 +591,7 @@ public class Aura extends Module {
                 ? aimedPitchStep.getValue() : pitchAcceleration < maxPitchStep.getValue() ? pitchAcceleration * pitchAccelerate.getValue() : maxPitchStep.getValue();
 
         float delta_yaw = wrapDegrees((float) wrapDegrees(Math.toDegrees(Math.atan2(targetVec.z - mc.player.getZ(), (targetVec.x - mc.player.getX()))) - 90) - (smoothRotation.getValue() ? currentYaw : rotationYaw)) + (wallsBypass.is(WallsBypass.V2) && !ready && !mc.player.canSee(target) ? 20 : 0);
-        float delta_pitch = ((float) (-Math.toDegrees(Math.atan2(targetVec.y - (mc.player.getPos().y + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((targetVec.x - mc.player.getX()), 2) + Math.pow(targetVec.z - mc.player.getZ(), 2))))) - (smoothRotation.getValue() ? currentPitch : rotationPitch));
+        float delta_pitch = ((float) (-Math.toDegrees(Math.atan2(targetVec.y - (mc.player.getY() + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((targetVec.x - mc.player.getX()), 2) + Math.pow(targetVec.z - mc.player.getZ(), 2))))) - (smoothRotation.getValue() ? currentPitch : rotationPitch));
 
         // Плавный степ вместо случайного дребезга по тикам:
         // скорость зависит от оставшейся дистанции (ease-curve) - быстро издалека, плавно на подлёте,
@@ -750,8 +751,8 @@ public class Aura extends Module {
         }
 
         if (clientLook.getValue() && rotationMode.getValue() != Mode.None) {
-            mc.player.setYaw((float) Render2DEngine.interpolate(mc.player.prevYaw, rotationYaw, Render3DEngine.getTickDelta()));
-            mc.player.setPitch((float) Render2DEngine.interpolate(mc.player.prevPitch, rotationPitch, Render3DEngine.getTickDelta()));
+            mc.player.setYaw((float) Render2DEngine.interpolate(mc.player.getYaw(), rotationYaw, Render3DEngine.getTickDelta()));
+            mc.player.setPitch((float) Render2DEngine.interpolate(mc.player.getPitch(), rotationPitch, Render3DEngine.getTickDelta()));
         }
     }
 
@@ -765,7 +766,7 @@ public class Aura extends Module {
     public float getSquaredRotateDistance() {
         float dst = getRange();
         dst += aimRange.getValue();
-        if ((mc.player.isFallFlying() || ModuleManager.elytraPlus.isEnabled()) && target != null) dst += 4f;
+        if ((mc.player.isGliding() || ModuleManager.elytraPlus.isEnabled()) && target != null) dst += 4f;
         if (ModuleManager.strafe.isEnabled()) dst += 4f;
         if (rotationMode.getValue() != Mode.Track || rayTrace.getValue() == RayTrace.OFF)
             dst = getRange();
@@ -812,16 +813,16 @@ public class Aura extends Module {
 
         if (!mc.player.canSee(target)) {
             if (wallsBypass.getValue() == WallsBypass.V2) {
-                return target.getPos().add(random(-0.15, 0.15), lenghtY / 2f, random(-0.15, 0.15));
+                return new Vec3d(target.getX(), target.getY(), target.getZ()).add(random(-0.15, 0.15), lenghtY / 2f, random(-0.15, 0.15));
             }
         }
 
         float[] rotation;
 
         if (!Managers.PLAYER.checkRtx(rotationYaw, rotationPitch, getRange(), getWallRange(), rayTrace.getValue())) {
-            float[] rotation1 = Managers.PLAYER.calcAngle(target.getPos().add(0, target.getEyeHeight(target.getPose()) / 2f, 0));
+            float[] rotation1 = Managers.PLAYER.calcAngle(new Vec3d(target.getX(), target.getY(), target.getZ()).add(0, target.getEyeHeight(target.getPose()) / 2f, 0));
 
-            if (PlayerUtility.squaredDistanceFromEyes(target.getPos().add(0, target.getEyeHeight(target.getPose()) / 2f, 0)) <= attackRange.getPow2Value()
+            if (PlayerUtility.squaredDistanceFromEyes(new Vec3d(target.getX(), target.getY(), target.getZ()).add(0, target.getEyeHeight(target.getPose()) / 2f, 0)) <= attackRange.getPow2Value()
                     && Managers.PLAYER.checkRtx(rotation1[0], rotation1[1], getRange(), 0, rayTrace.getValue())) {
                 rotationPoint = new Vec3d(random(-0.1f, 0.1f), target.getEyeHeight(target.getPose()) / (random(1.8f, 2.5f)), random(-0.1f, 0.1f));
             } else {
@@ -845,12 +846,12 @@ public class Aura extends Module {
                 }
             }
         }
-        return target.getPos().add(rotationPoint);
+        return new Vec3d(target.getX(), target.getY(), target.getZ()).add(rotationPoint);
     }
 
     public boolean isInRange(Entity target) {
 
-        if (PlayerUtility.squaredDistanceFromEyes(target.getPos().add(0, target.getEyeHeight(target.getPose()), 0)) > getSquaredRotateDistance() + 4) {
+        if (PlayerUtility.squaredDistanceFromEyes(new Vec3d(target.getX(), target.getY(), target.getZ()).add(0, target.getEyeHeight(target.getPose()), 0)) > getSquaredRotateDistance() + 4) {
             return false;
         }
 
@@ -889,10 +890,10 @@ public class Aura extends Module {
 
         return switch (sort.getValue()) {
             case LowestDistance ->
-                    first_stage.stream().min(Comparator.comparing(e -> (mc.player.squaredDistanceTo(e.getPos())))).orElse(null);
+                    first_stage.stream().min(Comparator.comparing(e -> (mc.player.squaredDistanceTo(new Vec3d(e.getX(), e.getY(), e.getZ()))))).orElse(null);
 
             case HighestDistance ->
-                    first_stage.stream().max(Comparator.comparing(e -> (mc.player.squaredDistanceTo(e.getPos())))).orElse(null);
+                    first_stage.stream().max(Comparator.comparing(e -> (mc.player.squaredDistanceTo(new Vec3d(e.getX(), e.getY(), e.getZ()))))).orElse(null);
 
             case FOV -> first_stage.stream().min(Comparator.comparing(this::getFOVAngle)).orElse(null);
 
@@ -931,7 +932,7 @@ public class Aura extends Module {
         if (entity instanceof ArmorStandEntity) return true;
         if (entity instanceof CatEntity) return true;
         if (skipNotSelected(entity)) return true;
-        if (!InteractionUtility.isVecInFOV(ent.getPos(), fov.getValue())) return true;
+        if (!InteractionUtility.isVecInFOV(new Vec3d(ent.getX(), ent.getY(), ent.getZ()), fov.getValue())) return true;
 
         if (entity instanceof PlayerEntity player) {
             if (ModuleManager.antiBot.isEnabled() && AntiBot.bots.contains(entity))
@@ -954,7 +955,7 @@ public class Aura extends Module {
     private boolean isBullet(Entity entity) {
         return (entity instanceof ShulkerBulletEntity || entity instanceof FireballEntity)
                 && entity.isAlive()
-                && PlayerUtility.squaredDistanceFromEyes(entity.getPos()) < getSquaredRotateDistance()
+                && PlayerUtility.squaredDistanceFromEyes(new Vec3d(entity.getX(), entity.getY(), entity.getZ())) < getSquaredRotateDistance()
                 && Projectiles.getValue();
     }
 
@@ -986,7 +987,7 @@ public class Aura extends Module {
     }
 
     private boolean shouldRandomizeDelay() {
-        return randomHitDelay.getValue() && (mc.player.isOnGround() || mc.player.fallDistance < 0.12f || mc.player.isSwimming() || mc.player.isFallFlying());
+        return randomHitDelay.getValue() && (mc.player.isOnGround() || mc.player.fallDistance < 0.12f || mc.player.isSwimming() || mc.player.isGliding());
     }
 
     private boolean shouldRandomizeFallDistance() {

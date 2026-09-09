@@ -145,8 +145,8 @@ public class BowSpam extends Module {
      * Сохраняет предыдущий слот для swapBack
      */
     private void swap(int hotbarSlot) {
-        previousSlot = mc.player.getInventory().selectedSlot;
-        mc.player.getInventory().selectedSlot = hotbarSlot;
+        previousSlot = mc.player.getInventory().getSelectedSlot();
+        mc.player.getInventory().setSelectedSlot(hotbarSlot);
         mc.getNetworkHandler().sendPacket(
                 new net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket(hotbarSlot)
         );
@@ -154,7 +154,7 @@ public class BowSpam extends Module {
 
     private void swapBack() {
         if (previousSlot == -1) return;
-        mc.player.getInventory().selectedSlot = previousSlot;
+        mc.player.getInventory().setSelectedSlot(previousSlot);
         mc.getNetworkHandler().sendPacket(
                 new net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket(previousSlot)
         );

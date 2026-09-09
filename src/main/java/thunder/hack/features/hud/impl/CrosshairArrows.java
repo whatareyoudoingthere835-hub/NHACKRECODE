@@ -47,10 +47,10 @@ public class CrosshairArrows extends HudElement {
         int color = 0;
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate(middleW, middleH);
+        context.getMatrices().translate((float) (middleW), (float) (middleH));
         float tiltDeg = 90f / Math.abs(90f / MathUtility.clamp(mc.player.getPitch(), pitchLock.getValue(), 90f)) - 102f;
         context.getMatrices().scale(1f, (float) Math.cos(Math.toRadians(tiltDeg)));
-        context.getMatrices().translate(-middleW, -middleH);
+        context.getMatrices().translate((float) (-middleW), (float) (-middleH));
 
         smoothYaw = AnimationUtility.fast(smoothYaw, mc.player.getYaw(), 13);
 
@@ -59,9 +59,9 @@ public class CrosshairArrows extends HudElement {
                 context.getMatrices().pushMatrix();
 
                 float yaw = getRotations(e) - smoothYaw;
-                context.getMatrices().translate(middleW, middleH);
+                context.getMatrices().translate((float) (middleW), (float) (middleH));
                 context.getMatrices().rotate((yaw) * MathHelper.RADIANS_PER_DEGREE);
-                context.getMatrices().translate(-middleW, -middleH);
+                context.getMatrices().translate((float) (-middleW), (float) (-middleH));
 
                 if (Managers.FRIEND.isFriend(e))
                     color = colorf.getValue().getColor();
@@ -72,9 +72,9 @@ public class CrosshairArrows extends HudElement {
 
                 Render2DEngine.drawTracerPointer(context.getMatrices(), middleW, middleH - xOffset.getValue(), width.getValue() * 5F,tracerWidth.getValue(), downHeight.getValue(), down.getValue().isEnabled(), glow.getValue(), color);
 
-                context.getMatrices().translate(middleW, middleH);
+                context.getMatrices().translate((float) (middleW), (float) (middleH));
                 context.getMatrices().rotate((-yaw) * MathHelper.RADIANS_PER_DEGREE);
-                context.getMatrices().translate(-middleW, -middleH);
+                context.getMatrices().translate((float) (-middleW), (float) (-middleH));
                 context.getMatrices().popMatrix();
             }
         }

@@ -47,7 +47,7 @@ public class ColorPickerElement extends AbstractElement {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 
-        Matrix3x2fStack matrixStack = context.getMatrices() = matrixStack = context.getMatrices();
+        Matrix3x2fStack matrixStack = context.getMatrices();
 
         boolean colorHovered = Render2DEngine.isHovered(mouseX, mouseY, x, y + 5f, 90, 7);
 

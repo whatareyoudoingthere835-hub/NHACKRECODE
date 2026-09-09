@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -128,7 +129,7 @@ public class HoleESP extends Module {
             positions.clear();
             return;
         }
-        BlockPos centerPos = BlockPos.ofFloored(mc.player.getPos());
+        BlockPos centerPos = BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()));
         List<Box> boxes = new ArrayList<>();
 
         for (int i = centerPos.getX() - rangeXZ.getValue(); i < centerPos.getX() + rangeXZ.getValue(); i++) {

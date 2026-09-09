@@ -31,7 +31,7 @@ public class LongJump extends Module {
 
     @EventHandler
     public void onMove(EventMove e) {
-        if (prevPosition != null && mc.player.getPos().squaredDistanceTo(prevPosition) > maxDistance.getPow2Value())
+        if (prevPosition != null && new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).squaredDistanceTo(prevPosition) > maxDistance.getPow2Value())
             disable(isRu() ? "Прыжок выполнен! Отключаю.." : "Jump complete! Disabling..");
 
         if (MovementUtility.isMoving()) {
@@ -89,7 +89,7 @@ public class LongJump extends Module {
     }
 
     public void resetValues() {
-        prevPosition = mc.player.getPos();
+        prevPosition = new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ());
         ThunderHack.TICK_TIMER = 1f;
         plannedSpeed = 0;
         realSpeed = 0;
@@ -104,7 +104,7 @@ public class LongJump extends Module {
     @EventHandler
     public void onEntitySync(EventSync eventSync) {
         if (MovementUtility.isMoving())
-            realSpeed = (float) Math.hypot(mc.player.getX() - mc.player.prevX, mc.player.getZ() - mc.player.prevZ);
+            realSpeed = (float) Math.hypot(mc.player.getX() - (mc.player.getX() - mc.player.getDeltaMovement().x), mc.player.getZ() - (mc.player.getZ() - mc.player.getDeltaMovement().z));
         else resetValues();
     }
 }

@@ -5,6 +5,8 @@ import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
+import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
+import thunder.hack.injection.accesors.IClickSlotC2SPacket;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -76,7 +78,7 @@ public class GuiMove extends Module {
         if (e.getPacket() instanceof ClickSlotC2SPacket click) {
             switch (clickBypass.getValue()) {
                 case GrimSwap -> {
-                    if (click.getActionType() != SlotActionType.PICKUP && click.getActionType() != SlotActionType.PICKUP_ALL)
+                    if (((IClickSlotC2SPacket) click).th$actionType() != SlotActionType.PICKUP && ((IClickSlotC2SPacket) click).th$actionType() != SlotActionType.PICKUP_ALL)
                         sendPacket(new CloseHandledScreenC2SPacket(0));
                 }
 
@@ -84,7 +86,7 @@ public class GuiMove extends Module {
                     if (mc.player.isOnGround() && !mc.world.getBlockCollisions(mc.player, mc.player.getBoundingBox().offset(0.0, 0.0656, 0.0)).iterator().hasNext()) {
                         if (mc.player.isSprinting())
                             sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
-                        sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + 0.0656, mc.player.getZ(), false));
+                        sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + 0.0656, mc.player.getZ(), false, mc.player.horizontalCollision));
                     }
                 }
 
@@ -92,7 +94,7 @@ public class GuiMove extends Module {
                     if (mc.player.isOnGround() && !mc.world.getBlockCollisions(mc.player, mc.player.getBoundingBox().offset(0.0, 0.000000271875, 0.0)).iterator().hasNext()) {
                         if (mc.player.isSprinting())
                             sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
-                        sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + 0.000000271875, mc.player.getZ(), false));
+                        sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + 0.000000271875, mc.player.getZ(), false, mc.player.horizontalCollision));
                     }
                 }
 

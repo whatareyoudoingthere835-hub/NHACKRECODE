@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -28,14 +29,14 @@ public class ReverseStep extends Module {
     public void onEntitySync(EventSync eventPlayerUpdateWalking) {
         if (ModuleManager.packetFly.isEnabled()) return;
 
-        BlockPos playerPos = BlockPos.ofFloored(mc.player.getPos());
+        BlockPos playerPos = BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()));
 
         if (pauseIfShift.getValue() && mc.options.sneakKey.isPressed()) {
             disableTimer();
             return;
         }
 
-        if (mc.player.isTouchingWater() || mc.player.isSubmergedInWater() || mc.player.isInLava() || mc.player.isFallFlying() || mc.player.getAbilities().flying || mc.world.getBlockState(playerPos).getBlock() == Blocks.COBWEB) {
+        if (mc.player.isTouchingWater() || mc.player.isSubmergedInWater() || mc.player.isInLava() || mc.player.isGliding() || mc.player.getAbilities().flying || mc.world.getBlockState(playerPos).getBlock() == Blocks.COBWEB) {
             disableTimer();
             return;
         }

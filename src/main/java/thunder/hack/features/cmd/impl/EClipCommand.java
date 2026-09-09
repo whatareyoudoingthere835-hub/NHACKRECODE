@@ -1,5 +1,6 @@
 package thunder.hack.features.cmd.impl;
 
+import net.minecraft.util.math.Vec3d;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.block.Blocks;
@@ -40,12 +41,12 @@ public class EClipCommand extends Command {
             float y = 0.0f;
 
             for (i = 1; i < 255; ++i) {
-                if (mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos()).add(0, -i, 0)) == Blocks.AIR.getDefaultState()) {
+                if (mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).add(0, -i, 0)) == Blocks.AIR.getDefaultState()) {
                     y = -i - 1;
                     break;
                 }
 
-                if (mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos()).add(0, -i, 0)) != Blocks.BEDROCK.getDefaultState())
+                if (mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).add(0, -i, 0)) != Blocks.BEDROCK.getDefaultState())
                     continue;
 
                 sendMessage(Formatting.RED + " можно телепортироваться только под бедрок");
@@ -60,12 +61,12 @@ public class EClipCommand extends Command {
             float y = 0.0f;
 
             for (i = 1; i < 255; ++i) {
-                if (mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos()).add(0, -i, 0)) == Blocks.AIR.getDefaultState()) {
+                if (mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).add(0, -i, 0)) == Blocks.AIR.getDefaultState()) {
                     y = -i - 1;
                     break;
                 }
 
-                if (mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos()).add(0, -i, 0)) != Blocks.BEDROCK.getDefaultState())
+                if (mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).add(0, -i, 0)) != Blocks.BEDROCK.getDefaultState())
                     continue;
 
                 sendMessage(Formatting.RED + " можно телепортироваться только под бедрок");
@@ -84,7 +85,7 @@ public class EClipCommand extends Command {
             float y = 0.0f;
 
             for (i = 4; i < 255; ++i) {
-                if (mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos()).add(0, i, 0)) != Blocks.AIR.getDefaultState())
+                if (mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).add(0, i, 0)) != Blocks.AIR.getDefaultState())
                     continue;
                 y = i + 1;
                 break;
@@ -97,7 +98,7 @@ public class EClipCommand extends Command {
             float y = 0.0f;
 
             for (i = 4; i < 255; ++i) {
-                if (mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos()).add(0, i, 0)) != Blocks.AIR.getDefaultState())
+                if (mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).add(0, i, 0)) != Blocks.AIR.getDefaultState())
                     continue;
                 y = i + 1;
                 break;
@@ -122,10 +123,10 @@ public class EClipCommand extends Command {
             mc.interactionManager.clickSlot(0, 6, 1, SlotActionType.PICKUP, mc.player);
         }
 
-        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), false));
-        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), false));
+        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), false, mc.player.horizontalCollision));
+        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), false, mc.player.horizontalCollision));
         mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
-        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + (double) y, mc.player.getZ(), false));
+        mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + (double) y, mc.player.getZ(), false, mc.player.horizontalCollision));
         mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
 
         if (elytra != -2) {

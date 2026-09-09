@@ -1,5 +1,7 @@
 package thunder.hack.gui.mainmenu;
 
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.gl.RenderPipelines;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -84,7 +86,7 @@ public class CreditsScreen extends Screen {
             FontRenderers.sf_medium.drawString(context.getMatrices(), contributor.description, cX + 10, cY + 108, new Color(0x818182).getRGB());
 
             if (contributor.avatar != null)
-                context.drawTexture(contributor.avatar, (int) (cX + 70 - 24), (int) (halfOfHeight - 110), 48, 48, 0, 0, 96, 96, 96, 96);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, contributor.avatar, (int) (cX + 70 - 24), (int) (halfOfHeight - 110), 0, 0, 96, 96, 96, 96, -1);
 
             if (Render2DEngine.isHovered(mouseX, mouseY, cX, cY, 140, 240) && !Objects.equals(contributor.clickAction, ""))
                 Render2DEngine.drawRound(context.getMatrices(), cX, cY, 140, 240, 8, new Color(0x5FFFFFF, true));
@@ -94,13 +96,17 @@ public class CreditsScreen extends Screen {
 
         Render2DEngine.drawHudBase(context.getMatrices(), mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30, 5, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 60, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
 
-        context.drawTexture(TextureStorage.thTeam, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30, 0, 0, 30, 30, 30, 30);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.thTeam, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 0, 0, 30, 30, 30, 30, -1);
 
     }
 
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         float halfOfWidth = mc.getWindow().getScaledWidth() / 2f;
         float halfOfHeight = mc.getWindow().getScaledHeight() / 2f;
         float globalOffset = (contributors.size() * 150) / 2f;
@@ -116,7 +122,7 @@ public class CreditsScreen extends Screen {
         if (Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 40, 40))
             mc.setScreen(MainMenuScreen.getInstance());
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     public record Contributor(String name, Identifier avatar, String role, String description, String clickAction) {

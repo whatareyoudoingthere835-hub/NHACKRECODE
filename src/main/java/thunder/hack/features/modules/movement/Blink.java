@@ -68,7 +68,7 @@ public class Blink extends Module {
         }
 
         storedTransactions.clear();
-        lastPos = mc.player.getPos();
+        lastPos = new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ());
         prevVelocity = mc.player.getVelocity();
         prevYaw = mc.player.getYaw();
         prevSprinting = mc.player.isSprinting();

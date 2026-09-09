@@ -21,7 +21,7 @@ public class AntiCrash extends Module { //https://github.com/Bram1903/MinecraftP
 
     @EventHandler
     public void onPacketReceive(PacketEvent.@NotNull Receive receive) {
-        if (receive.getPacket() instanceof ExplosionS2CPacket exp && (exp.getX() > 1E9 || exp.getY() > 1E9 || exp.getZ() > 1E9 || exp.getRadius() > 1E9)) {
+        if (receive.getPacket() instanceof ExplosionS2CPacket exp && (exp.center().x > 1E9 || exp.center().y > 1E9 || exp.center().z > 1E9 || exp.radius() > 1E9)) {
             if (debug.getValue() && debugTimer.passedMs(1000)) {
                 sendMessage("ExplosionS2CPacket canceled");
                 debugTimer.reset();

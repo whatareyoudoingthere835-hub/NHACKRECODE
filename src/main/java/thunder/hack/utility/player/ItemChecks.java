@@ -39,7 +39,7 @@ public final class ItemChecks {
         if (stack.isIn(ItemTags.HEAD_ARMOR)) return EquipmentSlot.HEAD;
         if (stack.isIn(ItemTags.CHEST_ARMOR)) return EquipmentSlot.CHEST;
         if (stack.isIn(ItemTags.LEG_ARMOR)) return EquipmentSlot.LEGS;
-        if (stack.isIn(ItemTags.FEET_ARMOR)) return EquipmentSlot.FEET;
+        if (stack.isIn(ItemTags.FOOT_ARMOR)) return EquipmentSlot.FEET;
         return null;
     }
 

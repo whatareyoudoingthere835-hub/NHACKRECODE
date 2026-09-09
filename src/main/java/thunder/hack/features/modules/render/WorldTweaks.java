@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.render;
 
+import thunder.hack.injection.accesors.IClientWorldMixin;
+
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import thunder.hack.events.impl.PacketEvent;
@@ -31,7 +33,7 @@ public class WorldTweaks extends Module {
 
     @Override
     public void onDisable() {
-        mc.world.setTimeOfDay(oldTime);
+        ((IClientWorldMixin) mc.world).setTimeOfDay(oldTime);
     }
 
     @EventHandler
@@ -44,6 +46,6 @@ public class WorldTweaks extends Module {
 
     @Override
     public void onUpdate() {
-        if (ctime.getValue()) mc.world.setTimeOfDay(ctimeVal.getValue() * 1000);
+        if (ctime.getValue()) ((IClientWorldMixin) mc.world).setTimeOfDay(ctimeVal.getValue() * 1000);
     }
 }

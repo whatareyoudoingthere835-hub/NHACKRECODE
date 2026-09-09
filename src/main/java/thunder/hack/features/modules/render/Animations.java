@@ -56,14 +56,14 @@ public class Animations extends Module {
     @Override
     public void onUpdate() {
         if (fullNullCheck()) return;
-        if (oldAnimationsM.getValue() && ((IHeldItemRenderer) mc.getEntityRenderManager().getHeldItemRenderer()).getEquippedProgressMainHand() <= 1f) {
-            ((IHeldItemRenderer) mc.getEntityRenderManager().getHeldItemRenderer()).setEquippedProgressMainHand(1f);
-            ((IHeldItemRenderer) mc.getEntityRenderManager().getHeldItemRenderer()).setItemStackMainHand(mc.player.getMainHandStack());
+        if (oldAnimationsM.getValue() && ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).getEquippedProgressMainHand() <= 1f) {
+            ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).setEquippedProgressMainHand(1f);
+            ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).setItemStackMainHand(mc.player.getMainHandStack());
         }
 
-        if (oldAnimationsOff.getValue() && ((IHeldItemRenderer) mc.getEntityRenderManager().getHeldItemRenderer()).getEquippedProgressOffHand() <= 1f) {
-            ((IHeldItemRenderer) mc.getEntityRenderManager().getHeldItemRenderer()).setEquippedProgressOffHand(1f);
-            ((IHeldItemRenderer) mc.getEntityRenderManager().getHeldItemRenderer()).setItemStackOffHand(mc.player.getOffHandStack());
+        if (oldAnimationsOff.getValue() && ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).getEquippedProgressOffHand() <= 1f) {
+            ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).setEquippedProgressOffHand(1f);
+            ((IHeldItemRenderer) mc.gameRenderer.getHeldItemRenderer()).setItemStackOffHand(mc.player.getOffHandStack());
         }
     }
 
@@ -388,7 +388,7 @@ public class Animations extends Module {
         if (stack.isEmpty()) {
             return;
         }
-        mc.getEntityRenderManager().getHeldItemRenderer().renderItem(entity, renderMode, stack, matrices, vertexConsumers, light);
+        mc.gameRenderer.getHeldItemRenderer().renderItem(entity, renderMode, stack, matrices, vertexConsumers, light);
     }
 
     private void applyEatOrDrinkTransformationCustom(MatrixStack matrices, float tickDelta, Arm arm, @NotNull ItemStack stack) {

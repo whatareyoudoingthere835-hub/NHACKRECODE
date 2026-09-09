@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import net.minecraft.client.gl.RenderPipelines;
 import org.joml.Matrix3x2fStack;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.DrawContext;
@@ -55,13 +56,13 @@ public class Companion extends HudElement {
         context.getMatrices().scale((float) scale.getValue() / 100f, (float) scale.getValue() / 100f, 1);
         context.getMatrices().translate(-((int) getPosX() + 100), -((int) getPosY() + 100));
         if (mode.getValue() == Mode.Boykisser)
-            context.drawTexture(TextureStorage.boykisser, (int) getPosX(), (int) getPosY(), 0, currentFrame * 128, 130, 128, 130, 6784);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.boykisser, (int) getPosX(), (int) getPosY(), 0, currentFrame * 128, 130, 128, 130, 6784, -1);
         else if (mode.getValue() == Mode.Paimon)
-            context.drawTexture(TextureStorage.paimon, (int) getPosX(), (int) getPosY(), 0, currentFrame * 200, 200, 200, 200, 10600);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.paimon, (int) getPosX(), (int) getPosY(), 0, currentFrame * 200, 200, 200, 200, 10600, -1);
         else if (mode.getValue() == Mode.Baltika)
-            context.drawTexture(TextureStorage.baltika, (int) getPosX(), (int) getPosY(), 0, 0, 421, 800, 421, 800);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.baltika, (int) getPosX(), (int) getPosY(), 0, 0, 421, 800, 421, 800, -1);
         else if (mode.getValue() == Mode.Kowk)
-            context.drawTexture(TextureStorage.kowk, (int) getPosX(), (int) getPosY(), 0, 0, 287, 252, 287, 252);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.kowk, (int) getPosX(), (int) getPosY(), 0, 0, 287, 252, 287, 252, -1);
         context.getMatrices().popMatrix();
 
         if (!lastPop.passedMs(2000)) {

@@ -160,7 +160,7 @@ class GlyphMap {
                     backingBuffer.put(abgr);
                 }
             }
-            NativeImageBackedTexture tex = new NativeImageBackedTexture(() -> "thunderhack_font_glyphmap", image);
+            NativeImageBackedTexture tex = new NativeImageBackedTexture(image);
             tex.upload();
             MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(i, tex));
         } catch (Throwable e) {

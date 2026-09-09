@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -65,10 +66,10 @@ public final class TriggerBot extends Module {
         boolean reasonForSkipCrit =
                 !smartCrit.getValue().isEnabled()
                         || mc.player.getAbilities().flying
-                        || (mc.player.isFallFlying() || ModuleManager.elytraPlus.isEnabled())
+                        || (mc.player.isGliding() || ModuleManager.elytraPlus.isEnabled())
                         || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
                         || mc.player.isHoldingOntoLadder()
-                        || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos())).getBlock() == Blocks.COBWEB;
+                        || mc.world.getBlockState(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()))).getBlock() == Blocks.COBWEB;
 
         if (mc.player.fallDistance > 1 && mc.player.fallDistance < 1.14)
             return false;

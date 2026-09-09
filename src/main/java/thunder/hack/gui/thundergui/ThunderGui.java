@@ -1,5 +1,7 @@
 package thunder.hack.gui.thundergui;
 
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.input.KeyInput;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -224,7 +226,7 @@ public class ThunderGui extends Screen {
         Render2DEngine.drawRound(context.getMatrices(), main_posX + 5, main_posY + 5, 90, 30, 7f, ThunderHackGui.getColorByTheme(1));
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().scale(0.85f, 0.85f, 1);
+        context.getMatrices().scale(0.85f, 0.85f);
         context.getMatrices().translate((main_posX + 10) / 0.85, (main_posY + 15) / 0.85);
         FontRenderers.thglitch.drawString(context.getMatrices(), "THUNDERHACK", 0, 0, ThunderHackGui.getColorByTheme(2).getRGB());
         context.getMatrices().translate(-(main_posX + 10) / 0.85, -(main_posY + 15) / 0.85);
@@ -455,7 +457,11 @@ public class ThunderGui extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int clickedButton) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int clickedButton = click.button();
+
         mouse_state = true;
         if (isHoveringItem(main_posX + 368, main_posY + 17, 20, 6, (float) mouseX, (float) mouseY)) {
             if (listening_config) {
@@ -463,14 +469,14 @@ public class ThunderGui extends Screen {
                 config_string = "Save config";
                 listening_config = false;
                 loadConfigs();
-                return super.mouseClicked(mouseX, mouseY, clickedButton);
+                return super.mouseClicked(click, doubled);
             }
             if (listening_friend) {
                 Managers.FRIEND.addFriend(friend_string);
                 friend_string = "Add friend";
                 listening_friend = false;
                 loadFriends();
-                return super.mouseClicked(mouseX, mouseY, clickedButton);
+                return super.mouseClicked(click, doubled);
             }
         }
         if (isHoveringItem(main_posX + 105, main_posY + 14, 11, 11, (float) mouseX, (float) mouseY)) {
@@ -524,26 +530,34 @@ public class ThunderGui extends Screen {
         this.categories.forEach(category -> category.mouseClicked((int) mouseX, (int) mouseY, 0));
         this.configs.forEach(component -> component.mouseClicked((int) mouseX, (int) mouseY, clickedButton));
         this.friends.forEach(component -> component.mouseClicked((int) mouseX, (int) mouseY, clickedButton));
-        return super.mouseClicked(mouseX, mouseY, clickedButton);
+        return super.mouseClicked(click, doubled);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(Click click) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         mouse_state = false;
         dragging = false;
         rescale = false;
         settings.forEach(settingElement -> settingElement.mouseReleased((int) mouseX, (int) mouseY, button));
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyInput input) {
+        int keyCode = input.key();
+        int scanCode = input.scancode();
+        int modifiers = input.modifiers();
+
         try {
             keyTyped(GLFW.glfwGetKeyName(keyCode, scanCode), keyCode);
         } catch (IOException ignored) {
         }
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            super.keyPressed(keyCode, scanCode, modifiers);
+            super.keyPressed(input);
             return true;
         }
         return false;

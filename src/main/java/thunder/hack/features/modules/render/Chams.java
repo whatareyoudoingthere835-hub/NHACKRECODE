@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.model.ModelPart;
@@ -154,7 +155,7 @@ public class Chams extends Module {
             k = j - h;
         }
         float m = MathHelper.lerp(g, pe.prevPitch, pe.getPitch());
-        if (LivingEntityRenderer.shouldFlipUpsideDown(pe)) {
+        if (pe.isSleeping()) {
             m *= -1.0f;
             k *= -1.0f;
         }
@@ -173,8 +174,8 @@ public class Chams extends Module {
         n = 0.0f;
         float o = 0.0f;
         if (!pe.hasVehicle() && pe.isAlive()) {
-            n = pe.limbAnimator.getSpeed(g);
-            o = pe.limbAnimator.getPos(g);
+            n = pe.limbAnimator.getSpeed();
+            o = pe.limbAnimator.getAnimationProgress(g);
             if (pe.isBaby())
                 o *= 3.0f;
 
@@ -202,7 +203,7 @@ public class Chams extends Module {
         float k = abstractClientPlayerEntity.getPitch(h);
         float l;
         float m;
-        if (abstractClientPlayerEntity.isFallFlying()) {
+        if (abstractClientPlayerEntity.isGliding()) {
             setupTransforms(abstractClientPlayerEntity, matrixStack, f, g, h);
             l = (float) abstractClientPlayerEntity.getFallFlyingTicks() + h;
             m = MathHelper.clamp(l * l / 100.0F, 0.0F, 1.0F);

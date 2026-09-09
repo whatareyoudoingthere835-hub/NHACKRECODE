@@ -99,7 +99,7 @@ public class Nuker extends Module {
 
     @EventHandler
     public void onBlockDestruct(EventSetBlockState e) {
-        if (blockData != null && e.getPos() == blockData.bp && e.getState().isAir()) {
+        if (blockData != null && new Vec3d(e.getX(), e.getY(), e.getZ()) == blockData.bp && e.getState().isAir()) {
             blockData = null;
             new Thread(() -> {
                 if ((targetBlockType != null || blocks.getValue().equals(BlockSelection.All)) && !mc.options.attackKey.isPressed() && blockData == null) {
@@ -141,7 +141,7 @@ public class Nuker extends Module {
 
         if (mode.getValue() == Mode.FastAF) {
             int intRange = (int) (Math.floor(range.getValue()) + 1);
-            Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+            Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).up()), intRange, intRange, intRange);
 
             for (BlockPos b : blocks_) {
                 if (flatten.getValue() && b.getY() < mc.player.getY())
@@ -202,7 +202,7 @@ public class Nuker extends Module {
 
     public BlockData getNukerBlockPos() {
         int intRange = (int) (Math.floor(range.getValue()) + 1);
-        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).up()), intRange, intRange, intRange);
 
         for (BlockPos b : blocks_) {
             BlockState state = mc.world.getBlockState(b);

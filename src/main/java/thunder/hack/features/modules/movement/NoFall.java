@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -45,7 +46,7 @@ public class NoFall extends Module {
                 case MatrixOffGround, Vanilla -> cancelGround = true;
                 case Rubberband -> sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
                 case Items -> {
-                    BlockPos playerPos = BlockPos.ofFloored(mc.player.getPos());
+                    BlockPos playerPos = BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()));
 
                     SearchInvResult snowResult = InventoryUtility.findItemInHotBar(Items.POWDER_SNOW_BUCKET);
                     SearchInvResult pearlResult = InventoryUtility.findItemInHotBar(Items.ENDER_PEARL);
@@ -86,7 +87,7 @@ public class NoFall extends Module {
     @EventHandler
     public void onTick(EventTick e) {
         if (mode.is(Mode.Grim2b2t) && isFalling()) {
-            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY() + 0.000000001, mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), false));
+            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY() + 0.000000001, mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), false, mc.player.horizontalCollision));
             mc.player.onLanding();
         }
     }
@@ -153,7 +154,7 @@ public class NoFall extends Module {
         if (mc == null || mc.player == null || mc.world == null)
             return false;
 
-        if (mc.player.isFallFlying())
+        if (mc.player.isGliding())
             return false;
 
         if (mode.is(Mode.Grim2b2t))

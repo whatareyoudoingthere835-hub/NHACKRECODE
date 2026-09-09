@@ -88,7 +88,7 @@ public class MSAAFramebuffer extends Framebuffer {
         depthAttachment = MinecraftClient.getInstance().getFramebuffer().getDepthAttachment();
 
         checkFramebufferStatus();
-        clear(getError);
+        clear();
         endRead();
     }
 

@@ -147,7 +147,7 @@ public class Speed extends Module {
         // Спуфим полет на элитре каждые 100мс
         if (elytraSpoofTimer.passedMs(100)) {
             // Сохраняем текущий слот
-            int currentSlot = mc.player.getInventory().selectedSlot;
+            int currentSlot = mc.player.getInventory().getSelectedSlot();
 
             // Переключаемся на элитру
             sendPacket(new UpdateSelectedSlotC2SPacket(elytraResult.slot()));
@@ -216,9 +216,9 @@ public class Speed extends Module {
             if (mc.world.isAir(pos) || !result.found() || !mc.options.jumpKey.isPressed())
                 return;
 
-            prevSlot = mc.player.getInventory().selectedSlot;
+            prevSlot = mc.player.getInventory().getSelectedSlot();
             result.switchTo();
-            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), 90, mc.player.isOnGround()));
+            sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), 90, mc.player.isOnGround(), mc.player.horizontalCollision));
 
             if (strict.getValue()) {
                 sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, Direction.UP));
@@ -234,7 +234,7 @@ public class Speed extends Module {
     @EventHandler
     public void onPostTick(EventPostTick e) {
         if ((mode.is(Mode.GrimIce) || mode.is(Mode.GrimCombo)) && prevSlot != -1) {
-            mc.player.getInventory().selectedSlot = prevSlot;
+            mc.player.getInventory().setSelectedSlot(prevSlot);
             ((IInteractionManager) mc.interactionManager).syncSlot();
             prevSlot = -1;
         }
@@ -264,7 +264,7 @@ public class Speed extends Module {
                         mc.interactionManager.clickSlot(0, 6, 1, SlotActionType.PICKUP, mc.player);
                     }
                     mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
-                    int prevSlot = mc.player.getInventory().selectedSlot;
+                    int prevSlot = mc.player.getInventory().getSelectedSlot();
                     if (prevSlot != fireSlot && !inOffHand)
                         sendPacket(new UpdateSelectedSlotC2SPacket(fireSlot));
                     mc.interactionManager.interactItem(mc.player, inOffHand ? Hand.OFF_HAND : Hand.MAIN_HAND);
@@ -326,7 +326,7 @@ public class Speed extends Module {
         }
         if (mode.getValue() != Mode.NCP && mode.getValue() != Mode.StrictStrafe) return;
         if (mc.player.getAbilities().flying) return;
-        if (mc.player.isFallFlying()) return;
+        if (mc.player.isGliding()) return;
         if (mc.player.getHungerManager().getFoodLevel() <= 6) return;
         if (event.isCancelled()) return;
         event.cancel();

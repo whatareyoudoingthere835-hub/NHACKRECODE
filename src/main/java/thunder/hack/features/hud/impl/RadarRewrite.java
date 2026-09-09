@@ -1,11 +1,12 @@
 package thunder.hack.features.hud.impl;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix3x2fStack;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Matrix3x2fStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.RotationAxis;
@@ -42,8 +43,8 @@ public class RadarRewrite extends HudElement {
 
     public static float getRotations(Entity entity) {
         if (mc.player == null) return 0;
-        double x = interp(entity.getPos().x, entity.prevX) - interp(mc.player.getPos().x, mc.player.prevX);
-        double z = interp(entity.getPos().z, entity.prevZ) - interp(mc.player.getPos().z, mc.player.prevZ);
+        double x = interp(entity.getX(), (entity.getX() - entity.getDeltaMovement().x)) - interp(mc.player.getX(), (mc.player.getX() - mc.player.getDeltaMovement().x));
+        double z = interp(entity.getZ(), (entity.getZ() - entity.getDeltaMovement().z)) - interp(mc.player.getZ(), (mc.player.getZ() - mc.player.getDeltaMovement().z));
         return (float) -(Math.atan2(x, z) * (180 / Math.PI));
     }
 
@@ -99,20 +100,20 @@ public class RadarRewrite extends HudElement {
         setBounds(getPosX(), getPosY(),(int) (CRadius.getValue() * 2), (int) (CRadius.getValue() * 2));
     }
 
-    public void renderCompass(MatrixStack matrices, float x, float y) {
+    public void renderCompass(Matrix3x2fStack matrices, float x, float y) {
         float pitchFactor = Math.abs(90f / MathUtility.clamp(mc.player.getPitch(), pitchLock.getValue(), 90f));
         drawEllipsCompas(matrices, -(int) mc.player.getYaw(), x, y, pitchFactor, 1f, -2f, 1f, ciColor.getValue().getColorObject(), false);
         drawEllipsCompas(matrices, -(int) mc.player.getYaw(), x, y, pitchFactor, 1f, 0f, 3f, Color.WHITE, true);
     }
 
-    public void drawEllipsCompas(MatrixStack matrices, int yaw, float x, float y, float x2, float y2, float margin, float width, Color color, boolean Dir) {
+    public void drawEllipsCompas(Matrix3x2fStack matrices, int yaw, float x, float y, float x2, float y2, float margin, float width, Color color, boolean Dir) {
         drawElipse(matrices, x, y, x2, y2, 15 + yaw, 75 + yaw, margin, width, color, Dir ? "W" : "");
         drawElipse(matrices, x, y, x2, y2, 105 + yaw, 165 + yaw, margin, width, color, Dir ? "N" : "");
         drawElipse(matrices, x, y, x2, y2, 195 + yaw, 255 + yaw, margin, width, color, Dir ? "E" : "");
         drawElipse(matrices, x, y, x2, y2, 285 + yaw, 345 + yaw, margin, width, color, Dir ? "S" : "");
     }
 
-    public void drawElipse(MatrixStack matrices, float x, float y, float rx, float ry, float start, float end, float margin, float width, Color color, String direction) {
+    public void drawElipse(Matrix3x2fStack matrices, float x, float y, float rx, float ry, float start, float end, float margin, float width, Color color, String direction) {
         float sin;
         float cos;
         float endOffset;

@@ -39,7 +39,7 @@ public class HitBubbles extends Module {
         ArrayList<HitBubble> bubblesCopy = Lists.newArrayList(bubbles);
         bubblesCopy.forEach(b -> {
             matrixStack.push();
-            matrixStack.translate(b.x - mc.gameRenderer.getCamera().getPos().getX(), b.y - mc.gameRenderer.getCamera().getPos().getY(), b.z - mc.gameRenderer.getCamera().getPos().getZ());
+            matrixStack.translate(b.x - gameRenderer.getCamera().getCameraPos().getX(), b.y - gameRenderer.getCamera().getCameraPos().getY(), b.z - gameRenderer.getCamera().getCameraPos().getZ());
             matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(b.yaw));
             matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(b.pitch));
             drawBubble(matrixStack, -b.life.getPassedTimeMs() / 4f, b.life.getPassedTimeMs() / 1500f);

@@ -1,5 +1,6 @@
 package thunder.hack.core;
 
+import net.minecraft.client.gl.RenderPipelines;
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
@@ -162,7 +163,7 @@ public final class Core {
             int yPos = (int) (mc.getWindow().getScaledHeight() / 2f - 150);
             float alpha = (1f - (skullTimer.getPassedTimeMs() / 3000f));
 
-            e.drawTexture(TextureStorage.skull, xPos, yPos, 0, 0, 300, 300, 300, 300);
+            e.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.skull, xPos, yPos, 0, 0, 300, 300, 300, 300, -1);
 
         } else showSkull = false;
     }
@@ -173,13 +174,13 @@ public final class Core {
             float xOffset = mc.getWindow().getScaledWidth() / 2f;
             float yOffset = mc.getWindow().getScaledHeight() / 2f;
             float yaw = getRotations(new Vec2f(ThunderHack.gps_position.getX(), ThunderHack.gps_position.getZ())) - mc.player.getYaw();
-            e.getMatrices().translate(xOffset, yOffset);
+            e.getMatrices().translate((float) (xOffset), (float) (yOffset));
             e.getMatrices().rotate((yaw) * MathHelper.RADIANS_PER_DEGREE);
-            e.getMatrices().translate(-xOffset, -yOffset);
+            e.getMatrices().translate((float) (-xOffset), (float) (-yOffset));
             Render2DEngine.drawTracerPointer(e.getMatrices(), xOffset, yOffset - 50, 12.5f, 0.5f, 3.63f, true, true, HudEditor.getColor(1).getRGB());
-            e.getMatrices().translate(xOffset, yOffset);
+            e.getMatrices().translate((float) (xOffset), (float) (yOffset));
             e.getMatrices().rotate((-yaw) * MathHelper.RADIANS_PER_DEGREE);
-            e.getMatrices().translate(-xOffset, -yOffset);
+            e.getMatrices().translate((float) (-xOffset), (float) (-yOffset));
 
             FontRenderers.modules.drawCenteredString(e.getMatrices(), "gps (" + dst + "m)", (float) (Math.sin(Math.toRadians(yaw)) * 50f) + xOffset, (float) (yOffset - (Math.cos(Math.toRadians(yaw)) * 50f)) - 23, -1);
 
@@ -214,8 +215,8 @@ public final class Core {
 
     public static float getRotations(Vec2f vec) {
         if (mc.player == null) return 0;
-        double x = vec.x - mc.player.getPos().x;
-        double z = vec.y - mc.player.getPos().z;
+        double x = vec.x - mc.player.getX();
+        double z = vec.y - mc.player.getZ();
         return (float) -(Math.atan2(x, z) * (180 / Math.PI));
     }
 
@@ -224,8 +225,8 @@ public final class Core {
             return;
         }
 
-        float g = -(playerEntity.horizontalSpeed + (playerEntity.horizontalSpeed - playerEntity.prevHorizontalSpeed) * tickDelta);
-        float h = MathHelper.lerp(tickDelta, playerEntity.prevStrideDistance, playerEntity.strideDistance);
+        float g = -((Math.hypot(playerEntity.getDeltaMovement().x, playerEntity.getDeltaMovement().z)) + ((Math.hypot(playerEntity.getDeltaMovement().x, playerEntity.getDeltaMovement().z)) - playerEntity.getHorizontalSpeed()) * tickDelta);
+        float h = MathHelper.lerp(tickDelta, 0.0F, 0.0F);
         matrices.translate(MathHelper.sin(g * (float) Math.PI) * h * 0.1f, -Math.abs(MathHelper.cos(g * (float) Math.PI) * h) * 0.3, 0.0f);
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0f));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2f) * h) * 0.3f));

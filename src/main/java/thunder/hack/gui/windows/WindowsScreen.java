@@ -1,9 +1,13 @@
 package thunder.hack.gui.windows;
 
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.gl.RenderPipelines;
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.CharInput;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -40,7 +44,7 @@ public class WindowsScreen extends Screen {
         if (Module.fullNullCheck())
             renderBackground(context, mouseX, mouseY, delta);
 
-        Matrix3x2fStack matrices = context.getMatrices() = matrices = context.getMatrices();
+        Matrix3x2fStack matrices = context.getMatrices();
         int i = mc.getWindow().getScaledWidth() / 2;
 
         float offset = (windows.size() * 20f) / -2f - 23;
@@ -50,7 +54,7 @@ public class WindowsScreen extends Screen {
 
 
 
-        context.drawTexture(clickGuiIcon, (int) (i + offset) + 1, mc.getWindow().getScaledHeight() - 23, 15, 15, 0, 0, 15, 15, 15, 15);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, clickGuiIcon, (int) (i + offset) + 1, mc.getWindow().getScaledHeight() - 23, 0, 0, 15, 15, 15, 15, -1);
 
 
 
@@ -64,7 +68,7 @@ public class WindowsScreen extends Screen {
 
 
 
-            context.drawTexture(w.getIcon() != null ? w.getIcon() : TextureStorage.configIcon, (int) (i + offset) + 3, mc.getWindow().getScaledHeight() - 21, 11, 11, 0, 0, 11, 11, 11, 11);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, w.getIcon() != null ? w.getIcon() : TextureStorage.configIcon, (int) (i + offset) + 3, mc.getWindow().getScaledHeight() - 21, 0, 0, 11, 11, 11, 11, -1);
 
 
             offset += 20f;
@@ -80,13 +84,21 @@ public class WindowsScreen extends Screen {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(Click click) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         windows.forEach(w -> w.mouseReleased(mouseX, mouseY, button));
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         windows.stream().filter(WindowBase::isVisible).forEach(w -> w.mouseClicked(mouseX, mouseY, button));
 
         int i = mc.getWindow().getScaledWidth() / 2;
@@ -102,18 +114,26 @@ public class WindowsScreen extends Screen {
             offset += 20f;
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyInput input) {
+        int keyCode = input.key();
+        int scanCode = input.scancode();
+        int modifiers = input.modifiers();
+
         windows.stream().filter(WindowBase::isVisible).forEach(w -> w.keyPressed(keyCode, scanCode, modifiers));
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(input);
     }
 
-    public boolean charTyped(char key, int keyCode) {
+    public boolean charTyped(CharInput input) {
+        int codePoint = input.codepoint();
+        int keyCode = input.modifiers();
+        char key = (char) codePoint;
+
         windows.stream().filter(WindowBase::isVisible).forEach(w -> w.charTyped(key, keyCode));
-        return super.charTyped(key, keyCode);
+        return super.charTyped(input);
     }
 
     @Override

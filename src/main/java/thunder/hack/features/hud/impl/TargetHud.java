@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import org.joml.Matrix4f;
 import thunder.hack.utility.render.Draw2D;
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -76,7 +77,7 @@ public class TargetHud extends HudElement {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private net.minecraft.util.Identifier getEntityTexture(LivingEntity entity) {
-        var renderManager = mc.getEntityRenderManager();
+        var renderManager = mc.getEntityRenderDispatcher();
         var state = renderManager.getAndUpdateRenderState(entity, Render3DEngine.getTickDelta());
         if (state == null) return null;
         return ((EntityRenderer) renderManager.getRenderer(entity)).getTexture(state);
@@ -299,7 +300,7 @@ public class TargetHud extends HudElement {
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(getPosX() + 3.5f + 20, getPosY() + 3.5f + 20);
-        context.getMatrices().scale(1 - hurtPercent / 15f, 1 - hurtPercent / 15f, 1f);
+        context.getMatrices().scale(1 - hurtPercent / 15f, 1 - hurtPercent / 15f);
         context.getMatrices().translate(-(getPosX() + 3.5f + 20), -(getPosY() + 3.5f + 20));
 
 
@@ -307,7 +308,7 @@ public class TargetHud extends HudElement {
 
 
 
-        Render2DEngine.renderRoundedQuadInternal(context.getMatrices().peek().getPositionMatrix(), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 3.5f, getPosY() + 3.5f, getPosX() + 3.5f + 40, getPosY() + 3.5f + 40, 7, 10);
+        Render2DEngine.renderRoundedQuadInternal(new Matrix4f().set(context.getMatrices().last()), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 3.5f, getPosY() + 3.5f, getPosX() + 3.5f + 40, getPosY() + 3.5f + 40, 7, 10);
 
 
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 3.5f, getPosY() + 3.5f, 40, 40, 8, 8, 8, 8, 64, 64);
@@ -337,7 +338,7 @@ public class TargetHud extends HudElement {
 
 
             //Броня
-            List<ItemStack> armor = ((PlayerEntity) target).getInventory().armor;
+            List<ItemStack> armor = java.util.List.of(((PlayerEntity) target).getInventory().getStack(36), ((PlayerEntity) target).getInventory().getStack(37), ((PlayerEntity) target).getInventory().getStack(38), ((PlayerEntity) target).getInventory().getStack(39));
             ItemStack[] items = new ItemStack[]{target.getMainHandStack(), armor.get(3), armor.get(2), armor.get(1), armor.get(0), target.getOffHandStack()};
 
             float xItemOffset = getPosX() + 48;
@@ -346,7 +347,7 @@ public class TargetHud extends HudElement {
                 context.getMatrices().translate(xItemOffset, getPosY() + 15);
                 context.getMatrices().scale(0.75f, 0.75f);
                 context.drawItem(itemStack, 0, 0);
-                context.drawItemInSlot(mc.textRenderer, itemStack, 0, 0);
+                context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
                 context.getMatrices().popMatrix();
                 xItemOffset += 12;
             }
@@ -380,7 +381,7 @@ public class TargetHud extends HudElement {
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(getPosX() + 2.5 + 15, getPosY() + 2.5 + 15);
-        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f, 1f);
+        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f);
         context.getMatrices().translate(-(getPosX() + 2.5 + 15), -(getPosY() + 2.5 + 15));
 
 
@@ -388,7 +389,7 @@ public class TargetHud extends HudElement {
 
 
 
-        Render2DEngine.renderRoundedQuadInternal(context.getMatrices().peek().getPositionMatrix(), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 30, getPosY() + 2.5 + 30, 5, 10);
+        Render2DEngine.renderRoundedQuadInternal(new Matrix4f().set(context.getMatrices().last()), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 30, getPosY() + 2.5 + 30, 5, 10);
 
 
         Render2DEngine.renderTexture(context.getMatrices(), getPosX() + 2.5, getPosY() + 2.5, 30, 30, 8, 8, 8, 8, 64, 64);
@@ -414,7 +415,7 @@ public class TargetHud extends HudElement {
         if (target instanceof PlayerEntity) {
             //Броня
 
-            List<ItemStack> armor = ((PlayerEntity) target).getInventory().armor;
+            List<ItemStack> armor = java.util.List.of(((PlayerEntity) target).getInventory().getStack(36), ((PlayerEntity) target).getInventory().getStack(37), ((PlayerEntity) target).getInventory().getStack(38), ((PlayerEntity) target).getInventory().getStack(39));
             ItemStack[] items = new ItemStack[]{target.getMainHandStack(), armor.get(3), armor.get(2), armor.get(1), armor.get(0), target.getOffHandStack()};
 
             float xItemOffset = getPosX() + 38;
@@ -423,7 +424,7 @@ public class TargetHud extends HudElement {
                 context.getMatrices().translate(xItemOffset, getPosY() + 13);
                 context.getMatrices().scale(0.5f, 0.5f);
                 context.drawItem(itemStack, 0, 0);
-                context.drawItemInSlot(mc.textRenderer, itemStack, 0, 0);
+                context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
                 context.getMatrices().popMatrix();
                 xItemOffset += 9;
             }
@@ -516,7 +517,7 @@ public class TargetHud extends HudElement {
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(getPosX() + 2.5 + 15, getPosY() + 2.5 + 15);
-        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f, 1f);
+        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f);
         context.getMatrices().translate(-(getPosX() + 2.5 + 15), -(getPosY() + 2.5 + 15));
 
 
@@ -525,7 +526,7 @@ public class TargetHud extends HudElement {
 
 
 
-        Render2DEngine.renderRoundedQuadInternal(context.getMatrices().peek().getPositionMatrix(), animationFactor, animationFactor, animationFactor, animationFactor,
+        Render2DEngine.renderRoundedQuadInternal(new Matrix4f().set(context.getMatrices().last()), animationFactor, animationFactor, animationFactor, animationFactor,
                 getPosX() + 2.5, getPosY() + 2.5, getPosX() + 2.5 + 45, getPosY() + 2.5 + 45, 5, 10);
 
 
@@ -550,7 +551,7 @@ public class TargetHud extends HudElement {
 
         if (target instanceof PlayerEntity) {
             //Броня
-            List<ItemStack> armor = ((PlayerEntity) target).getInventory().armor;
+            List<ItemStack> armor = java.util.List.of(((PlayerEntity) target).getInventory().getStack(36), ((PlayerEntity) target).getInventory().getStack(37), ((PlayerEntity) target).getInventory().getStack(38), ((PlayerEntity) target).getInventory().getStack(39));
             ItemStack[] items = new ItemStack[]{target.getMainHandStack(), armor.get(3), armor.get(2), armor.get(1), armor.get(0), target.getOffHandStack()};
 
             float xItemOffset = getPosX() + 60;
@@ -560,7 +561,7 @@ public class TargetHud extends HudElement {
                 context.getMatrices().translate(xItemOffset, getPosY() + 35);
                 context.getMatrices().scale(0.75f, 0.75f);
                 context.drawItem(itemStack, 0, 0);
-                context.drawItemInSlot(mc.textRenderer, itemStack, 0, 0);
+                context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
 
                 context.getMatrices().popMatrix();
                 xItemOffset += 14;
@@ -573,11 +574,11 @@ public class TargetHud extends HudElement {
 
     private void celestialArmor(DrawContext context, PlayerEntity target, float posX, float posY) {
         for (int i = 0; i < 4; i++)
-            if (!target.getInventory().armor.get(3 - i).isEmpty()) {
+            if (!target.getInventory().getStack(36 + (3 - i)).isEmpty()) {
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(posX + (i > 1 ? 138 : 118), posY + (i % 2 == 0 ? 5 : 26));
-                context.drawItem(target.getInventory().armor.get(3 - i), 0, 0);
-                context.drawItemInSlot(mc.textRenderer, target.getInventory().armor.get(3 - i), 0, 0);
+                context.drawItem(target.getInventory().getStack(36 + (3 - i)), 0, 0);
+                context.drawStackOverlay(mc.textRenderer, target.getInventory().getStack(36 + (3 - i)), 0, 0);
                 context.getMatrices().popMatrix();
             }
     }
@@ -587,7 +588,7 @@ public class TargetHud extends HudElement {
             if (!(i == 0 ? target.getMainHandStack() : target.getOffHandStack()).isEmpty()) {
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(posX + (i == 0 ? 50 : 77), posY + 14);
-                context.getMatrices().scale(0.75f, 0.75f, 1f);
+                context.getMatrices().scale(0.75f, 0.75f);
                 context.drawItem((i == 0 ? target.getMainHandStack() : target.getOffHandStack()), 0, 0);
                 context.getMatrices().popMatrix();
                 FontRenderers.settings.drawString(context.getMatrices(), "x" + (i == 0 ? target.getMainHandStack() : target.getOffHandStack()).getCount(), posX + (i == 0 ? 50 : 77) + 12, posY + 21, -1);

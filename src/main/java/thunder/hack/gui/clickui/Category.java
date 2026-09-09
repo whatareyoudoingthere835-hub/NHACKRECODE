@@ -1,5 +1,6 @@
 package thunder.hack.gui.clickui;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -120,7 +121,7 @@ public class Category extends AbstractCategory {
             Render2DEngine.renderGradientTextureInternal(b, context.getMatrices(), getX() + 25, (getY() + (height - 21) / 2), 8, 8, 0, 0, 8, 8, 8, 8, m1, m2, m3, m4);
             Render2DEngine.renderGradientTextureInternal(b, context.getMatrices(), getX() + 15, (getY() + (height - 22) / 2), 12, 12, 0, 0, 12, 12, 12, 12, m1.darker().darker().darker(), m2.darker().darker().darker(), m3.darker().darker().darker(), m4.darker().darker().darker());
             Render2DEngine.renderGradientTextureInternal(b, context.getMatrices(), getX() + 5, (getY() + (height - 28) / 2), 20, 20, 0, 0, 20, 20, 20, 20, m1, m2, m3, m4);
-            BufferRenderer.drawWithGlobalProgram(b.end());
+            Render2DEngine.endBuilding(b);
 
             Render2DEngine.popWindow();
         }

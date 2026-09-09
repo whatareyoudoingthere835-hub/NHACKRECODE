@@ -1,8 +1,10 @@
 package thunder.hack.injection;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.util.DyeColor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -80,7 +82,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
     }
 
     private boolean shit() {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 344);
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), 344);
     }
 
     private boolean attack() {
@@ -169,7 +171,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
             Item focusedItem = stack.getItem();
             if (focusedItem instanceof BlockItem bi && bi.getBlock() instanceof ShulkerBoxBlock) {
                 try {
-                    Color c = new Color(Objects.requireNonNull(ShulkerBoxBlock.getColor(stack.getItem())).getEntityColor());
+                    Color c = th$shulkerColor(stack);
                     colors = new float[]{c.getRed() / 255f, c.getGreen() / 255f, c.getRed() / 255f, c.getAlpha() / 255f};
                 } catch (NullPointerException npe) {
                     colors = new float[]{1F, 1F, 1F};
@@ -193,20 +195,17 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
     @Unique
     private void draw(DrawContext context, List<ItemStack> itemStacks, int offsetX, int offsetY, int mouseX, int mouseY, float[] colors) {
 
-        RenderSystem.clear(256, true);
 
         offsetX += 8;
         offsetY -= 82;
 
         drawBackground(context, offsetX, offsetY, colors);
 
-
-        DiffuseLighting.enableGuiDepthLighting();
         int row = 0;
         int i = 0;
         for (ItemStack itemStack : itemStacks) {
             context.drawItem(itemStack, offsetX + 8 + i * 18, offsetY + 7 + row * 18);
-            context.drawItemInSlot(mc.textRenderer, itemStack, offsetX + 8 + i * 18, offsetY + 7 + row * 18);
+            context.drawStackOverlay(mc.textRenderer, itemStack, offsetX + 8 + i * 18, offsetY + 7 + row * 18);
 
             if (mouseX > offsetX + 8 + i * 18 && mouseX < offsetX + 28 + i * 18 && mouseY > offsetY + 7 + row * 18 && mouseY < offsetY + 27 + row * 18)
                 postRender = () -> context.drawTooltip(textRenderer, getTooltipFromItem(mc, itemStack), itemStack.getTooltipData(), mouseX, mouseY);
@@ -217,7 +216,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
                 row++;
             }
         }
-        DiffuseLighting.disableGuiDepthLighting();
+
 
     }
 
@@ -226,7 +225,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
 
 
 
-        context.drawTexture(TextureStorage.container, x, y, 0, 0, 176, 67, 176, 67);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.container, x, y, 0, 0, 176, 67, 176, 67, -1);
 
     }
 
@@ -236,8 +235,11 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
-    private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    private void mouseClicked(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
         if (Module.fullNullCheck()) return;
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
         if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && focusedSlot != null && !focusedSlot.getStack().isEmpty() && client.player.playerScreenHandler.getCursorStack().isEmpty()) {
             ItemStack itemStack = focusedSlot.getStack();
 
@@ -265,5 +267,14 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
                 }
             }
         }
+    }
+
+    @Unique
+    private static Color th$shulkerColor(ItemStack stack) {
+        String key = stack.getItem().getTranslationKey();
+        int dot = key.lastIndexOf('.');
+        String name = (dot > 0 ? key.substring(dot + 1) : key).replace("_shulker_box", "");
+        DyeColor dc = DyeColor.byName(name, DyeColor.WHITE);
+        return new Color(dc.getTooltipColor(), false);
     }
 }

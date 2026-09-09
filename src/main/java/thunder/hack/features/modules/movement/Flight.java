@@ -120,8 +120,8 @@ public class Flight extends Module {
 
         if (mode.is(Mode.Damage))
             if (e.getPacket() instanceof EntityVelocityUpdateS2CPacket v)
-                if (v.getVelocityY() / 8000.0 > 0.2) {
-                    velocityMotion = v.getVelocityY() / 8000.0;
+                if (((int) (v.getVelocity().y * 8000.0)) / 8000.0 > 0.2) {
+                    velocityMotion = ((int) (v.getVelocity().y * 8000.0)) / 8000.0;
                     flyTicks = boostTicks.getValue();
                 }
     }

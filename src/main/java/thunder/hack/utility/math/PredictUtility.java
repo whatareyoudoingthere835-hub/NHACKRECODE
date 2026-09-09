@@ -83,6 +83,6 @@ public class PredictUtility {
     }
 
     public static Box createBox(Vec3d vec, Entity entity) {
-        return entity.getBoundingBox().offset(entity.getPos().relativize(vec));
+        return entity.getBoundingBox().offset(new Vec3d(entity.getX(), entity.getY(), entity.getZ()).relativize(vec));
     }
 }

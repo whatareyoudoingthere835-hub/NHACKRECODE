@@ -209,7 +209,7 @@ public class Scaffold extends Module {
                 mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
 
             if (mode.is(Mode.Grim))
-                sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), rotations[0], rotations[1], mc.player.isOnGround()));
+                sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), rotations[0], rotations[1], mc.player.isOnGround(), mc.player.horizontalCollision));
 
             if (placeMode.getValue() == InteractionUtility.PlaceMode.Packet && !mode.is(Mode.Grim)) {
                 boolean finalIsOffhand = prevItem == -2;
@@ -225,7 +225,7 @@ public class Scaffold extends Module {
                 mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
 
             if (mode.is(Mode.Grim))
-                sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround()));
+                sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround(), mc.player.horizontalCollision));
 
             if (render.getValue())
                 BlockAnimationUtility.renderBlock(currentblock.position(), renderLineColor.getValue().getColorObject(), renderLineWidth.getValue(), renderFillColor.getValue().getColorObject(), animationMode.getValue(), renderMode.getValue());
@@ -287,9 +287,9 @@ public class Scaffold extends Module {
             return -2;
 
         if (mc.player.getMainHandStack().getItem() instanceof BlockItem bi && !bi.getBlock().getDefaultState().isReplaceable())
-            return mc.player.getInventory().selectedSlot;
+            return mc.player.getInventory().getSelectedSlot();
 
-        int prevSlot = mc.player.getInventory().selectedSlot;
+        int prevSlot = mc.player.getInventory().getSelectedSlot();
 
         SearchInvResult hotbarResult = InventoryUtility.findInHotBar(i -> i.getItem() instanceof BlockItem bi && !bi.getBlock().getDefaultState().isReplaceable());
         SearchInvResult invResult = InventoryUtility.findInInventory(i -> i.getItem() instanceof BlockItem bi && !bi.getBlock().getDefaultState().isReplaceable());
@@ -299,7 +299,7 @@ public class Scaffold extends Module {
                 case Inventory -> {
                     if (invResult.found()) {
                         prevSlot = invResult.slot();
-                        mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, prevSlot, mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+                        mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, prevSlot, mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP, mc.player);
                         sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
                     }
                 }
@@ -315,7 +315,7 @@ public class Scaffold extends Module {
 
         switch (autoSwitch.getValue()) {
             case Inventory -> {
-                mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, prevSlot, mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+                mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, prevSlot, mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP, mc.player);
                 sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
             }
             case Silent -> InventoryUtility.switchTo(prevSlot);

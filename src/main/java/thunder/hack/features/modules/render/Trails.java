@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
@@ -266,8 +267,8 @@ public class Trails extends Module {
         Color c = lmode.getValue() == Mode.Sync ? HudEditor.getColor(mc.player.age % 360) : lcolor.getValue().getColorObject();
 
         for (PlayerEntity player : mc.world.getPlayers()) {
-            if (player.getPos().getZ() != player.prevZ || player.getPos().getX() != player.prevX && (!onlySelf.getValue())) {
-                ((IEntity) player).getTrails().add(new Trail(new Vec3d(player.prevX, player.prevY, player.prevZ), player.getPos(), c));
+            if (new Vec3d(player.getX(), player.getY(), player.getZ()).getZ() != (player.getZ() - player.getDeltaMovement().z) || new Vec3d(player.getX(), player.getY(), player.getZ()).getX() != (player.getX() - player.getDeltaMovement().x) && (!onlySelf.getValue())) {
+                ((IEntity) player).getTrails().add(new Trail(new Vec3d((player.getX() - player.getDeltaMovement().x), (player.getY() - player.getDeltaMovement().y), (player.getZ() - player.getDeltaMovement().z)), new Vec3d(player.getX(), player.getY(), player.getZ()), c));
                 if (players.is(Players.Particles)) {
                     for (int i = 0; i < amount.getValue(); i++) {
                         particles.add(new Particle(player.getX(), MathUtility.random((float) (player.getY() + player.getHeight()), (float) player.getY()), player.getZ(), c));
@@ -289,7 +290,7 @@ public class Trails extends Module {
         }
 
         if (Managers.PLAYER.currentPlayerSpeed != 0) {
-            ((IEntity) mc.player).getTrails().add(new Trail(new Vec3d(mc.player.prevX, mc.player.prevY, mc.player.prevZ), mc.player.getPos(), c));
+            ((IEntity) mc.player).getTrails().add(new Trail(new Vec3d((mc.player.getX() - mc.player.getDeltaMovement().x), (mc.player.getY() - mc.player.getDeltaMovement().y), (mc.player.getZ() - mc.player.getDeltaMovement().z)), new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()), c));
             if (players.is(Players.Particles)) {
                 for (int i = 0; i < amount.getValue(); i++) {
                     particles.add(new Particle(mc.player.getX(), MathUtility.random((float) (mc.player.getY() + mc.player.getHeight()), (float) mc.player.getY()), mc.player.getZ(), c));
@@ -313,9 +314,9 @@ public class Trails extends Module {
         }
 
         public Vec3d interpolate(float pt) {
-            double x = from.x + ((to.x - from.x) * pt) - mc.gameRenderer.getCamera().getPos().getX();
-            double y = from.y + ((to.y - from.y) * pt) - mc.gameRenderer.getCamera().getPos().getY();
-            double z = from.z + ((to.z - from.z) * pt) - mc.gameRenderer.getCamera().getPos().getZ();
+            double x = from.x + ((to.x - from.x) * pt) - gameRenderer.getCamera().getCameraPos().getX();
+            double y = from.y + ((to.y - from.y) * pt) - gameRenderer.getCamera().getCameraPos().getY();
+            double z = from.z + ((to.z - from.z) * pt) - gameRenderer.getCamera().getCameraPos().getZ();
             return new Vec3d(x, y, z);
         }
 
@@ -432,9 +433,9 @@ public class Trails extends Module {
         public void render(Matrix3x2fStack matrixStack, BufferBuilder bufferBuilder) {
             update();
             float scale = starsScale.getValue() / 10f;
-            final double posX = x - mc.gameRenderer.getCamera().getPos().getX();
-            final double posY = y - mc.gameRenderer.getCamera().getPos().getY();
-            final double posZ = z - mc.gameRenderer.getCamera().getPos().getZ();
+            final double posX = x - gameRenderer.getCamera().getCameraPos().getX();
+            final double posY = y - gameRenderer.getCamera().getCameraPos().getY();
+            final double posZ = z - gameRenderer.getCamera().getCameraPos().getZ();
 
             Camera camera = mc.gameRenderer.getCamera();
 

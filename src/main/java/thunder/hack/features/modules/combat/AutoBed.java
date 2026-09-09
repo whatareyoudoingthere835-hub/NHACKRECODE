@@ -12,7 +12,6 @@ import net.minecraft.item.BedItem;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
@@ -140,7 +139,7 @@ public final class AutoBed extends Module {
             } else if (switchToHotbar.getValue()) {
                 SearchInvResult invResult = InventoryUtility.findBed();
                 if (invResult.found() && !(mc.currentScreen instanceof CraftingScreen)) {
-                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, invResult.slot(), mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, invResult.slot(), mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP, mc.player);
                     sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
                 }
             }
@@ -157,10 +156,10 @@ public final class AutoBed extends Module {
 
         if (bestPos != null && placeTimer.passedMs(placeDelay.getValue()) && !(mc.world.getBlockState(bestPos.hitResult().getBlockPos().up()).getBlock() instanceof BedBlock)) {
             final float angle2 = InteractionUtility.calculateAngle(bestPos.hitResult.getBlockPos().toCenterPos(), bestPos.hitResult.getBlockPos().offset(bestPos.dir).toCenterPos())[0];
-            sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle2, 0, mc.player.isOnGround()));
+            sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle2, 0, mc.player.isOnGround(), mc.player.horizontalCollision));
             float prevYaw = mc.player.getYaw();
             mc.player.setYaw(angle2);
-            mc.player.prevYaw = angle2;
+            mc.player.getYaw() = angle2;
             ((IClientPlayerEntity) mc.player).setLastYaw(angle2);
             sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, bestPos.hitResult(), id));
             mc.player.swingHand(Hand.MAIN_HAND);
@@ -193,7 +192,7 @@ public final class AutoBed extends Module {
 
     private BedData findBedToExplode() {
         int intRange = (int) (Math.floor(range.getValue()) + 1);
-        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).up()), intRange, intRange, intRange);
 
         BedData bestData = null;
 
@@ -230,7 +229,7 @@ public final class AutoBed extends Module {
 
     private BedData findBlockToPlace() {
         int intRange = (int) (Math.floor(range.getValue()) + 1);
-        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).up()), intRange, intRange, intRange);
 
         BedData bestData = null;
 
@@ -299,7 +298,7 @@ public final class AutoBed extends Module {
 
     public void craftBed() {
         int intRange = (int) (Math.floor(range.getValue()) + 1);
-        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).up()), intRange, intRange, intRange);
 
         for (BlockPos b : blocks_) {
             BlockState state = mc.world.getBlockState(b);
@@ -309,8 +308,8 @@ public final class AutoBed extends Module {
                     if (mc.player.currentScreenHandler instanceof CraftingScreenHandler craft) {
                         mc.player.getRecipeBook().setGuiOpen(craft.getCategory(), true);
                         for (RecipeResultCollection results : mc.player.getRecipeBook().getOrderedResults()) {
-                            for (RecipeEntry<?> recipe : results.getRecipes(true)) {
-                                if (recipe.value().getResult(results.getRegistryManager()).getItem() instanceof BedItem) {
+                            for (var recipe : results.getRecipes(true)) {
+                                if (recipe.recipe().getResult(results.getRegistryManager()).getItem() instanceof BedItem) {
                                     for (int i = 0; i < bedsPerCraft.getValue(); i++)
                                         mc.interactionManager.clickRecipe(mc.player.currentScreenHandler.syncId, recipe, false);
                                     mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, 0, 0, SlotActionType.QUICK_MOVE, mc.player);

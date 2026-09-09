@@ -84,7 +84,7 @@ public class AutoCrystalBase extends Module {
         }
 
         if (calcTimer.every(calcDelay.getValue()))
-            Managers.ASYNC.run(() -> calcPosition(range.getValue(), mc.player.getPos()));
+            Managers.ASYNC.run(() -> calcPosition(range.getValue(), new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())));
     }
 
     @EventHandler

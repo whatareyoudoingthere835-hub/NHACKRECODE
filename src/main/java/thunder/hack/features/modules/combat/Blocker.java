@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -75,7 +76,7 @@ public final class Blocker extends PlaceModule {
         while (blocksPlaced < actionShift.getValue()) {
             BlockPos pos = placePositions.stream()
                     .filter(p -> InteractionUtility.canPlaceBlock(p, interact.getValue(), true))
-                    .min(Comparator.comparing(p -> mc.player.getPos().distanceTo(p.toCenterPos())))
+                    .min(Comparator.comparing(p -> new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).distanceTo(p.toCenterPos())))
                     .orElse(null);
 
             if (pos != null && mc.player.isOnGround() && placeBlock(pos)) {
@@ -130,7 +131,7 @@ public final class Blocker extends PlaceModule {
             return;
 
         if (antiCev.getValue()) {
-            for (BlockPos checkPos : HoleUtility.getHolePoses(mc.player.getPos())) {
+            for (BlockPos checkPos : HoleUtility.getHolePoses(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()))) {
                 if (pos.equals(checkPos.up(2))) {
                     placePositions.add(checkPos.up(3));
                     return;
@@ -138,7 +139,7 @@ public final class Blocker extends PlaceModule {
             }
         }
 
-        if (HoleUtility.getSurroundPoses(mc.player.getPos()).contains(pos)) {
+        if (HoleUtility.getSurroundPoses(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).contains(pos)) {
             if (mc.world.getBlockState(pos).getBlock() == Blocks.BEDROCK || mc.world.getBlockState(pos).isReplaceable())
                 return;
 
@@ -158,7 +159,7 @@ public final class Blocker extends PlaceModule {
         }
 
         if (antiCiv.getValue()) {
-            for (BlockPos checkPos : HoleUtility.getSurroundPoses(mc.player.getPos())) {
+            for (BlockPos checkPos : HoleUtility.getSurroundPoses(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()))) {
                 if (pos.equals(checkPos.up())) {
                     placePositions.add(checkPos.up(2));
                     return;

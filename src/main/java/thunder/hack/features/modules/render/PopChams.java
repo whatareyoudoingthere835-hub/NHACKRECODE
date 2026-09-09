@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.render;
 
+import net.minecraft.util.math.Vec3d;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
@@ -81,7 +83,7 @@ public final class PopChams extends Module {
         entity.handSwingTicks = e.getEntity().handSwingTicks;
         entity.setSneaking(e.getEntity().isSneaking());
         entity.limbAnimator.setSpeed(e.getEntity().limbAnimator.getSpeed());
-        entity.limbAnimator.pos = e.getEntity().limbAnimator.getPos();
+        entity.limbAnimator.getAnimationProgress() = e.getEntity().limbAnimator.getAnimationProgress();
         popList.add(new Person(entity, ((AbstractClientPlayerEntity) e.getEntity()).getSkinTextures().texture()));
     }
 
@@ -93,10 +95,10 @@ public final class PopChams extends Module {
         modelBase.jacket.visible = secondLayer.getValue();
         modelBase.hat.visible = secondLayer.getValue();
 
-        double x = entity.getX() - mc.gameRenderer.getCamera().getPos().getX();
-        double y = entity.getY() - mc.gameRenderer.getCamera().getPos().getY();
-        double z = entity.getZ() - mc.gameRenderer.getCamera().getPos().getZ();
-        ((IEntity) entity).setPos(entity.getPos().add(0, (double) ySpeed.getValue() / 50., 0));
+        double x = entity.getX() - gameRenderer.getCamera().getCameraPos().getX();
+        double y = entity.getY() - gameRenderer.getCamera().getCameraPos().getY();
+        double z = entity.getZ() - gameRenderer.getCamera().getCameraPos().getZ();
+        ((IEntity) entity).setPos(new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(0, (double) ySpeed.getValue() / 50., 0));
 
         matrices.push();
         matrices.translate((float) x, (float) y, (float) z);
@@ -112,8 +114,8 @@ public final class PopChams extends Module {
         state.bodyYaw = entity.bodyYaw;
         state.relativeHeadYaw = entity.headYaw - entity.bodyYaw;
         state.pitch = entity.getPitch();
-        state.limbSwingAnimationProgress = entity.limbAnimator.getPos(Render3DEngine.getTickDelta());
-        state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(Render3DEngine.getTickDelta()), 1f);
+        state.limbSwingAnimationProgress = entity.limbAnimator.getAnimationProgress(Render3DEngine.getTickDelta());
+        state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(), 1f);
         modelBase.resetTransforms();
         modelBase.setAngles(state);
 
@@ -160,7 +162,7 @@ public final class PopChams extends Module {
         public void update(CopyOnWriteArrayList<Person> arrayList) {
             if (alpha <= 0) {
                 arrayList.remove(this);
-                player.kill();
+                player.kill((net.minecraft.server.world.ServerWorld) null);
                 player.remove(Entity.RemovalReason.KILLED);
                 player.onRemoved();
                 return;

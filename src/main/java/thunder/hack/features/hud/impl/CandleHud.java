@@ -1,9 +1,10 @@
 package thunder.hack.features.hud.impl;
 
+import net.minecraft.client.gl.RenderPipelines;
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Matrix3x2fStack;
 import thunder.hack.features.hud.HudElement;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.render.Render2DEngine;
@@ -25,7 +26,7 @@ public class CandleHud extends HudElement {
     public void onRender2D(DrawContext context) {
         super.onRender2D(context);
 
-        float yDelta = mc.player.prevHeadYaw - mc.player.getHeadYaw();
+        float yDelta = mc.player.getHeadYaw() - mc.player.getHeadYaw();
         if (yDelta > 0) xAnim = AnimationUtility.fast(xAnim, -15, 10);
         else if (yDelta < 0) xAnim = AnimationUtility.fast(xAnim, 35, 10);
         else xAnim = AnimationUtility.fast(xAnim, 10, 10);
@@ -40,8 +41,8 @@ public class CandleHud extends HudElement {
         context.getMatrices().pushMatrix();
         context.getMatrices().translate((int) getPosX(), (int) getPosY());
         float scalefactor = (float) scale.getValue() / 100f;
-        context.getMatrices().scale(scalefactor, scalefactor, 1);
-        context.drawTexture(TextureStorage.candle, 0, -5, 0, 0, 102, 529, 102, 529);
+        context.getMatrices().scale(scalefactor, scalefactor);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.candle, 0, -5, 0, 0, 102, 529, 102, 529, -1);
         context.getMatrices().popMatrix();
 
         drawFire(context.getMatrices(), getPosX() + (40 + 15f - xAnim) * scalefactor, getPosY() + (10 - yAnim) * scalefactor, 7 * scalefactor, 7 * scalefactor,
@@ -58,7 +59,7 @@ public class CandleHud extends HudElement {
         setBounds(getPosX(), getPosY(), (int) (102 * scalefactor), (int) (529 * scalefactor));
     }
 
-    private void drawFire(MatrixStack matrices, float x, float y, float width, float height, Color color) {
+    private void drawFire(Matrix3x2fStack matrices, float x, float y, float width, float height, Color color) {
         width = width + 7 * 2;
         height = height + 7 * 2;
         x = x - 7;

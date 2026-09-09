@@ -1,5 +1,6 @@
 package thunder.hack.gui.clickui.impl;
 
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
@@ -29,21 +30,21 @@ public class ParentElement extends AbstractElement {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
-        Matrix3x2fStack matrixStack = context.getMatrices() = matrixStack = context.getMatrices();
+        Matrix3x2fStack matrixStack = context.getMatrices();
 
         float tx = x + width - 11;
         float ty = y + 7.5f;
 
         animation = fast(animation, getParentSetting().getValue().isExtended() ? 0 : 1, 15f);
 
-        matrixStack.push();
+        matrixStack.pushMatrix();
         matrixStack.translate(tx, ty, 0);
         matrixStack.rotate((-180f * animation) * MathHelper.RADIANS_PER_DEGREE);
         matrixStack.translate(-tx, -ty, 0);
         matrixStack.translate((x + width - 14), (y + 4.5f), 0);
-        context.drawTexture(TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6, -1);
         matrixStack.translate(-(x + width - 14), -(y + 4.5f), 0);
-        matrixStack.pop();
+        matrixStack.popMatrix();
 
         FontRenderers.sf_medium_mini.drawString(matrixStack, setting.getName(), x + 6 + (6 * getParentSetting().getValue().getHierarchy()), y + height / 2 - 1f, new Color(-1).getRGB());
     }

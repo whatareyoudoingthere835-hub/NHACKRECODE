@@ -269,7 +269,7 @@ public class LegacyHud extends Module {
     public void renderTotemHUD(DrawContext context) {
         int width = mc.getWindow().getScaledWidth();
         int height = mc.getWindow().getScaledHeight();
-        int totems = mc.player.getInventory().main.stream().filter(itemStack -> (itemStack.getItem() == Items.TOTEM_OF_UNDYING)).mapToInt(ItemStack::getCount).sum();
+        int totems = mc.player.getInventory().getMainStacks().stream().filter(itemStack -> (itemStack.getItem() == Items.TOTEM_OF_UNDYING)).mapToInt(ItemStack::getCount).sum();
         int u = mc.player.getMaxAir();
         int v = Math.min(mc.player.getAir(), u);
         if (mc.player.getOffHandStack().getItem() == Items.TOTEM_OF_UNDYING)
@@ -279,13 +279,13 @@ public class LegacyHud extends Module {
             int y = height - 55 - (mc.player.isSubmergedInWater() || v < u ? 10 : 0);
             int x = i - 189 + 180 + 2;
             context.drawItem(totem, x, y);
-            context.drawItemInSlot(mc.textRenderer, totem, x, y);
+            context.drawStackOverlay(mc.textRenderer, totem, x, y);
             drawText(context, totems + "", 8 + (int) (x - (float) getStringWidth(totems + "") / 2f), (y - 7), 16777215);
         }
     }
     private static String biome() {
         if (mc.player == null || mc.world == null) return null;
-        Identifier id = mc.world.getRegistryManager().get(RegistryKeys.BIOME).getId(mc.world.getBiome(mc.player.getBlockPos()).value());
+        Identifier id = mc.world.getRegistryManager().getOrThrow(RegistryKeys.BIOME).getId(mc.world.getBiome(mc.player.getBlockPos()).value());
         if (id == null) return ("Unknown");
 
         return (Arrays.stream(id.getPath().split("_")).map(StringUtils::capitalize).collect(Collectors.joining(" ")));
@@ -297,13 +297,13 @@ public class LegacyHud extends Module {
         int v = Math.min(mc.player.getAir(), u);
 
         int y = mc.getWindow().getScaledHeight() - 55 - (mc.player.isSubmergedInWater() || v < u ? 10 : 0);
-        for (ItemStack is : mc.player.getInventory().armor) {
+        for (int ai = 0; ai < 4; ai++) if (mc.player.getInventory().getStack(36+ai) instanceof ItemStack is) {
             i++;
             if (is.isEmpty())
                 continue;
             int x = (mc.getWindow().getScaledWidth() / 2) - 90 + (9 - i) * 20 + 2;
             context.drawItem(is, x, y);
-            context.drawItemInSlot(mc.textRenderer, is, x, y);
+            context.drawStackOverlay(mc.textRenderer, is, x, y);
             String s = (is.getCount() > 1) ? (is.getCount() + "") : "";
             drawText(context, s, (x + 19 - 2 - getStringWidth(s)), (y + 9), 16777215);
             if (percent) {

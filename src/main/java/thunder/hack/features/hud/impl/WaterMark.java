@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import net.minecraft.client.gl.RenderPipelines;
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -121,7 +122,7 @@ public class WaterMark extends HudElement {
             context.getMatrices().translate(getPosX() + 10, getPosY() + 32);
             context.getMatrices().rotate((float) Math.toRadians(mc.player.age * 3 + Render3DEngine.getTickDelta()));
             context.getMatrices().translate(-(getPosX() + 10), -(getPosY() + 32));
-            context.drawTexture(TextureStorage.baltika, (int) getPosX() - 10, (int) getPosY() + 2, 0, 0, 40, 64, 40, 64);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.baltika, (int) getPosX() - 10, (int) getPosY() + 2, 0, 0, 40, 64, 40, 64, -1);
             context.getMatrices().popMatrix();
             Render2DEngine.popWindow();
 

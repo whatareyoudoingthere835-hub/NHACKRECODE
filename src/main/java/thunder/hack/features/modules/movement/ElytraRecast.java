@@ -70,9 +70,9 @@ public class ElytraRecast extends Module {
 
     @Override
     public void onDisable() {
-        if (!InputUtil.isKeyPressed(mc.getWindow().getHandle(), mc.options.forwardKey.getDefaultKey().getCode()))
+        if (!InputUtil.isKeyPressed(mc.getWindow(), mc.options.forwardKey.getDefaultKey().getCode()))
             mc.options.forwardKey.setPressed(false);
-        if (!InputUtil.isKeyPressed(mc.getWindow().getHandle(), mc.options.jumpKey.getDefaultKey().getCode()))
+        if (!InputUtil.isKeyPressed(mc.getWindow(), mc.options.jumpKey.getDefaultKey().getCode()))
             mc.options.jumpKey.setPressed(false);
     }
 
@@ -81,7 +81,7 @@ public class ElytraRecast extends Module {
         if (autoJump.getValue()) mc.options.jumpKey.setPressed(true);
         if (autoWalk.getValue()) mc.options.forwardKey.setPressed(true);
 
-        if (!mc.player.isFallFlying() && mc.player.fallDistance > 0 && checkElytra() && !mc.player.isFallFlying())
+        if (!mc.player.isGliding() && mc.player.fallDistance > 0 && checkElytra() && !mc.player.isGliding())
             castElytra();
 
         jitter = (20 * MathUtility.sin((System.currentTimeMillis() - ThunderHack.initTime) / 50f));
@@ -109,7 +109,7 @@ public class ElytraRecast extends Module {
         if (!mc.player.isTouchingWater() && !mc.player.hasStatusEffect(StatusEffects.LEVITATION)) {
             ItemStack is = mc.player.getEquippedStack(EquipmentSlot.CHEST);
             if (is.isOf(Items.ELYTRA) && (ItemChecks.isElytraUsable(is) || allowBroken.getValue())) {
-                mc.player.startFallFlying();
+                // TODO 1.21.11: no public startFallFlying; gliding must be resumed manually
                 return true;
             }
         }

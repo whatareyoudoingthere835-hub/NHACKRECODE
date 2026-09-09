@@ -90,7 +90,7 @@ public class PacketTeleport extends Module {
     private void sendNormalTeleport(double x, double y, double z) {
         // Отправляем несколько пакетов для надежности
         for (int i = 0; i < packets.getValue(); i++) {
-            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
+            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true, mc.player.horizontalCollision));
         }
 
         // Подтверждаем телепорт если нужно
@@ -106,7 +106,7 @@ public class PacketTeleport extends Module {
     private void sendBypassTeleport(double x, double y, double z) {
         // Основной пакет телепорта
         for (int i = 0; i < packets.getValue(); i++) {
-            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
+            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true, mc.player.horizontalCollision));
         }
 
         // Rubberbanding трюк
@@ -116,10 +116,10 @@ public class PacketTeleport extends Module {
                 y,
                 z + border,
                 true
-        ));
+        , mc.player.horizontalCollision));
 
         // Возврат на целевую позицию
-        sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true));
+        sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, true, mc.player.horizontalCollision));
 
         // Подтверждение
         if (teleportId != -1) {
@@ -140,7 +140,7 @@ public class PacketTeleport extends Module {
     @EventHandler
     public void onPacketReceive(PacketEvent.Receive event) {
         if (event.getPacket() instanceof PlayerPositionLookS2CPacket pac) {
-            teleportId = pac.getTeleportId();
+            teleportId = pac.teleportId();
 
             // Диагностика
             if (isEnabled()) {

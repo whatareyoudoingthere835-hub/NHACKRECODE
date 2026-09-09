@@ -102,7 +102,7 @@ public class BlockESP extends Module {
                 if (count > limitCount.getValue() && limit.getValue().isEnabled())
                     continue;
 
-                if (vec.getDistance(mc.player.getPos()) > range.getPow2Value()) {
+                if (vec.getDistance(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())) > range.getPow2Value()) {
                     blocks.remove(vec);
                     continue;
                 }

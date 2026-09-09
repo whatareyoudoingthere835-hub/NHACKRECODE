@@ -1,6 +1,7 @@
 package thunder.hack.injection;
 
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,7 @@ public abstract class MixinTridentItem {
 
     @Inject(method = "onStoppedUsing", at = @At(value = "HEAD"), cancellable = true)
     public void onStoppedUsingHook(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo ci) {
-        if (user == mc.player && EnchantmentHelper.getTridentSpinAttackStrength(stack, mc.player) > 0) {
+        if (user == mc.player && mc.world != null && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.RIPTIDE.getRegistryRef()).getEntry(Enchantments.RIPTIDE).get(), stack) > 0) {
             UseTridentEvent e = new UseTridentEvent();
             ThunderHack.EVENT_BUS.post(e);
             if (e.isCancelled())
@@ -32,12 +33,4 @@ public abstract class MixinTridentItem {
         }
     }
 
-    @Inject(method = "use", at = @At(value = "HEAD"), cancellable = true)
-    public void useHook(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
-        ItemStack itemStack = user.getStackInHand(hand);
-        if (EnchantmentHelper.getTridentSpinAttackStrength(itemStack, user) > 0 && !user.isTouchingWaterOrRain() && ModuleManager.tridentBoost.isEnabled() && ModuleManager.tridentBoost.anyWeather.getValue()) {
-            user.setCurrentHand(hand);
-            cir.setReturnValue(TypedActionResult.consume(itemStack));
-        }
-    }
 }

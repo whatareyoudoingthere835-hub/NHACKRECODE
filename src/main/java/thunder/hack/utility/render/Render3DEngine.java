@@ -1,5 +1,6 @@
 package thunder.hack.utility.render;
 
+import net.minecraft.util.math.Vec3d;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -67,7 +68,7 @@ public class Render3DEngine {
         }
 
         if (!OUTLINE_QUEUE.isEmpty() || !OUTLINE_SIDE_QUEUE.isEmpty()) {
-            BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+            BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH);
 
             OUTLINE_QUEUE.forEach(action ->
                     setOutlinePoints(action.box(), matrixFrom(action.box().minX, action.box().minY, action.box().minZ), buffer, action.color()));
@@ -82,7 +83,7 @@ public class Render3DEngine {
         }
 
         if (!DEBUG_LINE_QUEUE.isEmpty()) {
-            BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.LINES);
+            BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH);
 
             DEBUG_LINE_QUEUE.forEach(action -> {
                 MatrixStack matrices = matrixFrom(action.start.getX(), action.start.getY(), action.start.getZ());
@@ -94,7 +95,7 @@ public class Render3DEngine {
         }
 
         if (!LINE_QUEUE.isEmpty()) {
-            BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+            BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH);
 
             LINE_QUEUE.forEach(action -> {
                 MatrixStack matrices = matrixFrom(action.start.getX(), action.start.getY(), action.start.getZ());
@@ -117,7 +118,7 @@ public class Render3DEngine {
     }
 
     public static void setFilledBoxVertexes(@NotNull BufferBuilder bufferBuilder, Matrix4f m, @NotNull Box box, @NotNull Color c) {
-        Vec3d cam = mc.gameRenderer.getCamera().getPos();
+        Vec3d cam = gameRenderer.getCamera().getCameraPos();
         float minX = (float) (box.minX - cam.getX());
         float minY = (float) (box.minY - cam.getY());
         float minZ = (float) (box.minZ - cam.getZ());
@@ -174,7 +175,7 @@ public class Render3DEngine {
     }
 
     public static void setFilledSidePoints(BufferBuilder buffer, Matrix4f matrix, Box box, Color c, Direction dir) {
-        Vec3d cam = mc.gameRenderer.getCamera().getPos();
+        Vec3d cam = gameRenderer.getCamera().getCameraPos();
         float minX = (float) (box.minX - cam.getX());
         float minY = (float) (box.minY - cam.getY());
         float minZ = (float) (box.minZ - cam.getZ());
@@ -250,9 +251,9 @@ public class Render3DEngine {
         int[] viewport = new int[]{0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight()};
         Vector3f target = new Vector3f();
 
-        double deltaX = pos.x - camera.getPos().x;
-        double deltaY = pos.y - camera.getPos().y;
-        double deltaZ = pos.z - camera.getPos().z;
+        double deltaX = pos.x - camera.getCameraPos().x;
+        double deltaY = pos.y - camera.getCameraPos().y;
+        double deltaZ = pos.z - camera.getCameraPos().z;
 
         Vector4f transformedCoordinates = new Vector4f((float) deltaX, (float) deltaY, (float) deltaZ, 1.f).mul(lastWorldSpaceMatrix);
         Matrix4f matrixProj = new Matrix4f(lastProjMat);
@@ -273,7 +274,7 @@ public class Render3DEngine {
     }
 
     public static void setFilledFadePoints(Box box, BufferBuilder buffer, Matrix4f posMatrix, Color c, Color c1) {
-        Vec3d cam = mc.gameRenderer.getCamera().getPos();
+        Vec3d cam = gameRenderer.getCamera().getCameraPos();
         float minX = (float) (box.minX - cam.getX());
         float minY = (float) (box.minY - cam.getY());
         float minZ = (float) (box.minZ - cam.getZ());
@@ -400,7 +401,7 @@ public class Render3DEngine {
 
     public static void drawHoleOutline(@NotNull Box box, Color color, float lineWidth) {
         MatrixStack matrices = matrixFrom(box.minX, box.minY, box.minZ);
-        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH);
 
         box = box.offset(new Vec3d(box.minX, box.minY, box.minZ).negate());
 
@@ -447,7 +448,7 @@ public class Render3DEngine {
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
 
-        matrices.translate(x - camera.getPos().x, y - camera.getPos().y, z - camera.getPos().z);
+        matrices.translate(x - camera.getCameraPos().x, y - camera.getCameraPos().y, z - camera.getCameraPos().z);
 
         return matrices;
     }
@@ -465,10 +466,10 @@ public class Render3DEngine {
         ArrayList<Vec3d> vecs1 = new ArrayList<>();
         ArrayList<Vec3d> vecs2 = new ArrayList<>();
 
-        Vec3d cam = mc.gameRenderer.getCamera().getPos();
-        double x = target.prevX + (target.getX() - target.prevX) * getTickDelta() - cam.getX();
-        double y = target.prevY + (target.getY() - target.prevY) * getTickDelta() - cam.getY();
-        double z = target.prevZ + (target.getZ() - target.prevZ) * getTickDelta() - cam.getZ();
+        Vec3d cam = gameRenderer.getCamera().getCameraPos();
+        double x = (target.getX() - target.getDeltaMovement().x) + (target.getX() - (target.getX() - target.getDeltaMovement().x)) * getTickDelta() - cam.getX();
+        double y = (target.getY() - target.getDeltaMovement().y) + (target.getY() - (target.getY() - target.getDeltaMovement().y)) * getTickDelta() - cam.getY();
+        double z = (target.getZ() - target.getDeltaMovement().z) + (target.getZ() - (target.getZ() - target.getDeltaMovement().z)) * getTickDelta() - cam.getZ();
 
         double height = target.getHeight();
 
@@ -513,7 +514,7 @@ public class Render3DEngine {
 
     public static void renderCrosses(@NotNull Box box, Color color, float lineWidth) {
         MatrixStack matrices = matrixFrom(box.minX, box.minY, box.minZ);
-        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH);
 
         box = box.offset(new Vec3d(box.minX, box.minY, box.minZ).negate());
 
@@ -603,10 +604,10 @@ public class Render3DEngine {
 
     public static void drawCircle3D(MatrixStack stack, Entity ent, float radius, int color, int points, boolean hudColor, int colorOffset) {
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-        Vec3d cam = mc.gameRenderer.getCamera().getPos();
-        double x = ent.prevX + (ent.getX() - ent.prevX) * getTickDelta() - cam.getX();
-        double y = ent.prevY + (ent.getY() - ent.prevY) * getTickDelta() - cam.getY();
-        double z = ent.prevZ + (ent.getZ() - ent.prevZ) * getTickDelta() - cam.getZ();
+        Vec3d cam = gameRenderer.getCamera().getCameraPos();
+        double x = (ent.getX() - ent.getDeltaMovement().x) + (ent.getX() - (ent.getX() - ent.getDeltaMovement().x)) * getTickDelta() - cam.getX();
+        double y = (ent.getY() - ent.getDeltaMovement().y) + (ent.getY() - (ent.getY() - ent.getDeltaMovement().y)) * getTickDelta() - cam.getY();
+        double z = (ent.getZ() - ent.getDeltaMovement().z) + (ent.getZ() - (ent.getZ() - ent.getDeltaMovement().z)) * getTickDelta() - cam.getZ();
         stack.push();
         stack.translate(x, y, z);
 
@@ -627,11 +628,11 @@ public class Render3DEngine {
         double cs = prevCircleStep + (circleStep - prevCircleStep) * getTickDelta();
         double prevSinAnim = absSinAnimation(cs - 0.45f);
         double sinAnim = absSinAnimation(cs);
-        Vec3d cam = mc.gameRenderer.getCamera().getPos();
-        double x = target.prevX + (target.getX() - target.prevX) * getTickDelta() - cam.getX();
-        double y = target.prevY + (target.getY() - target.prevY) * getTickDelta() - cam.getY() + prevSinAnim * target.getHeight();
-        double z = target.prevZ + (target.getZ() - target.prevZ) * getTickDelta() - cam.getZ();
-        double nextY = target.prevY + (target.getY() - target.prevY) * getTickDelta() - cam.getY() + sinAnim * target.getHeight();
+        Vec3d cam = gameRenderer.getCamera().getCameraPos();
+        double x = (target.getX() - target.getDeltaMovement().x) + (target.getX() - (target.getX() - target.getDeltaMovement().x)) * getTickDelta() - cam.getX();
+        double y = (target.getY() - target.getDeltaMovement().y) + (target.getY() - (target.getY() - target.getDeltaMovement().y)) * getTickDelta() - cam.getY() + prevSinAnim * target.getHeight();
+        double z = (target.getZ() - target.getDeltaMovement().z) + (target.getZ() - (target.getZ() - target.getDeltaMovement().z)) * getTickDelta() - cam.getZ();
+        double nextY = (target.getY() - target.getDeltaMovement().y) + (target.getY() - (target.getY() - target.getDeltaMovement().y)) * getTickDelta() - cam.getY() + sinAnim * target.getHeight();
         stack.push();
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
@@ -652,9 +653,9 @@ public class Render3DEngine {
     public static void renderGhosts(int espLength, int factor, float shaking, float amplitude, Entity target) {
         Camera camera = mc.gameRenderer.getCamera();
 
-        double tPosX = Render2DEngine.interpolate(target.prevX, target.getX(), Render3DEngine.getTickDelta()) - camera.getPos().x;
-        double tPosY = Render2DEngine.interpolate(target.prevY, target.getY(), Render3DEngine.getTickDelta()) - camera.getPos().y;
-        double tPosZ = Render2DEngine.interpolate(target.prevZ, target.getZ(), Render3DEngine.getTickDelta()) - camera.getPos().z;
+        double tPosX = Render2DEngine.interpolate((target.getX() - target.getDeltaMovement().x), target.getX(), Render3DEngine.getTickDelta()) - camera.getCameraPos().x;
+        double tPosY = Render2DEngine.interpolate((target.getY() - target.getDeltaMovement().y), target.getY(), Render3DEngine.getTickDelta()) - camera.getCameraPos().y;
+        double tPosZ = Render2DEngine.interpolate((target.getZ() - target.getDeltaMovement().z), target.getZ(), Render3DEngine.getTickDelta()) - camera.getCameraPos().z;
         float iAge = (float) Render2DEngine.interpolate(target.age - 1, target.age, Render3DEngine.getTickDelta());
 
         BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
@@ -694,7 +695,7 @@ public class Render3DEngine {
     }
 
     public static Vec3d interpolatePos(float prevposX, float prevposY, float prevposZ, float posX, float posY, float posZ) {
-        Vec3d cam = mc.gameRenderer.getCamera().getPos();
+        Vec3d cam = gameRenderer.getCamera().getCameraPos();
         double x = prevposX + ((posX - prevposX) * getTickDelta()) - cam.getX();
         double y = prevposY + ((posY - prevposY) * getTickDelta()) - cam.getY();
         double z = prevposZ + ((posZ - prevposZ) * getTickDelta()) - cam.getZ();
@@ -706,7 +707,7 @@ public class Render3DEngine {
     }
 
     public static float getTickDelta() {
-        return mc.getRenderTickCounter().getTickDelta(true);
+        return mc.getRenderTickCounter().getTickDelta();
     }
 
     public record FillAction(Box box, Color color) {

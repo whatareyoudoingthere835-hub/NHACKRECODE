@@ -171,8 +171,8 @@ public final class AimBot extends Module {
 
         if (target != null && (mc.player.canSee(target) || ignoreWalls.getValue())) {
             if (rotation.getValue() == Rotation.Client) {
-                mc.player.setYaw((float) Render2DEngine.interpolate(mc.player.prevYaw, rotationYaw, Render3DEngine.getTickDelta()));
-                mc.player.setPitch((float) Render2DEngine.interpolate(mc.player.prevPitch, rotationPitch, Render3DEngine.getTickDelta()));
+                mc.player.setYaw((float) Render2DEngine.interpolate(mc.player.getYaw(), rotationYaw, Render3DEngine.getTickDelta()));
+                mc.player.setPitch((float) Render2DEngine.interpolate(mc.player.getPitch(), rotationPitch, Render3DEngine.getTickDelta()));
             }
         } else {
             if (mode.getValue() == Mode.CSAim) {
@@ -182,8 +182,8 @@ public final class AimBot extends Module {
         }
 
         if (rotation.getValue() == Rotation.Client && mode.getValue() == Mode.BowAim && mc.player.getActiveItem().getItem() instanceof BowItem) {
-            mc.player.setYaw((float) Render2DEngine.interpolate(mc.player.prevYaw, rotationYaw, Render3DEngine.getTickDelta()));
-            mc.player.setPitch((float) Render2DEngine.interpolate(mc.player.prevPitch, rotationPitch, Render3DEngine.getTickDelta()));
+            mc.player.setYaw((float) Render2DEngine.interpolate(mc.player.getYaw(), rotationYaw, Render3DEngine.getTickDelta()));
+            mc.player.setPitch((float) Render2DEngine.interpolate(mc.player.getPitch(), rotationPitch, Render3DEngine.getTickDelta()));
         }
     }
 
@@ -221,7 +221,7 @@ public final class AimBot extends Module {
             return;
 
         float delta_yaw = wrapDegrees((float) wrapDegrees(Math.toDegrees(Math.atan2(targetVec.z - mc.player.getZ(), (targetVec.x - mc.player.getX()))) - 90) - rotationYaw);
-        float delta_pitch = ((float) (-Math.toDegrees(Math.atan2(targetVec.y - (mc.player.getPos().y + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((targetVec.x - mc.player.getX()), 2) + Math.pow(targetVec.z - mc.player.getZ(), 2))))) - rotationPitch);
+        float delta_pitch = ((float) (-Math.toDegrees(Math.atan2(targetVec.y - (mc.player.getY() + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((targetVec.x - mc.player.getX()), 2) + Math.pow(targetVec.z - mc.player.getZ(), 2))))) - rotationPitch);
 
         if (delta_yaw > 180)
             delta_yaw = delta_yaw - 180;

@@ -1,5 +1,6 @@
 package thunder.hack.gui.misc;
 
+import net.minecraft.client.gui.Click;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.screen.ingame.ShulkerBoxScreen;
 import net.minecraft.component.DataComponentTypes;
@@ -24,7 +25,11 @@ public class PeekScreen extends ShulkerBoxScreen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && focusedSlot != null && !focusedSlot.getStack().isEmpty() && client.player.playerScreenHandler.getCursorStack().isEmpty()) {
             ItemStack itemStack = focusedSlot.getStack();
 
@@ -47,7 +52,11 @@ public class PeekScreen extends ShulkerBoxScreen {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(Click click) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         return false;
     }
 }

@@ -75,7 +75,7 @@ public class FakePlayer extends Module {
             fakePlayer.onDamaged(mc.world.getDamageSources().generic());
             fakePlayer.setHealth(fakePlayer.getHealth() + fakePlayer.getAbsorptionAmount() - ExplosionUtility.getAutoCrystalDamage(new Vec3d(explosion.getX(), explosion.getY(), explosion.getZ()), fakePlayer, 0, false));
             if (fakePlayer.isDead()) {
-                if (fakePlayer.tryUseTotem(mc.world.getDamageSources().generic())) {
+                if (fakePlayer.getOffHandStack().getItem() == net.minecraft.item.Items.TOTEM_OF_UNDYING) {
                     fakePlayer.setHealth(10f);
 
 
@@ -106,8 +106,8 @@ public class FakePlayer extends Module {
                 fakePlayer.setPitch(p.pitch);
                 fakePlayer.setHeadYaw(p.yaw);
 
-                fakePlayer.updateTrackedPosition(p.x, p.y, p.z);
-                fakePlayer.updateTrackedPositionAndAngles(p.x, p.y, p.z, p.yaw, p.pitch, 3);
+                fakePlayer.setPosition(p.x, p.y, p.z);
+                fakePlayer.setPosition(p.x, p.y, p.z, p.yaw, p.pitch); fakePlayer.setYaw(p.yaw); fakePlayer.setPitch(p.pitch);
             } else movementTick = 0;
 
             if (autoTotem.getValue() && fakePlayer.getOffHandStack().getItem() != Items.TOTEM_OF_UNDYING)
@@ -132,7 +132,7 @@ public class FakePlayer extends Module {
                 fakePlayer.setHealth(fakePlayer.getHealth() + fakePlayer.getAbsorptionAmount() - InventoryUtility.getHitDamage(mc.player.getMainHandStack(), fakePlayer));
             else fakePlayer.setHealth(fakePlayer.getHealth() + fakePlayer.getAbsorptionAmount() - 1f);
             if (fakePlayer.isDead()) {
-                if (fakePlayer.tryUseTotem(mc.world.getDamageSources().generic())) {
+                if (fakePlayer.getOffHandStack().getItem() == net.minecraft.item.Items.TOTEM_OF_UNDYING) {
                     fakePlayer.setHealth(10f);
                     new EntityStatusS2CPacket(fakePlayer, EntityStatuses.USE_TOTEM_OF_UNDYING).apply(mc.player.networkHandler);
                 }
@@ -143,7 +143,7 @@ public class FakePlayer extends Module {
     @Override
     public void onDisable() {
         if (fakePlayer == null) return;
-        fakePlayer.kill();
+        fakePlayer.kill((net.minecraft.server.world.ServerWorld) null);
         fakePlayer.setRemoved(Entity.RemovalReason.KILLED);
         fakePlayer.onRemoved();
         fakePlayer = null;

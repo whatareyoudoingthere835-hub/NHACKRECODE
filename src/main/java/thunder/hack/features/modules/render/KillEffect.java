@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -48,9 +49,9 @@ public class KillEffect extends Module {
                 if (System.currentTimeMillis() - time > 3000) {
                     renderEntities.remove(entity);
                 } else {
-                    Render3DEngine.drawLine(entity.getPos().add(0, calculateSpeed(), 0), entity.getPos().add(0, 3 + calculateSpeed(), 0), color.getValue().getColorObject());
-                    Render3DEngine.drawLine(entity.getPos().add(1, 2.3 + calculateSpeed(), 0), entity.getPos().add(-1, 2.3 + calculateSpeed(), 0), color.getValue().getColorObject());
-                    Render3DEngine.drawLine(entity.getPos().add(0.5, 1.2 + calculateSpeed(), 0), entity.getPos().add(-0.5, 0.8 + calculateSpeed(), 0), color.getValue().getColorObject());
+                    Render3DEngine.drawLine(new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(0, calculateSpeed(), 0), new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(0, 3 + calculateSpeed(), 0), color.getValue().getColorObject());
+                    Render3DEngine.drawLine(new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(1, 2.3 + calculateSpeed(), 0), new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(-1, 2.3 + calculateSpeed(), 0), color.getValue().getColorObject());
+                    Render3DEngine.drawLine(new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(0.5, 1.2 + calculateSpeed(), 0), new Vec3d(entity.getX(), entity.getY(), entity.getZ()).add(-0.5, 0.8 + calculateSpeed(), 0), color.getValue().getColorObject());
                 }
             });
             case FallingLava -> renderEntities.keySet().forEach(entity -> {

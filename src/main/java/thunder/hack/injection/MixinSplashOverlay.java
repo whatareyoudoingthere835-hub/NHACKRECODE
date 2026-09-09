@@ -1,5 +1,6 @@
 package thunder.hack.injection;
 
+import net.minecraft.client.gl.RenderPipelines;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
@@ -85,10 +86,10 @@ public abstract class MixinSplashOverlay {
 
 
 
-        context.drawTexture(TextureStorage.thLogo, k - 150, p - 35, 0, 0, 300, 70, 300, 70);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.thLogo, k - 150, p - 35, 0, 0, 300, 70, 300, 70, -1);
 
         Render2DEngine.addWindow(context.getMatrices(),k - 150, p - 35, k - 150 + (300 * progress), p + 35, 1f);
-        context.drawTexture(TextureStorage.thLogo, k - 150, p - 35, 0, 0, 300, 70, 300, 70);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.thLogo, k - 150, p - 35, 0, 0, 300, 70, 300, 70, -1);
         Render2DEngine.popWindow();
 
         float t = this.reload.getProgress();

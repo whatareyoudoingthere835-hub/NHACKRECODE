@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import net.minecraft.client.gl.RenderPipelines;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.PlayerListEntry;
@@ -154,8 +155,8 @@ public class StaffBoard extends HudElement {
 
             Identifier tex = getTexture(player);
             if (tex != null) {
-                context.drawTexture(tex, (int) (getPosX() + 3), (int) (getPosY() + 16 + y_offset), 8, 8, 8, 8, 8, 8, 64, 64);
-                context.drawTexture(tex, (int) (getPosX() + 3), (int) (getPosY() + 16 + y_offset), 8, 8, 40, 8, 8, 8, 64, 64);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, tex, (int) (getPosX() + 3), (int) (getPosY() + 16 + y_offset), 8, 8, 8, 8, 64, 64, -1);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, tex, (int) (getPosX() + 3), (int) (getPosY() + 16 + y_offset), 40, 8, 8, 8, 64, 64, -1);
             }
 
             FontRenderers.sf_bold_mini.drawString(context.getMatrices(), player.split(":")[0], getPosX() + 13, getPosY() + 19 + y_offset, HudEditor.textColor.getValue().getColor());

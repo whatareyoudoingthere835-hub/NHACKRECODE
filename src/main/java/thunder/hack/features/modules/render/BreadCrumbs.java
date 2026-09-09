@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.render.*;
@@ -35,7 +36,7 @@ public class BreadCrumbs extends Module {
     public void onRender3D(MatrixStack stack) {
         Render3DEngine.setupRender();
 
-        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH);
 
         for (int i = 0; i < positions.size(); i++) {
             Vec3d vec1 = null;

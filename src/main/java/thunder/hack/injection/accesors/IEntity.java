@@ -10,6 +10,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(Entity.class)
 public interface IEntity {
     @Mutable
+    @Accessor("id")
+    void th$setId(int id);
+    @Mutable
     @Accessor("pos")
     void setPos(Vec3d pos);
 

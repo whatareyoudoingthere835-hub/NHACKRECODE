@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.combat;
 
+import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.util.hit.BlockHitResult;
@@ -105,7 +106,7 @@ public final class HoleFill extends Module {
     @EventHandler
     public void onTick(EventTick event) {
         if (fullNullCheck()) return;
-        if (jumpDisable.getValue() && mc.player.prevY < mc.player.getY())
+        if (jumpDisable.getValue() && (mc.player.getY() - mc.player.getDeltaMovement().y) < mc.player.getY())
             disable(isRu() ? "Вы прыгнули! Выключаю..." : "You jumped! Disabling...");
 
         if (tickCounter < actionInterval.getValue()) {
@@ -137,8 +138,8 @@ public final class HoleFill extends Module {
             if (mode.getValue() == Mode.Target) {
                 pos = holes.stream()
                         .filter(this::isHole)
-                        .filter(p -> mc.player.getPos().distanceTo(p.toCenterPos()) <= placeRange.getValue())
-                        .filter(p -> predicted.getPos().distanceTo(p.toCenterPos()) <= rangeToTarget.getValue())
+                        .filter(p -> new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).distanceTo(p.toCenterPos()) <= placeRange.getValue())
+                        .filter(p -> new Vec3d(predicted.getX(), predicted.getY(), predicted.getZ()).distanceTo(p.toCenterPos()) <= rangeToTarget.getValue())
                         .filter(p -> {
                             if (p.equals(mc.player.getBlockPos()) && selfFill.getValue()) {
                                 selfFillNeed = true;
@@ -146,12 +147,12 @@ public final class HoleFill extends Module {
                             }
                             return InteractionUtility.canPlaceBlock(p, interactMode.getValue(), false);
                         })
-                        .min(Comparator.comparing(p -> mc.player.getPos().distanceTo(p.toCenterPos())))
+                        .min(Comparator.comparing(p -> new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).distanceTo(p.toCenterPos())))
                         .orElse(null);
             } else {
                 pos = holes.stream()
                         .filter(this::isHole)
-                        .filter(p -> mc.player.getPos().distanceTo(p.toCenterPos()) <= placeRange.getValue())
+                        .filter(p -> new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).distanceTo(p.toCenterPos()) <= placeRange.getValue())
                         .filter(p -> {
                             if (p.equals(mc.player.getBlockPos()) && selfFill.getValue()) {
                                 selfFillNeed = true;
@@ -159,13 +160,13 @@ public final class HoleFill extends Module {
                             }
                             return InteractionUtility.canPlaceBlock(p, interactMode.getValue(), false);
                         })
-                        .min(Comparator.comparing(p -> mc.player.getPos().distanceTo(p.toCenterPos())))
+                        .min(Comparator.comparing(p -> new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).distanceTo(p.toCenterPos())))
                         .orElse(null);
             }
 
             if (pos != null) {
                 List<BlockPos> poses = getHolePoses(pos).stream()
-                        .filter(blockPos -> mc.player.getPos().distanceTo(blockPos.toCenterPos()) <= placeRange.getValue())
+                        .filter(blockPos -> new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).distanceTo(blockPos.toCenterPos()) <= placeRange.getValue())
                         .toList();
                 boolean broke = false;
 
@@ -181,7 +182,7 @@ public final class HoleFill extends Module {
                             return;
                         }
                         case Trap -> {
-                            BlockPos headPos = BlockPos.ofFloored(mc.player.getPos()).up(2);
+                            BlockPos headPos = BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).up(2);
                             if (mc.world.getBlockState(headPos).isReplaceable() && InteractionUtility.canPlaceBlock(headPos, interactMode.getValue(), false)) {
                                 selfFillNeed = false;
                                 InteractionUtility.placeBlock(headPos, rotate.getValue(), interactMode.getValue(), placeMode.getValue(), slot, true, false);
@@ -310,7 +311,7 @@ public final class HoleFill extends Module {
         ItemStack stack = mc.player.getMainHandStack();
 
         if (!stack.isEmpty() && isValidItem(stack.getItem())) {
-            return mc.player.getInventory().selectedSlot;
+            return mc.player.getInventory().getSelectedSlot();
         } else {
             for (int i = 0; i < 9; ++i) {
                 stack = mc.player.getInventory().getStack(i);

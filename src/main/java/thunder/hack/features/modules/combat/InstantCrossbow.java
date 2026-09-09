@@ -74,13 +74,13 @@ public class InstantCrossbow extends Module {
         }
 
         // Выбираем слот и стреляем
-        int prevSlot = mc.player.getInventory().selectedSlot;
-        mc.player.getInventory().selectedSlot = screenSlot;
+        int prevSlot = mc.player.getInventory().getSelectedSlot();
+        mc.player.getInventory().setSelectedSlot(screenSlot);
 
         // Небольшая задержка чтобы сервер успел обновить выбранный слот
         mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
 
-        mc.player.getInventory().selectedSlot = prevSlot;
+        mc.player.getInventory().setSelectedSlot(prevSlot);
         ticks = 0;
     }
 
@@ -128,7 +128,7 @@ public class InstantCrossbow extends Module {
         if (hotbarSlot != -1) return hotbarSlot;
 
         // Потом в основном инвентаре
-        for (int i = 9; i < mc.player.getInventory().main.size(); i++) {
+        for (int i = 9; i < mc.player.getInventory().getMainStacks().size(); i++) {
             ItemStack stack = mc.player.getInventory().getStack(i);
             if (isCrossbow(stack)) return i;
         }

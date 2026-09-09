@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
@@ -161,10 +162,10 @@ public class LogoutSpots extends Module {
         modelBase.jacket.visible = true;
         modelBase.hat.visible = true;
 
-        double x = entity.getX() - mc.gameRenderer.getCamera().getPos().getX();
-        double y = entity.getY() - mc.gameRenderer.getCamera().getPos().getY();
-        double z = entity.getZ() - mc.gameRenderer.getCamera().getPos().getZ();
-        ((IEntity) entity).setPos(entity.getPos());
+        double x = entity.getX() - gameRenderer.getCamera().getCameraPos().getX();
+        double y = entity.getY() - gameRenderer.getCamera().getCameraPos().getY();
+        double z = entity.getZ() - gameRenderer.getCamera().getCameraPos().getZ();
+        ((IEntity) entity).setPos(new Vec3d(entity.getX(), entity.getY(), entity.getZ()));
         matrices.push();
         matrices.translate((float) x, (float) y, (float) z);
         matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw)));
@@ -174,8 +175,8 @@ public class LogoutSpots extends Module {
         state.bodyYaw = entity.bodyYaw;
         state.relativeHeadYaw = entity.headYaw - entity.bodyYaw;
         state.pitch = entity.getPitch();
-        state.limbSwingAnimationProgress = entity.limbAnimator.getPos(Render3DEngine.getTickDelta());
-        state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(Render3DEngine.getTickDelta()), 1f);
+        state.limbSwingAnimationProgress = entity.limbAnimator.getAnimationProgress(Render3DEngine.getTickDelta());
+        state.limbSwingAmplitude = Math.min(entity.limbAnimator.getSpeed(), 1f);
         modelBase.resetTransforms();
         modelBase.setAngles(state);
         BufferBuilder buffer;

@@ -1,5 +1,6 @@
 package thunder.hack.injection;
 
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,7 +24,7 @@ public abstract class MixinKeyBinding {
                 && mc.player != null
                 && mc.world != null
                 && ModuleManager.safeWalk.isEnabled()
-                && mc.player.isOnGround() && mc.world.getBlockState(new BlockPos((int) Math.floor(mc.player.getPos().getX()), (int) Math.floor(mc.player.getPos().getY()) - 1, (int) Math.floor(mc.player.getPos().getZ()))).isAir()
+                && mc.player.isOnGround() && mc.world.getBlockState(new BlockPos((int) Math.floor(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).getX()), (int) Math.floor(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).getY()) - 1, (int) Math.floor(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).getZ()))).isAir()
                 && !ModuleManager.scaffold.isEnabled()){
             cir.setReturnValue(true);
         }

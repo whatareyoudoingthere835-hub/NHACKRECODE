@@ -55,8 +55,8 @@ public class Render2DEngine {
 
     public static void addWindow(Matrix3x2fStack stack, Rectangle r1) {
         Matrix3x2f m = new Matrix3x2f(stack);
-        float[] a = m.transformAffine(r1.x(), r1.y(), new float[2]);
-        float[] b = m.transformAffine(r1.x1(), r1.y1(), new float[2]);
+        float[] a = m.transform(r1.x(), r1.y(), new float[2]);
+        float[] b = m.transform(r1.x1(), r1.y1(), new float[2]);
         Rectangle r = new Rectangle(a[0], a[1], b[0], b[1]);
         if (clipStack.isEmpty()) {
             clipStack.push(r);
@@ -207,8 +207,7 @@ public class Render2DEngine {
             g.setColor(new Color(-1));
             g.fillRect(blurRadius, blurRadius, (int) (width - blurRadius * 2), (int) (height - blurRadius * 2));
             g.dispose();
-            java.awt.image.ConvolveOp op = new GaussianFilter(blurRadius);
-            BufferedImage blurred = op.filter(original, null);
+            BufferedImage blurred = new GaussianFilter(blurRadius).filter(original, null);
             shadowCache.put(identifier, new BlurredShadow(blurred));
         }
     }
@@ -754,7 +753,7 @@ public class Render2DEngine {
         net.minecraft.client.render.RenderLayer layer;
         if (format == net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR)
             layer = THRenderLayers.worldTextured(mode, currentBoundTexture, false);
-        else if (format == net.minecraft.client.render.VertexFormats.LINES)
+        else if (format == net.minecraft.client.render.VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH)
             layer = THRenderLayers.worldLines(mode);
         else
             layer = THRenderLayers.worldColored(mode);

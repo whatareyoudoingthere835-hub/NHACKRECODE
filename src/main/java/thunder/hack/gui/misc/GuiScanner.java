@@ -1,5 +1,6 @@
 package thunder.hack.gui.misc;
 
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -92,7 +93,11 @@ public class GuiScanner extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         if (mouseX > radarx && mouseX < radarx1 && mouseY > radary && mouseY < radary1) {
             busy = true;
             searchx = (int) (mouseX - centerx);
@@ -109,7 +114,7 @@ public class GuiScanner extends Screen {
             consoleout.clear();
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     @Override

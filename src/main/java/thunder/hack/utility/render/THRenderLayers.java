@@ -80,7 +80,7 @@ public final class THRenderLayers {
     /** LINES-style layer (debug lines, outlines) */
     public static RenderLayer worldLines(DrawMode mode) {
         return WORLD_CACHE.computeIfAbsent("lines" + mode, k ->
-                layer(k, worldPipeline(k, RenderPipelines.RENDERTYPE_LINES_SNIPPET, VertexFormats.LINES, mode, false), null));
+                layer(k, worldPipeline(k, RenderPipelines.RENDERTYPE_LINES_SNIPPET, VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH, mode, false), null));
     }
 
     /** textured + colored geometry bound to {@code texture}; {@code additive} for glow style */

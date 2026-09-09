@@ -1,5 +1,6 @@
 package thunder.hack.utility.render.animation;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -21,9 +22,9 @@ public class CaptureMark {
     public static void render(Entity target) {
         Camera camera = mc.gameRenderer.getCamera();
 
-        double tPosX = Render2DEngine.interpolate(target.prevX, target.getX(), Render3DEngine.getTickDelta()) - camera.getPos().x;
-        double tPosY = Render2DEngine.interpolate(target.prevY, target.getY(), Render3DEngine.getTickDelta()) - camera.getPos().y;
-        double tPosZ = Render2DEngine.interpolate(target.prevZ, target.getZ(), Render3DEngine.getTickDelta()) - camera.getPos().z;
+        double tPosX = Render2DEngine.interpolate((target.getX() - target.getDeltaMovement().x), target.getX(), Render3DEngine.getTickDelta()) - camera.getCameraPos().x;
+        double tPosY = Render2DEngine.interpolate((target.getY() - target.getDeltaMovement().y), target.getY(), Render3DEngine.getTickDelta()) - camera.getCameraPos().y;
+        double tPosZ = Render2DEngine.interpolate((target.getZ() - target.getDeltaMovement().z), target.getZ(), Render3DEngine.getTickDelta()) - camera.getCameraPos().z;
 
         MatrixStack matrices = new MatrixStack();
 
@@ -46,7 +47,7 @@ public class CaptureMark {
         buffer.vertex(matrix, 1.5f, 1.5f, 0).texture(1f, 1f).color(HudEditor.getColor(0).getRGB());
         buffer.vertex(matrix, 1.5f, 0, 0).texture(1f, 0).color(HudEditor.getColor(180).getRGB());
         buffer.vertex(matrix, 0, 0, 0).texture(0, 0).color(HudEditor.getColor(270).getRGB());
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
+        Render2DEngine.endBuilding(buffer);
 
 
 

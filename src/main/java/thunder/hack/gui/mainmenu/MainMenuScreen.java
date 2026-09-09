@@ -1,5 +1,6 @@
 package thunder.hack.gui.mainmenu;
 
+import net.minecraft.client.gui.Click;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -209,7 +210,11 @@ public class MainMenuScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         float halfOfWidth = mc.getWindow().getScaledWidth() / 2f;
         float halfOfHeight = mc.getWindow().getScaledHeight() / 2f;
         buttons.forEach(b -> b.onClick((int) mouseX, (int) mouseY));
@@ -220,7 +225,7 @@ public class MainMenuScreen extends Screen {
             confirm = false;
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     private static class Star {

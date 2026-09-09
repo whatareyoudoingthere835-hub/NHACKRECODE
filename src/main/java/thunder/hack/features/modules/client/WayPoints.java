@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.client;
 
+import net.minecraft.client.gl.RenderPipelines;
 import org.joml.Matrix3x2fStack;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Formatting;
@@ -31,8 +32,8 @@ public final class WayPoints extends Module {
                 if ((mc.isInSingleplayer() && wp.getServer().equals("SinglePlayer"))
                         || (mc.getNetworkHandler().getServerInfo() != null && !mc.getNetworkHandler().getServerInfo().address.contains(wp.getServer()))) continue;
                 if (!mc.world.getRegistryKey().getValue().getPath().equals(wp.getDimension())) continue;
-                double difX = wp.getX() - mc.player.getPos().x;
-                double difZ = wp.getZ() - mc.player.getPos().z;
+                double difX = wp.getX() - mc.player.getX();
+                double difZ = wp.getZ() - mc.player.getZ();
                 float yaw = (float) MathHelper.wrapDegrees(Math.toDegrees(Math.atan2(difZ, difX)) - 90.0);
                 double plYaw = MathHelper.wrapDegrees(mc.player.getYaw());
                 if (Math.abs(yaw - plYaw) > 90) continue;
@@ -60,7 +61,7 @@ public final class WayPoints extends Module {
 
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(posX - 10, (posY - 35));
-                context.drawTexture(TextureStorage.waypoint, 0, 0, 20, 20, 0, 0, 20, 20, 20, 20);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.waypoint, 0, 0, 0, 0, 20, 20, 20, 20, -1);
                 context.getMatrices().popMatrix();
 
                 FontRenderers.sf_bold_mini.drawString(context.getMatrices(), wp.getName(), tagX, (float) posY - 10, -1);

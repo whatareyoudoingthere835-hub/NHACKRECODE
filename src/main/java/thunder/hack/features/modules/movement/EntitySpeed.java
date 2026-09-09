@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
@@ -45,7 +46,7 @@ public class EntitySpeed extends Module {
         Entity entity = mc.player.getControllingVehicle();
 
         if (entity == null) return;
-        if ((!mc.world.isChunkLoaded((int) entity.getPos().getX() >> 4, (int) entity.getPos().getZ() >> 4) || entity.getPos().getY() < -60) && stopunloaded.getValue())
+        if ((!mc.world.isChunkLoaded((int) new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getX() >> 4, (int) new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getZ() >> 4) || new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getY() < -60) && stopunloaded.getValue())
             return;
 
         if (entity.horizontalCollision || mc.player.horizontalCollision)
@@ -58,7 +59,7 @@ public class EntitySpeed extends Module {
         double predictedX = entity.getX() + motion[0];
         double predictedZ = entity.getZ() + motion[1];
 
-        if ((!mc.world.isChunkLoaded((int) predictedX >> 4, (int) predictedZ >> 4) || entity.getPos().getY() < -60) && stopunloaded.getValue())
+        if ((!mc.world.isChunkLoaded((int) predictedX >> 4, (int) predictedZ >> 4) || new Vec3d(entity.getX(), entity.getY(), entity.getZ()).getY() < -60) && stopunloaded.getValue())
             return;
 
         if (MovementUtility.isMoving()) entity.setVelocity(motion[0], entity.getVelocity().getY(), motion[1]);

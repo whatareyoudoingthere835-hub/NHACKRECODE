@@ -1,5 +1,7 @@
 package thunder.hack.gui.hud;
 
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.input.KeyInput;
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -58,13 +60,13 @@ public class HudEditorGui extends Screen {
 
         if (ModuleManager.clickGui.scrollMode.getValue() == ClickGui.scrollModeEn.Old) {
             for (AbstractCategory window : windows) {
-                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 264))
+                if (InputUtil.isKeyPressed(mc.getWindow(), 264))
                     window.setY(window.getY() + 2);
-                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 265))
+                if (InputUtil.isKeyPressed(mc.getWindow(), 265))
                     window.setY(window.getY() - 2);
-                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 262))
+                if (InputUtil.isKeyPressed(mc.getWindow(), 262))
                     window.setX(window.getX() + 2);
-                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 263))
+                if (InputUtil.isKeyPressed(mc.getWindow(), 263))
                     window.setX(window.getX() - 2);
                 if (dWheel != 0)
                     window.setY((float) (window.getY() + dWheel));
@@ -87,7 +89,11 @@ public class HudEditorGui extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         windows.forEach(w -> {
             w.mouseClicked((int) mouseX, (int) mouseY, button);
 
@@ -96,22 +102,30 @@ public class HudEditorGui extends Screen {
                     w1.dragging = false;
             });
         });
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(Click click) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+
         windows.forEach(w -> w.mouseReleased((int) mouseX, (int) mouseY, button));
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyInput input) {
+        int keyCode = input.key();
+        int scanCode = input.scancode();
+        int modifiers = input.modifiers();
+
         windows.forEach(w -> w.keyTyped(keyCode));
 
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            super.keyPressed(keyCode, scanCode, modifiers);
+            super.keyPressed(input);
             return true;
         }
 

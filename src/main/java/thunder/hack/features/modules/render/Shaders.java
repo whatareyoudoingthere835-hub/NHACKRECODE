@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
@@ -58,7 +59,7 @@ public class Shaders extends Module {
         if (mc.player == null)
             return false;
 
-        if (mc.player.squaredDistanceTo(entity.getPos()) > maxRange.getPow2Value())
+        if (mc.player.squaredDistanceTo(new Vec3d(entity.getX(), entity.getY(), entity.getZ())) > maxRange.getPow2Value())
             return false;
 
         if (entity instanceof PlayerEntity) {

@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.movement;
 
+import net.minecraft.util.math.Vec3d;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
@@ -49,21 +50,21 @@ public class Phase extends Module {
     public void onCollide(EventCollision e) {
         if (fullNullCheck())
             return;
-        BlockPos playerPos = BlockPos.ofFloored(mc.player.getPos());
+        BlockPos playerPos = BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()));
 
         if (!mode.is(Mode.CCClip) && !mode.is(Mode.Pearl) && !mode.is(Mode.ForceMine) && canNoClip() || afterPearlTime > 0) {
-            if (!e.getPos().equals(playerPos.down()) || mc.options.sneakKey.isPressed())
+            if (!new Vec3d(e.getX(), e.getY(), e.getZ()).equals(playerPos.down()) || mc.options.sneakKey.isPressed())
                 e.setState(Blocks.AIR.getDefaultState());
         }
 
         if (mode.is(Mode.ForceMine)) {
-            float xDelta = Math.abs(playerPos.getX() - e.getPos().getX());
-            float zDelta = Math.abs(playerPos.getZ() - e.getPos().getZ());
+            float xDelta = Math.abs(playerPos.getX() - new Vec3d(e.getX(), e.getY(), e.getZ()).getX());
+            float zDelta = Math.abs(playerPos.getZ() - new Vec3d(e.getX(), e.getY(), e.getZ()).getZ());
 
             if (xDelta != 0 && zDelta != 0 && strict.getValue())
                   return;
 
-            if (!e.getPos().equals(playerPos.down()) || mc.options.sneakKey.isPressed())
+            if (!new Vec3d(e.getX(), e.getY(), e.getZ()).equals(playerPos.down()) || mc.options.sneakKey.isPressed())
                 e.setState(Blocks.AIR.getDefaultState());
         }
     }
@@ -87,12 +88,12 @@ public class Phase extends Module {
                 ).getType().equals(HitResult.Type.MISS) ? 1 : 2;
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY() + height, mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, mc.player.horizontalCollision));
 
-                height = mc.world.isAir(BlockPos.ofFloored(mc.player.getPos().add(diagonalOffset[0], -2, diagonalOffset[1]))) ? 2 : 1;
+                height = mc.world.isAir(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).add(diagonalOffset[0], -2, diagonalOffset[1]))) ? 2 : 1;
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY() - height, mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, mc.player.horizontalCollision));
                 disable("diagonal");
 
             } else {
@@ -103,15 +104,15 @@ public class Phase extends Module {
                 ).getType().equals(HitResult.Type.MISS) ? 1 : 2;
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY() + height, mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, mc.player.horizontalCollision));
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY(), mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, mc.player.horizontalCollision));
 
-                height = mc.world.isAir(BlockPos.ofFloored(mc.player.getPos().add(diagonalOffset[0], -2, diagonalOffset[1]))) ? 2 : 1;
+                height = mc.world.isAir(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()).add(diagonalOffset[0], -2, diagonalOffset[1]))) ? 2 : 1;
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY() - height, mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, mc.player.horizontalCollision));
                 disable("normal");
             }
         }
@@ -140,7 +141,7 @@ public class Phase extends Module {
             int best_tool = getTool(blockToBreak);
             if (best_tool == -1) return;
 
-            int prevItem = mc.player.getInventory().selectedSlot;
+            int prevItem = mc.player.getInventory().getSelectedSlot();
 
             InventoryUtility.switchTo(best_tool);
             mc.interactionManager.updateBlockBreakingProgress(blockToBreak, mc.player.getHorizontalFacing());
@@ -156,7 +157,7 @@ public class Phase extends Module {
                         if (((x == 0 && y == 0 && z == 0) || (x == 0 && y == 1 && z == 0)) && !mc.options.sneakKey.isPressed())
                             continue;
 
-                        BlockPos bp = BlockPos.ofFloored(mc.player.getPos()).add(x, y, z);
+                        BlockPos bp = BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())).add(x, y, z);
                         if (mc.player.getBoundingBox().intersects(new Box(bp)) && !mc.world.isAir(bp))
                             sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, bp, Direction.UP));
                     }
@@ -192,7 +193,7 @@ public class Phase extends Module {
                     return;
 
                 int epSlot = findEPSlot();
-                int prevItem = mc.player.getInventory().selectedSlot;
+                int prevItem = mc.player.getInventory().getSelectedSlot();
 
                 if (epSlot != -1) {
                     InventoryUtility.switchTo(epSlot);
@@ -211,7 +212,7 @@ public class Phase extends Module {
     private int findEPSlot() {
         int epSlot = -1;
         if (mc.player.getMainHandStack().getItem() == Items.ENDER_PEARL) {
-            epSlot = mc.player.getInventory().selectedSlot;
+            epSlot = mc.player.getInventory().getSelectedSlot();
         }
         if (epSlot == -1) {
             for (int l = 0; l < 9; ++l) {
@@ -231,7 +232,7 @@ public class Phase extends Module {
     }
 
     public boolean playerInsideBlock() {
-        return !mc.world.isAir(BlockPos.ofFloored(mc.player.getPos()));
+        return !mc.world.isAir(BlockPos.ofFloored(new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ())));
     }
 
     @EventHandler

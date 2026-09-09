@@ -1,5 +1,6 @@
 package thunder.hack.features.hud.impl;
 
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -49,7 +50,7 @@ public class Crosshair extends Module {
         float midX = mc.getWindow().getScaledWidth() / 2f;
         float midY = mc.getWindow().getScaledHeight() / 2f;
 
-        float yawDelta = mc.player.prevHeadYaw - mc.player.getHeadYaw();
+        float yawDelta = mc.player.getHeadYaw() - mc.player.getHeadYaw();
         float pitchDelta = prevPitch - mc.player.getPitch();
 
         if (yawDelta > 0) xAnim = AnimationUtility.fast(xAnim, midX - range.getValue(), speed.getValue());
@@ -82,9 +83,9 @@ public class Crosshair extends Module {
             case WiseTree -> {
                 Color color = this.color.getValue().getColorObject();
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(xAnim, yAnim);
+                context.getMatrices().translate((float) (xAnim), (float) (yAnim));
                 context.getMatrices().rotate((System.currentTimeMillis() % 70000) / 70000f * 360f);
-                context.getMatrices().translate(-xAnim, -yAnim);
+                context.getMatrices().translate((float) (-xAnim), (float) (-yAnim));
                 Render2DEngine.drawRect(context.getMatrices(), xAnim - 0.75f, yAnim - 5, 1.5f, 10, color);
                 Render2DEngine.drawRect(context.getMatrices(), xAnim - 5, yAnim - 0.75f, 10, 1.5f, color);
                 Render2DEngine.drawRect(context.getMatrices(), xAnim, yAnim - 5, 5, 1.5f, color);
@@ -95,7 +96,7 @@ public class Crosshair extends Module {
             }
             case Dot -> {
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(xAnim + 4, yAnim + 4);
+                context.getMatrices().translate((float) (xAnim + 4), (float) (yAnim + 4));
 
 
 
@@ -104,12 +105,12 @@ public class Crosshair extends Module {
         Render2DEngine.bindTexture(TextureStorage.firefly);
 
                 Color color1 = colorMode.getValue() == ColorMode.Sync ? HudEditor.getColor(1) : color.getValue().getColorObject();
-                Matrix4f posMatrix = context.getMatrices().peek().getPositionMatrix();
+                Matrix4f posMatrix = new Matrix4f().set(context.getMatrices().last());
                 bufferBuilder.vertex(posMatrix, 0, -8f, 0).texture(0f, 1f).color(color1.getRGB());
                 bufferBuilder.vertex(posMatrix, -8f, -8f, 0).texture(1f, 1f).color(color1.getRGB());
                 bufferBuilder.vertex(posMatrix, -8f, 0, 0).texture(1f, 0).color(color1.getRGB());
                 bufferBuilder.vertex(posMatrix, 0, 0, 0).texture(0, 0).color(color1.getRGB());
-                BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+                Render2DEngine.endBuilding(bufferBuilder);
 
 
                 context.getMatrices().popMatrix();

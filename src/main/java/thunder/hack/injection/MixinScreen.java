@@ -5,6 +5,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,15 +40,16 @@ public abstract class MixinScreen {
     @Shadow
     public abstract void init(MinecraftClient client, int width, int height);
 
-    @Inject(method = "handleTextClick", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;)V", ordinal = 1, remap = false), cancellable = true)
-    private void onRunCommand(Style style, CallbackInfoReturnable<Boolean> cir) {
-        if (Objects.requireNonNull(style.getClickEvent()) instanceof ClientClickEvent clientClickEvent && clientClickEvent.getValue().startsWith(Managers.COMMAND.getPrefix()))
+    @Inject(method = "handleTextClick", at = @At("HEAD"), cancellable = true, require = 0)
+    private void onRunCommand(ClickEvent click, CallbackInfoReturnable<Boolean> cir) {
+        if (click instanceof ClickEvent.RunCommand run && run.command().startsWith(Managers.COMMAND.getPrefix())) {
             try {
                 CommandManager manager = Managers.COMMAND;
-                manager.getDispatcher().execute(style.getClickEvent().getValue().substring(Managers.COMMAND.getPrefix().length()), manager.getSource());
+                manager.getDispatcher().execute(run.command().substring(Managers.COMMAND.getPrefix().length()), manager.getSource());
                 cir.setReturnValue(true);
             } catch (CommandSyntaxException ignored) {
             }
+        }
     }
 
     @Inject(method = "filesDragged", at = @At("HEAD"))

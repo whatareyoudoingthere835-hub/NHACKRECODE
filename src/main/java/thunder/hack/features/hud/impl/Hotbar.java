@@ -32,7 +32,7 @@ public class Hotbar extends HudElement {
 
         PlayerEntity playerEntity = mc.player;
         if (playerEntity != null) {
-            Matrix3x2fStack matrices = context.getMatrices() = matrices = context.getMatrices();
+            Matrix3x2fStack matrices = context.getMatrices();
             int i = mc.getWindow().getScaledWidth() / 2;
 
             if (mc.player.getOffHandStack().isEmpty()) {
@@ -53,7 +53,7 @@ public class Hotbar extends HudElement {
 
             Color c = HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry) ? new Color(0x7C151515, true) : new Color(0x7C2F2F2F, true);
 
-            Render2DEngine.drawRect(matrices, i - 88 + playerEntity.getInventory().selectedSlot * 19.8f, mc.getWindow().getScaledHeight() - 24, 17, 17, HudEditor.hudRound.getValue(), 0.7f, c, c, c, c);
+            Render2DEngine.drawRect(matrices, i - 88 + playerEntity.getInventory().getSelectedSlot() * 19.8f, mc.getWindow().getScaledHeight() - 24, 17, 17, HudEditor.hudRound.getValue(), 0.7f, c, c, c, c);
         }
     }
 
@@ -65,7 +65,7 @@ public class Hotbar extends HudElement {
         PlayerEntity playerEntity = mc.player;
         if (playerEntity != null) {
 
-            Matrix3x2fStack matrices = context.getMatrices() = matrices = context.getMatrices();
+            Matrix3x2fStack matrices = context.getMatrices();
             int i = mc.getWindow().getScaledWidth() / 2;
             int o = mc.getWindow().getScaledHeight() - 16 - 3;
 
@@ -78,9 +78,9 @@ public class Hotbar extends HudElement {
 
             for (int m = 0; m < 9; ++m) {
                 int n = i - 90 + m * 20 + 2;
-                if (m == mc.player.getInventory().selectedSlot)
-                    renderHotbarItem(context, n, o - 7, playerEntity.getInventory().main.get(m));
-                else renderHotbarItem(context, n, o - 5, playerEntity.getInventory().main.get(m));
+                if (m == mc.player.getInventory().getSelectedSlot())
+                    renderHotbarItem(context, n, o - 7, playerEntity.getInventory().getMainStacks().get(m));
+                else renderHotbarItem(context, n, o - 5, playerEntity.getInventory().getMainStacks().get(m));
             }
         }
     }
@@ -89,27 +89,27 @@ public class Hotbar extends HudElement {
         if (!itemStack.isEmpty()) {
             context.getMatrices().pushMatrix();
             context.getMatrices().translate((float) (i + 8), (float) (j + 12));
-            context.getMatrices().scale(0.9f, 0.9f, 1.0F);
+            context.getMatrices().scale(0.9f, 0.9f);
             context.getMatrices().translate((float) (-(i + 8)), (float) (-(j + 12)));
             context.drawItem(itemStack, i, j);
-            context.drawItemInSlot(mc.textRenderer, itemStack, i, j);
+            context.drawStackOverlay(mc.textRenderer, itemStack, i, j);
             context.getMatrices().popMatrix();
         }
     }
 
     public static void renderXpBar(int x, MatrixStack matrices) {
-        mc.getProfiler().push("expBar");
+
         int k;
         int l;
-        mc.getProfiler().pop();
+
 
         if (mc.player.experienceLevel > 0) {
-            mc.getProfiler().push("expLevel");
+
             String string = "" + mc.player.experienceLevel;
             k = (int) ((mc.getWindow().getScaledWidth() - FontRenderers.sf_bold_mini.getStringWidth(string)) / 2);
             l = mc.getWindow().getScaledHeight() - 31 - 4;
             FontRenderers.sf_bold_mini.drawString(Draw2D.CURRENT.getMatrices(), string, k, l, 8453920);
-            mc.getProfiler().pop();
+
         }
     }
 }
