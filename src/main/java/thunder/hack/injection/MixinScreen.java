@@ -47,9 +47,6 @@ public abstract class MixinScreen {
             } catch (CommandSyntaxException ignored) {
             }
         }
-    } catch (CommandSyntaxException ignored) {
-            }
-        }
     }
 
     @Inject(method = "renderPanoramaBackground", at = @At("HEAD"), cancellable = true)
