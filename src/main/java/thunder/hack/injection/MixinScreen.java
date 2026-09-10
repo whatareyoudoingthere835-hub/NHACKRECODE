@@ -37,14 +37,17 @@ import static thunder.hack.features.modules.client.ClientSettings.isRu;
 
 @Mixin(Screen.class)
 public abstract class MixinScreen {
-    @Inject(method = "handleTextClick", at = @At("HEAD"), cancellable = true, require = 0)
-    private void onRunCommand(ClickEvent click, CallbackInfoReturnable<Boolean> cir) {
-        if (click instanceof ClickEvent.RunCommand run && run.command().startsWith(Managers.COMMAND.getPrefix())) {
+    @Inject(method = "handleClickEvent(Lnet/minecraft/text/ClickEvent;Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"), cancellable = true, require = 0)
+    private static void onRunCommand(ClickEvent clickEvent, net.minecraft.client.MinecraftClient client, Screen screenAfterRun, CallbackInfo ci) {
+        if (clickEvent instanceof ClickEvent.RunCommand run && run.command().startsWith(Managers.COMMAND.getPrefix())) {
             try {
                 CommandManager manager = Managers.COMMAND;
                 manager.getDispatcher().execute(run.command().substring(Managers.COMMAND.getPrefix().length()), manager.getSource());
-                cir.setReturnValue(true);
+                ci.cancel();
             } catch (CommandSyntaxException ignored) {
+            }
+        }
+    } catch (CommandSyntaxException ignored) {
             }
         }
     }
